@@ -6,10 +6,16 @@ on:
   pull_request:
     branches: [ main ]
 
+# Prevent multiple runs from interfering with each other
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   security:
     name: 'Security Scan'
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     defaults:
       run:
         working-directory: ./turbot-assignment
