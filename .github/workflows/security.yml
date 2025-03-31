@@ -1,0 +1,37 @@
+name: 'Security Scan'
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  security:
+    name: 'Security Scan'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./turbot-assignment
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Run tfsec
+      uses: aquasecurity/tfsec-action@v1.0.0
+      with:
+        working-directory: ./turbot-assignment
+
+    - name: Run tflint
+      uses: terraform-linters/tflint-action@v1.0.0
+      with:
+        working-directory: ./turbot-assignment
+        args: --recursive
+
+    - name: Run checkov
+      uses: bridgecrewio/checkov-action@master
+      with:
+        directory: ./turbot-assignment
+        framework: terraform
+        check: CKV_AWS_* 
