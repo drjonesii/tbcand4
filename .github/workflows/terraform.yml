@@ -8,7 +8,6 @@ on:
 
 env:
   AWS_REGION: us-west-1
-  AWS_PROFILE: turbot
 
 # Prevent multiple runs from interfering with each other
 concurrency:
@@ -66,7 +65,6 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ env.AWS_REGION }}
-        profile-name: ${{ env.AWS_PROFILE }}
 
     - name: Setup Go
       uses: actions/setup-go@v4
