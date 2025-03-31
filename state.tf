@@ -1,6 +1,6 @@
 # S3 bucket for Terraform state
 resource "aws_s3_bucket" "terraform_state" {
-  bucket = "turbot-assignment-state"
+  bucket = "${var.project_name}-terraform-state"
 
   # Prevent accidental deletion of this S3 bucket
   lifecycle {
@@ -43,10 +43,11 @@ resource "aws_s3_bucket_public_access_block" "terraform_state" {
 }
 
 # DynamoDB table for state locking
-resource "aws_dynamodb_table" "terraform_locks" {
-  name         = "terraform-state-lock"
-  billing_mode = "PAY_PER_REQUEST"
-  hash_key     = "LockID"
+resource "aws_dynamodb_table" "terraform_state_lock" {
+  name           = "terraform-state-lock"
+  read_capacity  = 1
+  write_capacity = 1
+  hash_key       = "LockID"
 
   attribute {
     name = "LockID"
@@ -54,13 +55,7 @@ resource "aws_dynamodb_table" "terraform_locks" {
   }
 
   tags = {
-    Name        = "${var.project_name}-terraform-locks"
+    Name        = "${var.project_name}-terraform-state-lock"
     Environment = var.environment
   }
-}
-
-# Outputs
-output "terraform_state_bucket_name" {
-  description = "The name of the S3 bucket used for storing Terraform state"
-  value       = aws_s3_bucket.terraform_state.id
 } 
