@@ -1,8 +1,3 @@
-variable "vpc_id" {
-  description = "VPC ID where the EC2 instance will be created"
-  type        = string
-}
-
 variable "subnet_ids" {
   description = "List of subnet IDs where the EC2 instance can be created"
   type        = list(string)
