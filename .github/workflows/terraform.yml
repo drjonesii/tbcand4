@@ -22,6 +22,34 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.7.5
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Run tflint
+      uses: terraform-linters/tflint-action@v1.0.1
+      with:
+        working-directory: ./turbot-assignment
+        args: --recursive
+
+    - name: Run tfsec
+      uses: aquasecurity/tfsec-action@v1.0.0
+      with:
+        working-directory: ./turbot-assignment
+
+    - name: Run checkov
+      uses: bridgecrewio/checkov-action@master
+      with:
+        directory: ./turbot-assignment
+        framework: terraform
+        check: CKV_AWS_*
+
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
