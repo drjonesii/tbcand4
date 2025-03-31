@@ -30,7 +30,7 @@ jobs:
         working-directory: ./turbot-assignment
 
     - name: Run tflint
-      uses: terraform-linters/tflint-action@v1.0.0
+      uses: terraform-linters/tflint-action@v0.9.0
       with:
         working-directory: ./turbot-assignment
         args: --recursive
