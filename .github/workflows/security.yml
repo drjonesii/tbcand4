@@ -18,7 +18,7 @@ jobs:
     timeout-minutes: 15
     defaults:
       run:
-        working-directory: ./turbot-assignment
+        working-directory: .
 
     steps:
     - name: Checkout
@@ -30,18 +30,16 @@ jobs:
         tflint --version
 
     - name: Run tflint
-      run: |
-        cd turbot-assignment
-        tflint --recursive
+      run: tflint --recursive
 
     - name: Run tfsec
       uses: aquasecurity/tfsec-action@v1.0.0
       with:
-        working-directory: ./turbot-assignment
+        working-directory: .
 
     - name: Run checkov
       uses: bridgecrewio/checkov-action@master
       with:
-        directory: ./turbot-assignment
+        directory: .
         framework: terraform
         check: CKV_AWS_* 
