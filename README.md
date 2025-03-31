@@ -14,6 +14,7 @@ turbot-assignment/
 ├── backend.tf       # S3 backend configuration
 ├── state.tf         # State management resources
 ├── cis_report.tf    # CIS report bucket configuration
+├── architecture.md  # Infrastructure architecture diagram
 └── modules/         # Reusable Terraform modules
     ├── vpc/         # VPC module
     ├── ec2/         # EC2 module
@@ -137,6 +138,8 @@ Security checks:
 Edit `terraform.tfvars` to customize the infrastructure configuration.
 
 ## Infrastructure Components
+
+See [architecture.md](architecture.md) for a detailed diagram of resource dependencies.
 
 1. VPC:
    - Deletes default VPC
