@@ -38,11 +38,15 @@ jobs:
       with:
         python-version: '3.11'
 
+    - name: Install tflint
+      run: |
+        curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+        tflint --version
+
     - name: Run tflint
-      uses: terraform-linters/tflint-action@v0.9.0
-      with:
-        working-directory: ./turbot-assignment
-        args: --recursive
+      run: |
+        cd turbot-assignment
+        tflint --recursive
 
     - name: Run tfsec
       uses: aquasecurity/tfsec-action@v1.0.0
