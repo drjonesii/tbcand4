@@ -348,3 +348,43 @@ Note: The `allowed_ssh_cidr_blocks` variable must:
 - Not be empty
 - Not contain `0.0.0.0/0` (no public access allowed)
 - Contain valid CIDR blocks in the format `x.x.x.x/y`
+
+## Security Scanning with Checkov
+
+This project uses [Checkov](https://www.checkov.io/) for static code analysis of Terraform configurations to identify security and compliance issues.
+
+### Running Checkov Locally
+
+1. Make sure you have the Python environment set up:
+   ```bash
+   python -m venv .venv
+   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+   pip install -r requirements.txt
+   ```
+
+2. Run Checkov using the provided script:
+   ```bash
+   ./scripts/run_checkov.py
+   ```
+
+3. For more options:
+   ```bash
+   ./scripts/run_checkov.py --help
+   ```
+
+### Checkov Configuration
+
+The project includes a `.checkov` configuration file that:
+- Skips specific checks that might be too strict for your environment
+- Configures which frameworks to scan
+- Sets the output format
+- Specifies which paths to include or exclude
+
+### GitHub Actions Integration
+
+Checkov runs automatically as part of the CI/CD pipeline:
+- On every push to the main branch
+- On pull requests to the main branch
+- Daily at midnight
+
+The scan results are uploaded as artifacts and can be viewed in the GitHub Actions logs.

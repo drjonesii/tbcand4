@@ -85,7 +85,12 @@ variable "allowed_ssh_cidr_blocks" {
   }
 
   validation {
-    condition     = can(regex("^([0-9]{1,3}\\.){3}[0-9]{1,3}/[0-9]{1,2}$", var.allowed_ssh_cidr_blocks[0]))
+    condition     = alltrue([for cidr in var.allowed_ssh_cidr_blocks : can(regex("^([0-9]{1,3}\\.){3}[0-9]{1,3}/[0-9]{1,2}$", cidr))])
     error_message = "Each CIDR block must be in the format x.x.x.x/y where x is between 0-255 and y is between 0-32."
+  }
+
+  validation {
+    condition     = alltrue([for cidr in var.allowed_ssh_cidr_blocks : can(regex("^(10\\.|172\\.(1[6-9]|2[0-9]|3[0-1])\\.|192\\.168\\.)[0-9]{1,3}\\.[0-9]{1,3}/[0-9]{1,2}$", cidr))])
+    error_message = "CIDR blocks must be private IP ranges (10.0.0.0/8, 172.16.0.0/12, or 192.168.0.0/16)."
   }
 }
