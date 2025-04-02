@@ -10,6 +10,9 @@ import (
 )
 
 func TestEC2Module(t *testing.T) {
+	// Get AWS region
+	awsRegion := aws.GetRandomStableRegion(t, nil, nil)
+
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir: "../modules/ec2",
 		Vars: map[string]interface{}{
@@ -19,10 +22,16 @@ func TestEC2Module(t *testing.T) {
 			"environment":     "test",
 			"project_name":    "turbot-assignment",
 		},
+		EnvVars: map[string]string{
+			"AWS_DEFAULT_REGION": awsRegion,
+		},
+		Lock: false, // Disable state locking for testing
 	})
 
+	// Ensure we clean up resources after the test
 	defer terraform.Destroy(t, terraformOptions)
 
+	// Initialize and apply Terraform
 	terraform.InitAndApply(t, terraformOptions)
 
 	// Get instance ID
@@ -38,5 +47,5 @@ func TestEC2Module(t *testing.T) {
 	assert.NotEmpty(t, privateIP, "Private IP should not be empty")
 
 	// Wait for instance to be running
-	aws.WaitForSsmInstance(t, "us-west-1", instanceID, 10*time.Minute)
+	aws.WaitForSsmInstance(t, awsRegion, instanceID, 10*time.Minute)
 }

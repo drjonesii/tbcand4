@@ -1,65 +1,118 @@
 # Infrastructure Architecture
 
-```mermaid
-graph TD
-    subgraph "VPC Module"
-        VPC[VPC] --> IGW[Internet Gateway]
-        IGW --> RT[Route Table]
-        VPC --> Sub1[Public Subnet 1]
-        VPC --> Sub2[Public Subnet 2]
-        RT --> Sub1
-        RT --> Sub2
-    end
-
-    subgraph "Security Module"
-        SG[Security Group] --> VPC
-    end
-
-    subgraph "EC2 Module"
-        EC2[EC2 Instance] --> Sub1
-        EC2 --> SG
-    end
-
-    subgraph "S3 Module"
-        StateBucket[S3 State Bucket] --> DynamoDB[DynamoDB Lock Table]
-        CISBucket[CIS Report Bucket]
-        EC2 --> CISBucket
-    end
-
-    subgraph "Terraform State"
-        StateBucket --> TFState[Terraform State]
-        DynamoDB --> TFState
-    end
-
-    style VPC fill:#f9f,stroke:#333,stroke-width:2px
-    style EC2 fill:#bbf,stroke:#333,stroke-width:2px
-    style SG fill:#bfb,stroke:#333,stroke-width:2px
-    style StateBucket fill:#fbb,stroke:#333,stroke-width:2px
-    style CISBucket fill:#fbb,stroke:#333,stroke-width:2px
-```
-
 ## Resource Dependencies
 
-1. **VPC Module**
-   - VPC is the foundation for all networking
-   - Internet Gateway provides internet connectivity
-   - Route Table defines network routing
-   - Public Subnets are created in different AZs
+```mermaid
+graph TB
+    subgraph "Primary Region"
+        VPC[VPC]
+        SG[Security Group]
+        EC2[EC2 Instance]
+        S3_State[S3 State Bucket]
+        S3_CIS[S3 CIS Report Bucket]
+        S3_Logs[S3 Access Logs]
+        DynamoDB[DynamoDB Lock Table]
+        KMS_S3[KMS Key - S3]
+        KMS_DDB[KMS Key - DynamoDB]
+        KMS_CW[KMS Key - CloudWatch]
+        IAM_Role[IAM Replication Role]
+        CW_Logs[CloudWatch Logs]
+        Flow_Logs[VPC Flow Logs]
+    end
 
-2. **Security Module**
-   - Security Group depends on VPC
-   - Defines inbound and outbound rules
+    subgraph "DR Region"
+        S3_State_Replica[S3 State Replica]
+        S3_CIS_Replica[S3 CIS Report Replica]
+        S3_Logs_Replica[S3 Access Logs Replica]
+    end
 
-3. **EC2 Module**
-   - EC2 Instance depends on:
-     - Public Subnet for network placement
-     - Security Group for access control
+    %% VPC Dependencies
+    VPC --> SG
+    SG --> EC2
+    VPC --> Flow_Logs
+    Flow_Logs --> CW_Logs
+    KMS_CW --> CW_Logs
 
-4. **S3 Module**
-   - State Bucket and DynamoDB for Terraform state management
-   - CIS Report Bucket for storing benchmark results
-   - EC2 Instance uploads reports to CIS Bucket
+    %% State Management
+    S3_State --> DynamoDB
+    KMS_S3 --> S3_State
+    KMS_DDB --> DynamoDB
+    S3_State --> S3_Logs
+    S3_CIS --> S3_Logs
+    S3_State --> S3_State_Replica
+    S3_CIS --> S3_CIS_Replica
+    S3_Logs --> S3_Logs_Replica
+    IAM_Role --> S3_State
+    IAM_Role --> S3_State_Replica
+    IAM_Role --> S3_CIS
+    IAM_Role --> S3_CIS_Replica
+    IAM_Role --> S3_Logs
+    IAM_Role --> S3_Logs_Replica
 
-5. **Terraform State**
-   - Managed by S3 and DynamoDB
-   - Ensures state locking and versioning 
+    %% Security Features
+    S3_State -.-> |"Encryption"| KMS_S3
+    S3_State_Replica -.-> |"Encryption"| KMS_S3
+    S3_CIS -.-> |"Encryption"| KMS_S3
+    S3_CIS_Replica -.-> |"Encryption"| KMS_S3
+    S3_Logs -.-> |"Encryption"| KMS_S3
+    S3_Logs_Replica -.-> |"Encryption"| KMS_S3
+    DynamoDB -.-> |"Encryption"| KMS_DDB
+    S3_State -.-> |"Versioning"| S3_State
+    S3_State_Replica -.-> |"Versioning"| S3_State_Replica
+    S3_CIS -.-> |"Versioning"| S3_CIS
+    S3_CIS_Replica -.-> |"Versioning"| S3_CIS_Replica
+    S3_Logs -.-> |"Versioning"| S3_Logs
+    S3_Logs_Replica -.-> |"Versioning"| S3_Logs_Replica
+    EC2 -.-> |"IMDSv2"| EC2
+    EC2 -.-> |"Monitoring"| EC2
+```
+
+## Security Features
+
+### KMS Key Management
+- Separate KMS keys for S3, DynamoDB, and CloudWatch
+- Automatic key rotation enabled
+- Custom key policies for access control
+
+### S3 Bucket Protection
+- Server-side encryption using customer-managed KMS keys
+- Versioning enabled for data protection
+- Public access blocks to prevent unauthorized access
+- Access logging enabled for audit trails
+- Cross-region replication for disaster recovery
+- Self-logging for access logs bucket
+
+### Network Security
+- VPC Flow Logs with 1-year retention
+- CloudWatch logs encrypted with KMS
+- Private subnets for sensitive resources
+- NAT Gateway for secure outbound access
+- No automatic public IP assignment
+
+### Instance Security
+- IMDSv2 required with token-based access
+- Detailed monitoring enabled
+- EBS optimization enabled
+- Root volume encryption
+- Security group with least privilege
+- Latest Amazon Linux 2 AMI
+
+### State Management
+- Remote state stored in S3 with encryption
+- State locking using DynamoDB with encryption
+- Separate KMS keys for different services
+- Point-in-time recovery enabled for DynamoDB
+
+### Access Control
+- IAM roles with least privilege principle
+- Separate roles for replication and access
+- KMS key rotation enabled
+- Resource tagging for tracking
+
+### Monitoring and Audit
+- VPC Flow Logs with 1-year retention
+- S3 access logging enabled
+- DynamoDB point-in-time recovery
+- EC2 detailed monitoring
+- Resource tagging for tracking
+- Regular security scanning with tfsec 

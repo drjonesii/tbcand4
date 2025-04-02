@@ -7,11 +7,6 @@ terraform {
   }
 }
 
-provider "aws" {
-  region  = var.aws_region
-  profile = "turbot"
-}
-
 # VPC Module
 module "vpc" {
   source = "./modules/vpc"

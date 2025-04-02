@@ -8,6 +8,9 @@ on:
 
 env:
   AWS_REGION: us-west-1
+  TERRATEST_VERSION: v0.46.4  # Pinned version for consistency
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
 # Prevent multiple runs from interfering with each other
 concurrency:
@@ -50,7 +53,10 @@ jobs:
     - name: Run tfsec
       uses: aquasecurity/tfsec-action@v1.0.0
       with:
-        working-directory: .
+        working_directory: .
+        version: latest
+        format: default
+        additional_args: --no-color
 
     - name: Run checkov
       uses: bridgecrewio/checkov-action@master
@@ -70,37 +76,74 @@ jobs:
       uses: actions/setup-go@v4
       with:
         go-version: '1.20'
+        check-latest: true
+        cache: true
+        cache-dependency-path: |
+          test/go.mod
+          test/go.sum
 
-    - name: Install Terratest
+    - name: Setup Test Dependencies
       run: |
-        go install github.com/gruntwork-io/terratest/modules/terraform@latest
+        cd test
+        echo "Updating go.mod with pinned Terratest version..."
+        go get github.com/gruntwork-io/terratest@${{ env.TERRATEST_VERSION }}
+        echo "Running go mod tidy..."
+        go mod tidy
+        echo "Downloading dependencies..."
+        go mod download
+        echo "Verifying dependencies..."
+        go mod verify
 
     - name: Terraform Format
       id: fmt
-      run: terraform fmt -check
+      run: |
+        echo "Checking root directory format..."
+        terraform fmt -check
+        echo "Checking EC2 module format..."
+        terraform fmt -check modules/ec2
 
     - name: Terraform Init
       id: init
-      run: terraform init
+      run: |
+        echo "Initializing root directory..."
+        terraform init
+        echo "Initializing EC2 module..."
+        cd modules/ec2 && terraform init
 
     - name: Terraform Validate
       id: validate
-      run: terraform validate
+      run: |
+        echo "Validating root directory..."
+        terraform validate
+        echo "Validating EC2 module..."
+        cd modules/ec2 && terraform validate
 
     - name: Terraform Plan
       id: plan
-      run: terraform plan -no-color
+      run: |
+        echo "Planning root directory..."
+        terraform plan -no-color
+        echo "Planning EC2 module..."
+        cd modules/ec2 && terraform plan -no-color
 
     - name: Run Tests
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_DEFAULT_REGION: ${{ env.AWS_REGION }}
       run: |
         cd test
-        go mod tidy
-        go test -v
+        echo "Running tests with timeout of 30 minutes..."
+        go test -v -timeout 30m -count=1
 
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      run: terraform apply -auto-approve
+      run: |
+        echo "Applying Terraform configuration..."
+        terraform apply -auto-approve
 
     - name: Terraform Output
       if: steps.plan.outcome == 'success'
-      run: terraform output
+      run: |
+        echo "Terraform Output:"
+        terraform output
