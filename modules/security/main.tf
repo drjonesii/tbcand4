@@ -1,13 +1,3 @@
-terraform {
-  required_version = ">= 1.7.0"
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0"
-    }
-  }
-}
-
 resource "aws_security_group" "main" {
   name        = "${var.project_name}-sg"
   description = "Security group for ${var.project_name}"

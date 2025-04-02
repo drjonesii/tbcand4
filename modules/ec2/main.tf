@@ -1,13 +1,3 @@
-terraform {
-  required_version = ">= 1.7.0"
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0"
-    }
-  }
-}
-
 # Create EC2 instance
 resource "aws_instance" "main" {
   ami           = var.ami_id
