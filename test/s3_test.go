@@ -1,6 +1,7 @@
 package test
 
 import (
+	"os"
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/aws"
@@ -9,6 +10,12 @@ import (
 )
 
 func TestS3Module(t *testing.T) {
+	// Get AWS region from environment variable or use default
+	awsRegion := os.Getenv("AWS_REGION")
+	if awsRegion == "" {
+		awsRegion = "us-west-1"
+	}
+
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir: "..",
 		Vars: map[string]interface{}{
@@ -30,6 +37,6 @@ func TestS3Module(t *testing.T) {
 	assert.NotEmpty(t, cisBucketName, "CIS report bucket name should not be empty")
 
 	// Verify buckets exist
-	aws.AssertS3BucketExists(t, "us-west-1", stateBucketName)
-	aws.AssertS3BucketExists(t, "us-west-1", cisBucketName)
+	aws.AssertS3BucketExists(t, awsRegion, stateBucketName)
+	aws.AssertS3BucketExists(t, awsRegion, cisBucketName)
 }

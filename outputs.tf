@@ -8,14 +8,24 @@ output "public_subnet_ids" {
   value       = module.vpc.public_subnet_ids
 }
 
-output "private_subnet_ids" {
-  description = "List of private subnet IDs"
-  value       = module.vpc.private_subnet_ids
+output "public_subnet_cidrs" {
+  description = "List of public subnet CIDR blocks"
+  value       = module.vpc.public_subnet_cidrs
 }
 
-output "ec2_instance_ids" {
-  description = "List of EC2 instance IDs"
-  value       = module.ec2.instance_ids
+output "instance_id" {
+  description = "The ID of the EC2 instance"
+  value       = module.ec2.instance_id
+}
+
+output "instance_public_ip" {
+  description = "The public IP of the EC2 instance"
+  value       = module.ec2.instance_public_ip
+}
+
+output "instance_private_ip" {
+  description = "The private IP of the EC2 instance"
+  value       = module.ec2.instance_private_ip
 }
 
 output "cis_report_bucket_name" {

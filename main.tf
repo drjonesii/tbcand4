@@ -1,42 +1,30 @@
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0"
-    }
-  }
-}
-
-provider "aws" {
-  region  = var.aws_region
-  profile = "turbot"
-}
-
 # VPC Module
 module "vpc" {
   source = "./modules/vpc"
-  
-  vpc_cidr        = var.vpc_cidr
-  environment     = var.environment
-  project_name    = var.project_name
+
+  vpc_cidr     = var.vpc_cidr
+  environment  = var.environment
+  project_name = var.project_name
 }
 
 # Security Module
 module "security" {
   source = "./modules/security"
-  
-  vpc_id          = module.vpc.vpc_id
-  environment     = var.environment
-  project_name    = var.project_name
+
+  vpc_id       = module.vpc.vpc_id
+  environment  = var.environment
+  project_name = var.project_name
 }
 
 # EC2 Module
 module "ec2" {
   source = "./modules/ec2"
-  
-  vpc_id          = module.vpc.vpc_id
-  subnet_ids      = module.vpc.public_subnet_ids
-  security_groups = [module.security.security_group_id]
-  environment     = var.environment
-  project_name    = var.project_name
+
+  project_name            = var.project_name
+  environment             = var.environment
+  ami_id                  = "ami-0c55b159cbfafe1f0" # Example AMI ID
+  instance_type           = "t2.micro"
+  subnet_id               = module.vpc.public_subnet_ids[0]
+  vpc_id                  = module.vpc.vpc_id
+  allowed_ssh_cidr_blocks = ["192.168.0.0/16"] # Private IP range
 }

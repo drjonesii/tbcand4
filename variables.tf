@@ -1,7 +1,7 @@
-variable "aws_region" {
-  description = "AWS region to deploy resources"
+variable "project_name" {
+  description = "Name of the project"
   type        = string
-  default     = "us-west-1"
+  default     = "turbot-assignment"
 }
 
 variable "environment" {
@@ -10,10 +10,16 @@ variable "environment" {
   default     = "dev"
 }
 
-variable "project_name" {
-  description = "Name of the project"
+variable "aws_region" {
+  description = "Primary AWS region for resource creation"
   type        = string
-  default     = "turbot-assignment"
+  default     = "us-west-1"
+}
+
+variable "replica_region" {
+  description = "Secondary AWS region for disaster recovery"
+  type        = string
+  default     = "us-east-1"
 }
 
 variable "vpc_cidr" {
