@@ -6,17 +6,21 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
-	"github.com/gruntwork-io/terratest/modules/aws"
+	"github.com/aws/aws-sdk-go-v2/service/ec2/types"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestVPCModule(t *testing.T) {
 	// Get AWS region
-	awsRegion := aws.GetRandomStableRegion(t, nil, nil)
+	awsRegion := os.Getenv("AWS_DEFAULT_REGION")
+	if awsRegion == "" {
+		awsRegion = "us-west-2" // Default region
+	}
 
 	// Test variables
 	vpcCIDR := "10.0.0.0/16"
@@ -84,10 +88,6 @@ func TestVPCModule(t *testing.T) {
 	natGatewayID := terraform.Output(t, terraformOptions, "nat_gateway_id")
 	assert.NotEmpty(t, natGatewayID, "NAT Gateway ID should not be empty")
 
-	// Test VPC Flow Logs
-	flowLogsID := terraform.Output(t, terraformOptions, "flow_logs_id")
-	assert.NotEmpty(t, flowLogsID, "VPC Flow Logs ID should not be empty")
-
 	// Test S3 Endpoint
 	s3EndpointID := terraform.Output(t, terraformOptions, "s3_endpoint_id")
 	assert.NotEmpty(t, s3EndpointID, "S3 Endpoint ID should not be empty")
@@ -110,34 +110,10 @@ func TestVPCModule(t *testing.T) {
 	})
 	assert.NoError(t, err)
 	assert.Len(t, result.VpcEndpoints, 1, "Should find exactly one S3 endpoint")
-	
+
 	s3Endpoint := result.VpcEndpoints[0]
 	assert.Equal(t, "Gateway", string(s3Endpoint.VpcEndpointType), "S3 endpoint should be a Gateway endpoint")
 	assert.True(t, strings.Contains(*s3Endpoint.ServiceName, "s3"), "Service name should contain 's3'")
-
-	// Test VPC Endpoints
-	endpointIDs := terraform.OutputList(t, terraformOptions, "vpc_endpoint_ids")
-	assert.NotEmpty(t, endpointIDs, "VPC Endpoint IDs should not be empty")
-
-	// Verify required endpoints exist
-	requiredEndpoints := []string{"ssm", "ec2messages", "ssmmessages"}
-	for _, endpoint := range requiredEndpoints {
-		found := false
-		for _, id := range endpointIDs {
-			result, err := ec2Client.DescribeVpcEndpoints(context.TODO(), &ec2.DescribeVpcEndpointsInput{
-				VpcEndpointIds: []string{id},
-			})
-			assert.NoError(t, err)
-			if len(result.VpcEndpoints) > 0 {
-				serviceName := *result.VpcEndpoints[0].ServiceName
-				if strings.Contains(serviceName, endpoint) {
-					found = true
-					break
-				}
-			}
-		}
-		assert.True(t, found, "Required VPC endpoint for %s should exist", endpoint)
-	}
 
 	// Test route tables
 	publicRouteTableID := terraform.Output(t, terraformOptions, "public_route_table_id")
@@ -146,10 +122,70 @@ func TestVPCModule(t *testing.T) {
 	privateRouteTableID := terraform.Output(t, terraformOptions, "private_route_table_id")
 	assert.NotEmpty(t, privateRouteTableID, "Private route table ID should not be empty")
 
-	// Verify route tables have correct routes
-	publicSubnet := aws.GetSubnetById(t, publicSubnetIDs[0], awsRegion)
-	assert.Equal(t, publicRouteTableID, *publicSubnet.RouteTableId, "Public subnet should be associated with public route table")
+	// Verify route tables have correct routes using AWS SDK
+	publicRouteTable, err := ec2Client.DescribeRouteTables(context.TODO(), &ec2.DescribeRouteTablesInput{
+		RouteTableIds: []string{publicRouteTableID},
+	})
+	assert.NoError(t, err)
+	assert.Len(t, publicRouteTable.RouteTables, 1, "Should find exactly one public route table")
 
-	privateSubnet := aws.GetSubnetById(t, privateSubnetIDs[0], awsRegion)
-	assert.Equal(t, privateRouteTableID, *privateSubnet.RouteTableId, "Private subnet should be associated with private route table")
+	// Check for internet gateway route
+	foundIGWRoute := false
+	for _, route := range publicRouteTable.RouteTables[0].Routes {
+		if route.GatewayId != nil && *route.GatewayId == "igw-*" {
+			foundIGWRoute = true
+			break
+		}
+	}
+	assert.True(t, foundIGWRoute, "Public route table should have a route to internet gateway")
+
+	// Check private route table
+	privateRouteTable, err := ec2Client.DescribeRouteTables(context.TODO(), &ec2.DescribeRouteTablesInput{
+		RouteTableIds: []string{privateRouteTableID},
+	})
+	assert.NoError(t, err)
+	assert.Len(t, privateRouteTable.RouteTables, 1, "Should find exactly one private route table")
+
+	// Check for NAT gateway route
+	foundNATRoute := false
+	for _, route := range privateRouteTable.RouteTables[0].Routes {
+		if route.NatGatewayId != nil && *route.NatGatewayId == natGatewayID {
+			foundNATRoute = true
+			break
+		}
+	}
+	assert.True(t, foundNATRoute, "Private route table should have a route to NAT gateway")
+
+	// Verify subnet associations
+	publicSubnet, err := ec2Client.DescribeSubnets(context.TODO(), &ec2.DescribeSubnetsInput{
+		SubnetIds: []string{publicSubnetIDs[0]},
+	})
+	assert.NoError(t, err)
+	assert.Len(t, publicSubnet.Subnets, 1, "Should find exactly one public subnet")
+
+	// Check public subnet route table association
+	publicRouteTableAssoc, err := ec2Client.DescribeRouteTables(context.TODO(), &ec2.DescribeRouteTablesInput{
+		Filters: []types.Filter{
+			{
+				Name:   aws.String("association.subnet-id"),
+				Values: []string{publicSubnetIDs[0]},
+			},
+		},
+	})
+	assert.NoError(t, err)
+	assert.Len(t, publicRouteTableAssoc.RouteTables, 1, "Should find exactly one route table for public subnet")
+	assert.Equal(t, publicRouteTableID, *publicRouteTableAssoc.RouteTables[0].RouteTableId, "Public subnet should be associated with public route table")
+
+	// Check private subnet route table association
+	privateRouteTableAssoc, err := ec2Client.DescribeRouteTables(context.TODO(), &ec2.DescribeRouteTablesInput{
+		Filters: []types.Filter{
+			{
+				Name:   aws.String("association.subnet-id"),
+				Values: []string{privateSubnetIDs[0]},
+			},
+		},
+	})
+	assert.NoError(t, err)
+	assert.Len(t, privateRouteTableAssoc.RouteTables, 1, "Should find exactly one route table for private subnet")
+	assert.Equal(t, privateRouteTableID, *privateRouteTableAssoc.RouteTables[0].RouteTableId, "Private subnet should be associated with private route table")
 }

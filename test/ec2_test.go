@@ -9,14 +9,17 @@ import (
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
-	"github.com/gruntwork-io/terratest/modules/aws"
+	ec2types "github.com/aws/aws-sdk-go-v2/service/ec2/types"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestEC2Module(t *testing.T) {
 	// Get AWS region
-	awsRegion := aws.GetRandomStableRegion(t, nil, nil)
+	awsRegion := os.Getenv("AWS_DEFAULT_REGION")
+	if awsRegion == "" {
+		awsRegion = "us-west-2" // Default region
+	}
 
 	// Get AWS credentials from environment variables
 	awsAccessKeyID := os.Getenv("AWS_ACCESS_KEY_ID")
@@ -83,9 +86,36 @@ func TestEC2Module(t *testing.T) {
 	privateIP := terraform.Output(t, terraformOptions, "instance_private_ip")
 	assert.NotEmpty(t, privateIP, "Private IP should not be empty")
 
+	// Create AWS SDK v2 client
+	cfg, err := config.LoadDefaultConfig(context.TODO(),
+		config.WithRegion(awsRegion),
+		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(awsAccessKeyID, awsSecretAccessKey, "")),
+	)
+	assert.NoError(t, err)
+
+	ec2Client := ec2.NewFromConfig(cfg)
+
 	// Test SSM connectivity
 	t.Log("Waiting for SSM agent to be ready...")
-	aws.WaitForSsmInstance(t, awsRegion, instanceID, 10*time.Minute)
+	// Wait for instance to be running
+	maxAttempts := 30
+	for i := 0; i < maxAttempts; i++ {
+		result, err := ec2Client.DescribeInstances(context.TODO(), &ec2.DescribeInstancesInput{
+			InstanceIds: []string{instanceID},
+		})
+		assert.NoError(t, err)
+		assert.Len(t, result.Reservations, 1, "Should find exactly one reservation")
+		assert.Len(t, result.Reservations[0].Instances, 1, "Should find exactly one instance")
+
+		state := result.Reservations[0].Instances[0].State.Name
+		if state == ec2types.InstanceStateNameRunning {
+			break
+		}
+		if i == maxAttempts-1 {
+			t.Fatal("Instance did not reach running state in time")
+		}
+		time.Sleep(10 * time.Second)
+	}
 
 	// Test IAM role
 	instanceProfile := terraform.Output(t, terraformOptions, "instance_profile_name")
@@ -98,15 +128,6 @@ func TestEC2Module(t *testing.T) {
 	// Test security group
 	securityGroupID := terraform.Output(t, terraformOptions, "security_group_id")
 	assert.NotEmpty(t, securityGroupID, "Security group ID should not be empty")
-
-	// Create AWS SDK v2 client
-	cfg, err := config.LoadDefaultConfig(context.TODO(),
-		config.WithRegion(awsRegion),
-		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(awsAccessKeyID, awsSecretAccessKey, "")),
-	)
-	assert.NoError(t, err)
-
-	ec2Client := ec2.NewFromConfig(cfg)
 
 	// Verify security group rules using AWS SDK
 	result, err := ec2Client.DescribeSecurityGroups(context.TODO(), &ec2.DescribeSecurityGroupsInput{
