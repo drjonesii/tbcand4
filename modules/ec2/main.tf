@@ -49,14 +49,6 @@ resource "aws_security_group" "instance" {
   vpc_id      = var.vpc_id
   description = "Security group for ${var.project_name} EC2 instance in ${var.environment} environment"
 
-  ingress {
-    description = "Allow SSH access from specified CIDR blocks only"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = var.allowed_ssh_cidr_blocks
-  }
-
   # Allow SSM traffic
   ingress {
     description = "Allow SSM traffic"

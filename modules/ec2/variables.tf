@@ -69,28 +69,3 @@ variable "root_volume_size" {
     error_message = "Root volume size must be between 8 and 16384 GB"
   }
 }
-
-variable "allowed_ssh_cidr_blocks" {
-  description = "List of CIDR blocks allowed to connect to the instance via SSH. Must not be empty and must not contain 0.0.0.0/0"
-  type        = list(string)
-
-  validation {
-    condition     = length(var.allowed_ssh_cidr_blocks) > 0
-    error_message = "allowed_ssh_cidr_blocks must not be empty. At least one CIDR block must be specified."
-  }
-
-  validation {
-    condition     = !contains(var.allowed_ssh_cidr_blocks, "0.0.0.0/0")
-    error_message = "allowed_ssh_cidr_blocks must not contain 0.0.0.0/0. Use specific CIDR blocks instead."
-  }
-
-  validation {
-    condition     = alltrue([for cidr in var.allowed_ssh_cidr_blocks : can(regex("^([0-9]{1,3}\\.){3}[0-9]{1,3}/[0-9]{1,2}$", cidr))])
-    error_message = "Each CIDR block must be in the format x.x.x.x/y where x is between 0-255 and y is between 0-32."
-  }
-
-  validation {
-    condition     = alltrue([for cidr in var.allowed_ssh_cidr_blocks : can(regex("^(10\\.|172\\.(1[6-9]|2[0-9]|3[0-1])\\.|192\\.168\\.)[0-9]{1,3}\\.[0-9]{1,3}/[0-9]{1,2}$", cidr))])
-    error_message = "CIDR blocks must be private IP ranges (10.0.0.0/8, 172.16.0.0/12, or 192.168.0.0/16)."
-  }
-}
