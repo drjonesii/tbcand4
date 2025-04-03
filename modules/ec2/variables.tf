@@ -69,3 +69,14 @@ variable "root_volume_size" {
     error_message = "Root volume size must be between 8 and 16384 GB"
   }
 }
+
+variable "cis_report_bucket" {
+  description = "Name of the S3 bucket where CIS reports will be stored"
+  type        = string
+  default     = "cis-reports"
+
+  validation {
+    condition     = can(regex("^[a-z0-9][a-z0-9.-]*[a-z0-9]$", var.cis_report_bucket))
+    error_message = "S3 bucket name must be valid according to AWS naming rules."
+  }
+}

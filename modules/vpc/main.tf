@@ -125,6 +125,20 @@ resource "aws_nat_gateway" "main" {
   }
 }
 
+# Create S3 Gateway Endpoint
+resource "aws_vpc_endpoint" "s3" {
+  vpc_id       = aws_vpc.main.id
+  service_name = "com.amazonaws.${data.aws_region.current.name}.s3"
+  vpc_endpoint_type = "Gateway"
+
+  route_table_ids = [aws_route_table.private.id]
+
+  tags = {
+    Name        = "${var.project_name}-s3-endpoint"
+    Environment = var.environment
+  }
+}
+
 # Create route tables
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
@@ -171,3 +185,6 @@ resource "aws_route_table_association" "private" {
 data "aws_availability_zones" "available" {
   state = "available"
 }
+
+# Get current AWS region
+data "aws_region" "current" {}

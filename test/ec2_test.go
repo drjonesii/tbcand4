@@ -91,6 +91,10 @@ func TestEC2Module(t *testing.T) {
 	instanceProfile := terraform.Output(t, terraformOptions, "instance_profile_name")
 	assert.NotEmpty(t, instanceProfile, "Instance profile name should not be empty")
 
+	// Test S3 access policy
+	s3PolicyName := terraform.Output(t, terraformOptions, "s3_policy_name")
+	assert.NotEmpty(t, s3PolicyName, "S3 policy name should not be empty")
+
 	// Test security group
 	securityGroupID := terraform.Output(t, terraformOptions, "security_group_id")
 	assert.NotEmpty(t, securityGroupID, "Security group ID should not be empty")

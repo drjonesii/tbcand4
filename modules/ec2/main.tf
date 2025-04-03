@@ -113,6 +113,36 @@ resource "aws_iam_role_policy_attachment" "ssm" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
+# Create IAM policy for S3 access
+resource "aws_iam_policy" "s3_access" {
+  name        = "${var.project_name}-s3-access-policy"
+  description = "Policy to allow EC2 instance to write CIS reports to S3"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:PutObject",
+          "s3:GetObject",
+          "s3:ListBucket"
+        ]
+        Resource = [
+          "arn:aws:s3:::${var.cis_report_bucket}",
+          "arn:aws:s3:::${var.cis_report_bucket}/*"
+        ]
+      }
+    ]
+  })
+}
+
+# Attach S3 access policy to EC2 role
+resource "aws_iam_role_policy_attachment" "s3_access" {
+  role       = aws_iam_role.instance_role.name
+  policy_arn = aws_iam_policy.s3_access.arn
+}
+
 # Create KMS key for CloudWatch logs encryption
 resource "aws_kms_key" "cloudwatch" {
   description             = "KMS key for CloudWatch logs encryption"
