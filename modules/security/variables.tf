@@ -16,5 +16,5 @@ variable "project_name" {
 variable "allowed_ssh_cidr_blocks" {
   description = "List of CIDR blocks allowed to SSH into the instance"
   type        = list(string)
-  default     = ["10.0.0.0/8"]  # Default to internal network only
+  default     = ["10.0.0.0/8"] # Default to internal network only
 }

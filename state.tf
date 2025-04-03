@@ -197,15 +197,15 @@ resource "aws_iam_role_policy" "replication" {
 
 # Enable bucket logging
 resource "aws_s3_bucket_logging" "terraform_state" {
-  bucket = aws_s3_bucket.terraform_state.id
+  bucket        = aws_s3_bucket.terraform_state.id
   target_bucket = aws_s3_bucket.access_logs.id
   target_prefix = "terraform-state/"
 }
 
 # Enable bucket logging for replica
 resource "aws_s3_bucket_logging" "terraform_state_replica" {
-  provider = aws.replica
-  bucket = aws_s3_bucket.terraform_state_replica.id
+  provider      = aws.replica
+  bucket        = aws_s3_bucket.terraform_state_replica.id
   target_bucket = aws_s3_bucket.access_logs.id
   target_prefix = "terraform-state-replica/"
 }

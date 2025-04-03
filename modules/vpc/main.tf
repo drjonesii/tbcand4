@@ -33,7 +33,7 @@ resource "aws_flow_log" "vpc_flow_log" {
 # Create CloudWatch Log Group for VPC Flow Logs
 resource "aws_cloudwatch_log_group" "vpc_flow_log" {
   name              = "/aws/vpc/${var.project_name}-${var.environment}/flow-logs"
-  retention_in_days = 365  # 1 year retention
+  retention_in_days = 365 # 1 year retention
 
   kms_key_id = aws_kms_key.cloudwatch.arn
 
@@ -74,7 +74,7 @@ resource "aws_subnet" "public" {
   cidr_block        = cidrsubnet(var.vpc_cidr, 8, count.index)
   availability_zone = data.aws_availability_zones.available.names[count.index]
 
-  map_public_ip_on_launch = false  # Disable automatic public IP assignment
+  map_public_ip_on_launch = false # Disable automatic public IP assignment
 
   tags = {
     Name        = "${var.project_name}-public-subnet-${count.index + 1}"
@@ -117,7 +117,7 @@ resource "aws_eip" "nat" {
 # Create NAT Gateway
 resource "aws_nat_gateway" "main" {
   allocation_id = aws_eip.nat.id
-  subnet_id     = aws_subnet.public[0].id  # Place in first public subnet
+  subnet_id     = aws_subnet.public[0].id # Place in first public subnet
 
   tags = {
     Name        = "${var.project_name}-nat"

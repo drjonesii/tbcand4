@@ -3,8 +3,8 @@ variable "environment" {
   type        = string
 
   validation {
-    condition     = contains(["dev", "staging", "prod"], lower(var.environment))
-    error_message = "Environment must be one of: dev, staging, prod"
+    condition     = contains(["test", "dev", "staging", "prod"], lower(var.environment))
+    error_message = "Environment must be one of: test, dev, staging, prod"
   }
 }
 

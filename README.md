@@ -72,31 +72,109 @@ See [architecture.md](architecture.md) for a detailed diagram and description of
 ## Testing
 
 ### Local Testing
-1. Initialize Terraform:
+
+#### Prerequisites
+- Go 1.21 or later
+- Terraform >= 1.7.0
+- AWS CLI configured with appropriate credentials
+- Python 3.x (for security tools)
+
+#### Environment Setup
+1. Set AWS credentials:
    ```bash
-   terraform init
+   export AWS_ACCESS_KEY_ID=your_access_key
+   export AWS_SECRET_ACCESS_KEY=your_secret_key
+   export AWS_REGION=your_preferred_region  # Optional, defaults to us-west-1
    ```
 
-2. Run tests:
+2. Install Go dependencies:
    ```bash
    cd test
-   go test -v ./...
+   go mod download
    ```
+
+#### Running Tests
+
+The project includes a Makefile with various targets for running tests and checks:
+
+1. Run all checks (Terraform, security, and tests):
+   ```bash
+   make all
+   ```
+
+2. Run specific test suites:
+   ```bash
+   make test-vpc    # Run only VPC tests
+   make test-ec2    # Run only EC2 tests
+   make test-s3     # Run only S3 tests
+   make test        # Run all tests
+   ```
+
+3. Run individual checks:
+   ```bash
+   make terraform   # Run Terraform checks (fmt, init, validate, plan)
+   make security    # Run security checks (checkov, tfsec, tflint)
+   ```
+
+4. Clean up:
+   ```bash
+   make clean       # Remove all generated files and directories
+   ```
+
+#### Test Details
+
+- **VPC Tests**: Tests VPC creation, subnet configuration, and CIDR block validation
+- **EC2 Tests**: Tests EC2 instance creation, networking, and security group configuration
+- **S3 Tests**: Tests S3 bucket creation and configuration
+
+Each test suite:
+- Creates real AWS resources
+- Validates the infrastructure
+- Cleans up resources after completion
+- Has a 30-minute timeout to account for AWS resource provisioning
 
 ### GitHub Actions CI/CD
 
-The repository includes GitHub Actions workflows for:
+The repository includes a consolidated CI workflow (`.github/workflows/ci.yml`) that runs on pull requests to the `main` branch. The workflow includes two parallel jobs:
 
-1. Terraform Validation:
-   - Format checking
-   - Configuration validation
-   - Security scanning with tfsec
-   - Linting with tflint
+#### 1. Terraform Job
+- Checks out the repository
+- Sets up Terraform and Go
+- Installs Go dependencies
+- Runs Terraform commands:
+  - `terraform fmt -check -recursive`
+  - `terraform init`
+  - `terraform validate`
+  - `terraform plan`
+- Runs Go tests
 
-2. Infrastructure Testing:
-   - Automated Go tests
-   - Infrastructure validation
-   - Security compliance checks
+#### 2. Security Job
+- Checks out the repository
+- Sets up Python
+- Installs security tools:
+  - Checkov
+  - tfsec
+  - tflint
+- Runs security checks:
+  - Checkov scan
+  - tfsec scan
+  - tflint scan
+- Uploads Checkov report as an artifact
+
+#### Workflow Triggers
+- Runs on pull requests to `main` branch
+- Runs on push to `main` branch
+- Can be manually triggered from the Actions tab
+
+#### Artifacts
+- Checkov report is uploaded as an artifact
+- Can be downloaded from the GitHub Actions UI
+
+#### Viewing Results
+1. Go to the "Actions" tab in your GitHub repository
+2. Select the "CI" workflow
+3. Click on the latest run
+4. View the results of each job and step
 
 ## Usage
 
@@ -388,3 +466,67 @@ Checkov runs automatically as part of the CI/CD pipeline:
 - Daily at midnight
 
 The scan results are uploaded as artifacts and can be viewed in the GitHub Actions logs.
+
+## Running CI Checks Locally
+
+You can run the same checks that run in GitHub Actions locally using the provided Makefile.
+
+### Prerequisites
+
+- Make
+- Terraform
+- Go
+- Python 3.11 or later
+
+### Running Checks
+
+1. Run all checks (Terraform and Security):
+   ```bash
+   make all
+   ```
+
+2. Run only Terraform checks:
+   ```bash
+   make terraform
+   ```
+
+3. Run only security checks:
+   ```bash
+   make security
+   ```
+
+4. Run individual checks:
+   ```bash
+   # Terraform formatting
+   make terraform-fmt
+
+   # Terraform validation
+   make terraform-validate
+
+   # Go tests
+   make test-go
+
+   # Checkov
+   make checkov
+
+   # tfsec
+   make tfsec
+
+   # tflint
+   make tflint
+   ```
+
+5. Clean up generated files:
+   ```bash
+   make clean
+   ```
+
+### Environment Variables
+
+Some checks require AWS credentials. Set these environment variables before running the checks:
+
+```bash
+export AWS_ACCESS_KEY_ID=your_access_key
+export AWS_SECRET_ACCESS_KEY=your_secret_key
+export AWS_DEFAULT_REGION=your_region
+```

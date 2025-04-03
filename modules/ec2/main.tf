@@ -15,13 +15,27 @@ resource "aws_instance" "main" {
 
   metadata_options {
     http_endpoint               = "enabled"
-    http_tokens                 = "required"  # Require IMDSv2
+    http_tokens                 = "required" # Require IMDSv2
     http_put_response_hop_limit = 2
   }
 
-  monitoring = true  # Enable detailed monitoring
+  monitoring = true # Enable detailed monitoring
 
-  ebs_optimized = true  # Enable EBS optimization
+  ebs_optimized = true # Enable EBS optimization
+
+  user_data = <<-EOF
+    #!/bin/bash
+    # Install SSM agent
+    if command -v yum >/dev/null; then
+      yum install -y https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm
+    elif command -v apt-get >/dev/null; then
+      snap install amazon-ssm-agent --classic
+    fi
+    
+    # Start SSM agent
+    systemctl enable amazon-ssm-agent
+    systemctl start amazon-ssm-agent
+  EOF
 
   tags = {
     Name        = "${var.project_name}-instance"
@@ -43,12 +57,21 @@ resource "aws_security_group" "instance" {
     cidr_blocks = var.allowed_ssh_cidr_blocks
   }
 
+  # Allow SSM traffic
+  ingress {
+    description = "Allow SSM traffic"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    prefix_list_ids = [data.aws_ec2_managed_prefix_list.ssm.id]
+  }
+
   egress {
     description = "Allow outbound access to VPC endpoints and AWS services only"
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = [data.aws_vpc.selected.cidr_block]  # Restrict to VPC CIDR
+    cidr_blocks = [data.aws_vpc.selected.cidr_block] # Restrict to VPC CIDR
   }
 
   tags = {
@@ -90,6 +113,12 @@ resource "aws_iam_instance_profile" "instance_profile" {
 resource "aws_iam_role_policy_attachment" "cloudwatch_logs" {
   role       = aws_iam_role.instance_role.name
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
+}
+
+# Attach policy to allow SSM
+resource "aws_iam_role_policy_attachment" "ssm" {
+  role       = aws_iam_role.instance_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
 # Create KMS key for CloudWatch logs encryption
@@ -137,8 +166,8 @@ resource "aws_kms_key" "cloudwatch" {
 # Create CloudWatch Log Group
 resource "aws_cloudwatch_log_group" "instance_logs" {
   name              = "/aws/ec2/${var.project_name}-${var.environment}/instance-logs"
-  retention_in_days = 365  # 1 year retention
-  kms_key_id       = aws_kms_key.cloudwatch.arn
+  retention_in_days = 365 # 1 year retention
+  kms_key_id        = aws_kms_key.cloudwatch.arn
 
   tags = {
     Name        = "${var.project_name}-${var.environment}-instance-logs"
@@ -151,3 +180,8 @@ data "aws_region" "current" {}
 
 # Get current AWS account ID
 data "aws_caller_identity" "current" {}
+
+# Get SSM prefix list
+data "aws_ec2_managed_prefix_list" "ssm" {
+  name = "com.amazonaws.${data.aws_region.current.name}.ssm"
+}
