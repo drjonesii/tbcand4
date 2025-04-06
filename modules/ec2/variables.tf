@@ -19,13 +19,13 @@ variable "project_name" {
 }
 
 variable "instance_type" {
-  description = "EC2 instance type"
+  description = "The EC2 instance type"
   type        = string
-  default     = "t2.micro"
+  default     = "t3.micro"
 
   validation {
-    condition     = can(regex("^[a-z0-9]+\\.[a-z0-9]+$", var.instance_type))
-    error_message = "Instance type must be a valid AWS EC2 instance type (e.g., t2.micro, t3.small)"
+    condition     = var.instance_type == "t3.micro"
+    error_message = "Only t3.micro instance type is allowed."
   }
 }
 

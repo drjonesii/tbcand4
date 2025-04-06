@@ -62,7 +62,7 @@ func TestEC2Module(t *testing.T) {
 			"vpc_id":        vpcID,
 			"subnet_id":     privateSubnetIDs[0],
 			"ami_id":        "ami-0c55b159cbfafe1f0", // Amazon Linux 2 AMI
-			"instance_type": "t2.micro",
+			"instance_type": "t3.micro",
 			"environment":   "test",
 			"project_name":  "turbot-assignment",
 		},

@@ -48,9 +48,9 @@ See [architecture.md](architecture.md) for a detailed diagram and description of
 - Input validation for all variables:
   - Environment must be one of: dev, staging, prod
   - Project name must contain only lowercase letters, numbers, and hyphens
-  - Instance type must be a valid AWS EC2 instance type
+  - Instance type must be t3.micro (only t3.micro is allowed)
   - AMI ID must be a valid AWS AMI ID
-  - Subnet ID must be a valid AWS subnet ID
+  - Subnet ID must be a valid AWS private subnet ID
   - VPC ID must be a valid AWS VPC ID
   - Root volume size must be between 8 and 16384 GB
 
@@ -404,6 +404,8 @@ The EC2 module creates a secure EC2 instance with the following features:
 - EBS optimization
 - Restricted security group access
 - CloudWatch logging with KMS encryption
+- Deployed only in private subnets
+- Only t3.micro instance type allowed
 
 Required variables:
 ```hcl
@@ -413,8 +415,8 @@ module "ec2" {
   project_name  = var.project_name
   environment   = var.environment
   ami_id        = "ami-0c55b159cbfafe1f0" # Example AMI ID
-  instance_type = "t2.micro"
-  subnet_id     = module.vpc.public_subnet_ids[0]
+  instance_type = "t3.micro"
+  subnet_id     = module.vpc.private_subnet_ids[0]
   vpc_id        = module.vpc.vpc_id
 }
 ```
