@@ -139,6 +139,16 @@ func TestVPCModule(t *testing.T) {
 	}
 	assert.True(t, foundIGWRoute, "Public route table should have a route to internet gateway")
 
+	// Check for S3 gateway endpoint route in public route table
+	foundS3Route := false
+	for _, route := range publicRouteTable.RouteTables[0].Routes {
+		if route.GatewayId != nil && strings.Contains(*route.GatewayId, "vpce-") {
+			foundS3Route = true
+			break
+		}
+	}
+	assert.True(t, foundS3Route, "Public route table should have a route to S3 gateway endpoint")
+
 	// Check private route table
 	privateRouteTable, err := ec2Client.DescribeRouteTables(context.TODO(), &ec2.DescribeRouteTablesInput{
 		RouteTableIds: []string{privateRouteTableID},
@@ -155,6 +165,16 @@ func TestVPCModule(t *testing.T) {
 		}
 	}
 	assert.True(t, foundNATRoute, "Private route table should have a route to NAT gateway")
+
+	// Check for S3 gateway endpoint route in private route table
+	foundS3Route = false
+	for _, route := range privateRouteTable.RouteTables[0].Routes {
+		if route.GatewayId != nil && strings.Contains(*route.GatewayId, "vpce-") {
+			foundS3Route = true
+			break
+		}
+	}
+	assert.True(t, foundS3Route, "Private route table should have a route to S3 gateway endpoint")
 
 	// Verify subnet associations
 	publicSubnet, err := ec2Client.DescribeSubnets(context.TODO(), &ec2.DescribeSubnetsInput{
