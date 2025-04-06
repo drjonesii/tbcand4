@@ -3,14 +3,6 @@ resource "aws_security_group" "main" {
   description = "Security group for ${var.project_name}"
   vpc_id      = var.vpc_id
 
-  ingress {
-    description = "Allow SSH access from specified CIDR blocks"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = var.allowed_ssh_cidr_blocks
-  }
-
   egress {
     description = "Allow outbound HTTPS to AWS services"
     from_port   = 443
