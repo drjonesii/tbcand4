@@ -35,7 +35,6 @@ See [architecture.md](architecture.md) for a detailed diagram and description of
 - NAT Gateway for outbound internet access
 - No automatic public IP assignment
 - Restricted security group access:
-  - SSH access limited to specified CIDR blocks only
   - No public internet access (0.0.0.0/0) allowed
   - Egress traffic restricted to VPC CIDR
   - All security group rules have descriptive names
@@ -54,7 +53,6 @@ See [architecture.md](architecture.md) for a detailed diagram and description of
   - Subnet ID must be a valid AWS subnet ID
   - VPC ID must be a valid AWS VPC ID
   - Root volume size must be between 8 and 16384 GB
-  - SSH CIDR blocks must be valid and not include 0.0.0.0/0
 
 ### Monitoring and Audit
 - CloudWatch Logs with 1-year retention
@@ -378,8 +376,7 @@ See [architecture.md](architecture.md) for a detailed diagram of resource depend
 
 2. Security:
    - Creates security group
-   - Allows SSH access (port 22)
-   - Allows all outbound traffic
+   - Allows outbound traffic to AWS services only
 
 3. EC2:
    - Creates t3.micro instance
@@ -413,19 +410,19 @@ Required variables:
 module "ec2" {
   source = "./modules/ec2"
 
-  project_name = "my-project"
-  environment  = "prod"
-  ami_id       = "ami-0c7217cdde317cfec"  # Amazon Linux 2023 AMI
-  subnet_id    = module.vpc.private_subnet_ids[0]
-  vpc_id       = module.vpc.vpc_id
-  allowed_ssh_cidr_blocks = ["10.0.0.0/8", "172.16.0.0/12"]  # Example: Allow access from private IP ranges only
+  project_name  = var.project_name
+  environment   = var.environment
+  ami_id        = "ami-0c55b159cbfafe1f0" # Example AMI ID
+  instance_type = "t2.micro"
+  subnet_id     = module.vpc.public_subnet_ids[0]
+  vpc_id        = module.vpc.vpc_id
 }
 ```
 
-Note: The `allowed_ssh_cidr_blocks` variable must:
-- Not be empty
-- Not contain `0.0.0.0/0` (no public access allowed)
-- Contain valid CIDR blocks in the format `x.x.x.x/y`
+### Security Group Configuration
+- No public internet access allowed
+- Egress traffic restricted to VPC CIDR
+- All security group rules have descriptive names
 
 ## Security Scanning with Checkov
 
