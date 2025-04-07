@@ -138,7 +138,7 @@ jobs:
           sleep 30
 
       - name: Log Destruction Start
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');
@@ -167,7 +167,7 @@ jobs:
 
       - name: Log Destruction Complete
         if: always()
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');
@@ -185,7 +185,7 @@ jobs:
 
       - name: Upload Destruction Log
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: destruction-log
           path: destruction.log
@@ -193,7 +193,7 @@ jobs:
 
       - name: Notify on Completion
         if: always()
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           script: |
             const environment = '${{ github.event.inputs.environment }}';

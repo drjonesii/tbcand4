@@ -34,8 +34,7 @@ resource "aws_flow_log" "vpc_flow_log" {
 resource "aws_cloudwatch_log_group" "vpc_flow_log" {
   name              = "/aws/vpc/${var.project_name}-${var.environment}/flow-logs"
   retention_in_days = 365 # 1 year retention
-
-  kms_key_id = aws_kms_key.cloudwatch.arn
+  kms_key_id        = aws_kms_key.cloudwatch.arn
 
   tags = {
     Name        = "${var.project_name}-${var.environment}-vpc-flow-logs"
@@ -69,11 +68,10 @@ resource "aws_iam_role_policy_attachment" "vpc_flow_log_policy" {
 
 # Create public subnets
 resource "aws_subnet" "public" {
-  count             = 2
-  vpc_id            = aws_vpc.main.id
-  cidr_block        = cidrsubnet(var.vpc_cidr, 8, count.index)
-  availability_zone = data.aws_availability_zones.available.names[count.index]
-
+  count                   = 2
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = cidrsubnet(var.vpc_cidr, 8, count.index)
+  availability_zone       = data.aws_availability_zones.available.names[count.index]
   map_public_ip_on_launch = true
 
   tags = {
@@ -130,8 +128,8 @@ resource "aws_nat_gateway" "main" {
 
 # Create S3 Gateway Endpoint
 resource "aws_vpc_endpoint" "s3" {
-  vpc_id       = aws_vpc.main.id
-  service_name = "com.amazonaws.${data.aws_region.current.name}.s3"
+  vpc_id            = aws_vpc.main.id
+  service_name      = "com.amazonaws.${data.aws_region.current.name}.s3"
   vpc_endpoint_type = "Gateway"
 
   route_table_ids = [

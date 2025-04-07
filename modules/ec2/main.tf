@@ -19,8 +19,7 @@ resource "aws_instance" "main" {
     http_put_response_hop_limit = 2
   }
 
-  monitoring = true # Enable detailed monitoring
-
+  monitoring    = true # Enable detailed monitoring
   ebs_optimized = true # Enable EBS optimization
 
   user_data = <<-EOF
@@ -51,10 +50,10 @@ resource "aws_security_group" "instance" {
 
   # Allow SSM traffic
   ingress {
-    description = "Allow SSM traffic"
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
+    description      = "Allow SSM traffic"
+    from_port       = 443
+    to_port         = 443
+    protocol        = "tcp"
     prefix_list_ids = [data.aws_ec2_managed_prefix_list.ssm.id]
   }
 
