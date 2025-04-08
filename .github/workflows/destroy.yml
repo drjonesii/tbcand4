@@ -27,7 +27,6 @@ env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
   BACKUP_BUCKET: ${{ secrets.BACKUP_BUCKET }}
 
 jobs:
@@ -211,48 +210,4 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: githubMessage
-            });
-            
-            // Slack notification
-            const slackMessage = {
-              blocks: [
-                {
-                  type: "header",
-                  text: {
-                    type: "plain_text",
-                    text: "🚨 Infrastructure Destruction Alert",
-                    emoji: true
-                  }
-                },
-                {
-                  type: "section",
-                  fields: [
-                    {
-                      type: "mrkdwn",
-                      text: `*Environment:*\n${environment}`
-                    },
-                    {
-                      type: "mrkdwn",
-                      text: `*Status:*\n${status === 'success' ? '✅ Success' : '❌ Failed'}`
-                    },
-                    {
-                      type: "mrkdwn",
-                      text: `*Initiated By:*\n${actor}`
-                    },
-                    {
-                      type: "mrkdwn",
-                      text: `*Timestamp:*\n${timestamp}`
-                    }
-                  ]
-                }
-              ]
-            };
-            
-            // Send to Slack
-            fetch('${{ env.SLACK_WEBHOOK_URL }}', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(slackMessage)
             }); 

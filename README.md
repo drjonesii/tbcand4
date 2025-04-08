@@ -529,3 +529,52 @@ export AWS_ACCESS_KEY_ID=your_access_key
 export AWS_SECRET_ACCESS_KEY=your_secret_key
 export AWS_DEFAULT_REGION=your_region
 ```
+
+### Required IAM Roles
+
+The project requires three IAM roles for different GitHub Actions workflows:
+
+1. `github-actions-ci` - For CI workflow
+   - Permissions needed:
+     - Read access to ECR
+     - Read/Write access to S3 for Terraform state
+     - Read/Write access to DynamoDB for state locking
+     - Access to run security scans
+
+2. `github-actions-test` - For test workflow
+   - Permissions needed:
+     - Full access to create/destroy test resources
+     - Read/Write access to S3 for Terraform state
+     - Read/Write access to DynamoDB for state locking
+
+3. `github-actions-destroy` - For destroy workflow
+   - Permissions needed:
+     - Full access to destroy infrastructure
+     - Read/Write access to S3 for state backups
+     - Read/Write access to DynamoDB for state locking
+
+Example IAM role trust policy for all roles:
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "Federated": "arn:aws:iam::<AWS_ACCOUNT_ID>:oidc-provider/token.actions.githubusercontent.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+                "StringEquals": {
+                    "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
+                },
+                "StringLike": {
+                    "token.actions.githubusercontent.com:sub": "repo:<GITHUB_ORG>/<REPO_NAME>:*"
+                }
+            }
+        }
+    ]
+}
+```
+
+Each role should have appropriate IAM policies attached based on the least privilege principle.

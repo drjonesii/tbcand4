@@ -4,6 +4,11 @@ import json
 import subprocess
 from pathlib import Path
 
+@pytest.fixture(scope="session", autouse=True)
+def set_test_environment():
+    """Fixture to ensure tests run in test environment."""
+    os.environ["TF_VAR_environment"] = "test"
+
 @pytest.fixture(scope="session")
 def terraform_output():
     """Fixture to get Terraform output values."""

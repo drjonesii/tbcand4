@@ -39,6 +39,8 @@ resource "aws_instance" "main" {
   tags = {
     Name        = "${var.project_name}-instance"
     Environment = var.environment
+    Owner       = "candidate4"
+    Project     = "turbot"
   }
 }
 
@@ -68,6 +70,8 @@ resource "aws_security_group" "instance" {
   tags = {
     Name        = "${var.project_name}-instance-sg"
     Environment = var.environment
+    Owner       = "candidate4"
+    Project     = "turbot"
   }
 }
 
@@ -181,6 +185,8 @@ resource "aws_kms_key" "cloudwatch" {
   tags = {
     Name        = "${var.project_name}-cloudwatch-key"
     Environment = var.environment
+    Owner       = "candidate4"
+    Project     = "turbot"
   }
 }
 
@@ -193,6 +199,8 @@ resource "aws_cloudwatch_log_group" "instance_logs" {
   tags = {
     Name        = "${var.project_name}-${var.environment}-instance-logs"
     Environment = var.environment
+    Owner       = "candidate4"
+    Project     = "turbot"
   }
 }
 

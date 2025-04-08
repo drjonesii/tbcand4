@@ -17,6 +17,8 @@ resource "aws_security_group" "main" {
   tags = {
     Name        = "${var.project_name}-sg"
     Environment = var.environment
+    Owner       = "candidate4"
+    Project     = "turbot"
   }
 }
 

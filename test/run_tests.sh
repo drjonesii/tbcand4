@@ -15,5 +15,8 @@ if [ -z "$AWS_DEFAULT_REGION" ]; then
     export AWS_DEFAULT_REGION="us-west-2"
 fi
 
+# Set environment to test
+export TF_VAR_environment="test"
+
 # Run the tests
 go test -v ./... 

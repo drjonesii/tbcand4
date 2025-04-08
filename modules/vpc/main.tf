@@ -7,6 +7,8 @@ resource "aws_vpc" "main" {
   tags = {
     Name        = "${var.project_name}-vpc"
     Environment = var.environment
+    Owner       = "candidate4"
+    Project     = "turbot"
   }
 }
 
@@ -19,6 +21,8 @@ resource "aws_kms_key" "cloudwatch" {
   tags = {
     Name        = "${var.project_name}-cloudwatch-key"
     Environment = var.environment
+    Owner       = "candidate4"
+    Project     = "turbot"
   }
 }
 
@@ -39,6 +43,8 @@ resource "aws_cloudwatch_log_group" "vpc_flow_log" {
   tags = {
     Name        = "${var.project_name}-${var.environment}-vpc-flow-logs"
     Environment = var.environment
+    Owner       = "candidate4"
+    Project     = "turbot"
   }
 }
 
@@ -77,6 +83,8 @@ resource "aws_subnet" "public" {
   tags = {
     Name        = "${var.project_name}-public-subnet-${count.index + 1}"
     Environment = var.environment
+    Owner       = "candidate4"
+    Project     = "turbot"
   }
 }
 
@@ -90,6 +98,8 @@ resource "aws_subnet" "private" {
   tags = {
     Name        = "${var.project_name}-private-subnet-${count.index + 1}"
     Environment = var.environment
+    Owner       = "candidate4"
+    Project     = "turbot"
   }
 }
 
@@ -100,6 +110,8 @@ resource "aws_internet_gateway" "main" {
   tags = {
     Name        = "${var.project_name}-igw"
     Environment = var.environment
+    Owner       = "candidate4"
+    Project     = "turbot"
   }
 }
 
@@ -110,6 +122,8 @@ resource "aws_eip" "nat" {
   tags = {
     Name        = "${var.project_name}-nat-eip"
     Environment = var.environment
+    Owner       = "candidate4"
+    Project     = "turbot"
   }
 }
 
@@ -121,6 +135,8 @@ resource "aws_nat_gateway" "main" {
   tags = {
     Name        = "${var.project_name}-nat-gateway"
     Environment = var.environment
+    Owner       = "candidate4"
+    Project     = "turbot"
   }
 
   depends_on = [aws_internet_gateway.main]
@@ -140,6 +156,8 @@ resource "aws_vpc_endpoint" "s3" {
   tags = {
     Name        = "${var.project_name}-s3-endpoint"
     Environment = var.environment
+    Owner       = "candidate4"
+    Project     = "turbot"
   }
 }
 
@@ -155,6 +173,8 @@ resource "aws_route_table" "public" {
   tags = {
     Name        = "${var.project_name}-public-rt"
     Environment = var.environment
+    Owner       = "candidate4"
+    Project     = "turbot"
   }
 }
 
@@ -169,6 +189,8 @@ resource "aws_route_table" "private" {
   tags = {
     Name        = "${var.project_name}-private-rt"
     Environment = var.environment
+    Owner       = "candidate4"
+    Project     = "turbot"
   }
 }
 
