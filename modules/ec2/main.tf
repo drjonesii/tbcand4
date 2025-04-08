@@ -19,8 +19,7 @@ resource "aws_instance" "main" {
     http_put_response_hop_limit = 2
   }
 
-  monitoring = true # Enable detailed monitoring
-
+  monitoring    = true # Enable detailed monitoring
   ebs_optimized = true # Enable EBS optimization
 
   user_data = <<-EOF
@@ -49,20 +48,12 @@ resource "aws_security_group" "instance" {
   vpc_id      = var.vpc_id
   description = "Security group for ${var.project_name} EC2 instance in ${var.environment} environment"
 
-  ingress {
-    description = "Allow SSH access from specified CIDR blocks only"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = var.allowed_ssh_cidr_blocks
-  }
-
   # Allow SSM traffic
   ingress {
-    description = "Allow SSM traffic"
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
+    description      = "Allow SSM traffic"
+    from_port       = 443
+    to_port         = 443
+    protocol        = "tcp"
     prefix_list_ids = [data.aws_ec2_managed_prefix_list.ssm.id]
   }
 
@@ -119,6 +110,36 @@ resource "aws_iam_role_policy_attachment" "cloudwatch_logs" {
 resource "aws_iam_role_policy_attachment" "ssm" {
   role       = aws_iam_role.instance_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+# Create IAM policy for S3 access
+resource "aws_iam_policy" "s3_access" {
+  name        = "${var.project_name}-s3-access-policy"
+  description = "Policy to allow EC2 instance to write CIS reports to S3"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:PutObject",
+          "s3:GetObject",
+          "s3:ListBucket"
+        ]
+        Resource = [
+          "arn:aws:s3:::${var.cis_report_bucket}",
+          "arn:aws:s3:::${var.cis_report_bucket}/*"
+        ]
+      }
+    ]
+  })
+}
+
+# Attach S3 access policy to EC2 role
+resource "aws_iam_role_policy_attachment" "s3_access" {
+  role       = aws_iam_role.instance_role.name
+  policy_arn = aws_iam_policy.s3_access.arn
 }
 
 # Create KMS key for CloudWatch logs encryption

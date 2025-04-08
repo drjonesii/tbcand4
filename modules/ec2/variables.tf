@@ -19,13 +19,13 @@ variable "project_name" {
 }
 
 variable "instance_type" {
-  description = "EC2 instance type"
+  description = "The EC2 instance type"
   type        = string
-  default     = "t2.micro"
+  default     = "t3.micro"
 
   validation {
-    condition     = can(regex("^[a-z0-9]+\\.[a-z0-9]+$", var.instance_type))
-    error_message = "Instance type must be a valid AWS EC2 instance type (e.g., t2.micro, t3.small)"
+    condition     = var.instance_type == "t3.micro"
+    error_message = "Only t3.micro instance type is allowed."
   }
 }
 
@@ -70,27 +70,13 @@ variable "root_volume_size" {
   }
 }
 
-variable "allowed_ssh_cidr_blocks" {
-  description = "List of CIDR blocks allowed to connect to the instance via SSH. Must not be empty and must not contain 0.0.0.0/0"
-  type        = list(string)
+variable "cis_report_bucket" {
+  description = "Name of the S3 bucket where CIS reports will be stored"
+  type        = string
+  default     = "cis-reports"
 
   validation {
-    condition     = length(var.allowed_ssh_cidr_blocks) > 0
-    error_message = "allowed_ssh_cidr_blocks must not be empty. At least one CIDR block must be specified."
-  }
-
-  validation {
-    condition     = !contains(var.allowed_ssh_cidr_blocks, "0.0.0.0/0")
-    error_message = "allowed_ssh_cidr_blocks must not contain 0.0.0.0/0. Use specific CIDR blocks instead."
-  }
-
-  validation {
-    condition     = alltrue([for cidr in var.allowed_ssh_cidr_blocks : can(regex("^([0-9]{1,3}\\.){3}[0-9]{1,3}/[0-9]{1,2}$", cidr))])
-    error_message = "Each CIDR block must be in the format x.x.x.x/y where x is between 0-255 and y is between 0-32."
-  }
-
-  validation {
-    condition     = alltrue([for cidr in var.allowed_ssh_cidr_blocks : can(regex("^(10\\.|172\\.(1[6-9]|2[0-9]|3[0-1])\\.|192\\.168\\.)[0-9]{1,3}\\.[0-9]{1,3}/[0-9]{1,2}$", cidr))])
-    error_message = "CIDR blocks must be private IP ranges (10.0.0.0/8, 172.16.0.0/12, or 192.168.0.0/16)."
+    condition     = can(regex("^[a-z0-9][a-z0-9.-]*[a-z0-9]$", var.cis_report_bucket))
+    error_message = "S3 bucket name must be valid according to AWS naming rules."
   }
 }

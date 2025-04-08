@@ -1,0 +1,258 @@
+name: Destroy Infrastructure
+
+on:
+  workflow_dispatch:  # Allows manual triggering of the workflow
+    inputs:
+      environment:
+        description: 'Environment to destroy'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+      confirmation:
+        description: 'Type "DESTROY" to confirm'
+        required: true
+        type: string
+
+# Prevent multiple runs from interfering with each other
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  AWS_REGION: us-west-1
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  BACKUP_BUCKET: ${{ secrets.BACKUP_BUCKET }}
+
+jobs:
+  verify:
+    name: Verify Destruction Request
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check confirmation
+        if: github.event.inputs.confirmation != 'DESTROY'
+        run: |
+          echo "Invalid confirmation. Expected 'DESTROY', got '${{ github.event.inputs.confirmation }}'"
+          exit 1
+
+      - name: Check environment protection
+        run: |
+          if [[ "${{ github.event.inputs.environment }}" == "prod" ]]; then
+            echo "⚠️ WARNING: You are about to destroy PRODUCTION infrastructure! ⚠️"
+            echo "This action requires additional approval from repository administrators."
+            exit 1
+          fi
+
+      - name: Check IP restrictions
+        run: |
+          # Get the runner's IP address
+          RUNNER_IP=$(curl -s https://api.ipify.org)
+          # Get allowed IPs from environment secrets
+          ALLOWED_IPS="${{ secrets.ALLOWED_IPS }}"
+          
+          if [[ ! $ALLOWED_IPS =~ $RUNNER_IP ]]; then
+            echo "❌ IP $RUNNER_IP is not in the allowed list: $ALLOWED_IPS"
+            exit 1
+          fi
+          echo "✅ IP $RUNNER_IP is allowed to proceed"
+
+  backup:
+    name: Backup Infrastructure State
+    needs: verify
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.7.5"
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Backup Terraform State
+        run: |
+          TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+          ENV=${{ github.event.inputs.environment }}
+          
+          # Backup state file
+          terraform init
+          terraform workspace select $ENV || terraform workspace new $ENV
+          terraform state pull > terraform.tfstate
+          
+          # Upload to S3 with timestamp
+          aws s3 cp terraform.tfstate s3://${{ env.BACKUP_BUCKET }}/backups/${ENV}/terraform_${TIMESTAMP}.tfstate
+          
+          # Create backup manifest
+          echo "{
+            \"timestamp\": \"${TIMESTAMP}\",
+            \"environment\": \"${ENV}\",
+            \"initiated_by\": \"${{ github.actor }}\",
+            \"repository\": \"${{ github.repository }}\",
+            \"commit\": \"${{ github.sha }}\"
+          }" > backup_manifest.json
+          
+          aws s3 cp backup_manifest.json s3://${{ env.BACKUP_BUCKET }}/backups/${ENV}/manifest_${TIMESTAMP}.json
+
+  destroy:
+    name: Destroy Infrastructure
+    needs: [verify, backup]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: ${{ github.event.inputs.environment }}
+    defaults:
+      run:
+        working-directory: .
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.7.5"
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Workspace Select
+        run: terraform workspace select ${{ github.event.inputs.environment }} || terraform workspace new ${{ github.event.inputs.environment }}
+
+      - name: List Resources to be Destroyed
+        run: |
+          echo "The following resources will be destroyed:"
+          terraform state list
+          echo "Waiting 30 seconds before proceeding..."
+          sleep 30
+
+      - name: Log Destruction Start
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const logEntry = {
+              timestamp: new Date().toISOString(),
+              action: 'destroy_started',
+              environment: '${{ github.event.inputs.environment }}',
+              actor: '${{ github.actor }}',
+              repository: '${{ github.repository }}',
+              commit: '${{ github.sha }}'
+            };
+            
+            fs.appendFileSync('destruction.log', JSON.stringify(logEntry) + '\n');
+
+      - name: Terraform Destroy
+        run: |
+          terraform destroy -auto-approve
+        env:
+          TF_VAR_environment: ${{ github.event.inputs.environment }}
+
+      - name: Cleanup Workspace
+        if: always()
+        run: |
+          terraform workspace select default
+          terraform workspace delete ${{ github.event.inputs.environment }} || true
+
+      - name: Log Destruction Complete
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const logEntry = {
+              timestamp: new Date().toISOString(),
+              action: 'destroy_completed',
+              environment: '${{ github.event.inputs.environment }}',
+              actor: '${{ github.actor }}',
+              repository: '${{ github.repository }}',
+              commit: '${{ github.sha }}',
+              status: '${{ job.status }}'
+            };
+            
+            fs.appendFileSync('destruction.log', JSON.stringify(logEntry) + '\n');
+
+      - name: Upload Destruction Log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: destruction-log
+          path: destruction.log
+          retention-days: 365
+
+      - name: Notify on Completion
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const environment = '${{ github.event.inputs.environment }}';
+            const status = '${{ job.status }}';
+            const actor = '${{ github.actor }}';
+            const timestamp = new Date().toISOString();
+            
+            // GitHub notification
+            const githubMessage = status === 'success' 
+              ? `✅ Infrastructure in ${environment} environment has been destroyed successfully.`
+              : `❌ Failed to destroy infrastructure in ${environment} environment.`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: githubMessage
+            });
+            
+            // Slack notification
+            const slackMessage = {
+              blocks: [
+                {
+                  type: "header",
+                  text: {
+                    type: "plain_text",
+                    text: "🚨 Infrastructure Destruction Alert",
+                    emoji: true
+                  }
+                },
+                {
+                  type: "section",
+                  fields: [
+                    {
+                      type: "mrkdwn",
+                      text: `*Environment:*\n${environment}`
+                    },
+                    {
+                      type: "mrkdwn",
+                      text: `*Status:*\n${status === 'success' ? '✅ Success' : '❌ Failed'}`
+                    },
+                    {
+                      type: "mrkdwn",
+                      text: `*Initiated By:*\n${actor}`
+                    },
+                    {
+                      type: "mrkdwn",
+                      text: `*Timestamp:*\n${timestamp}`
+                    }
+                  ]
+                }
+              ]
+            };
+            
+            // Send to Slack
+            fetch('${{ env.SLACK_WEBHOOK_URL }}', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(slackMessage)
+            }); 
