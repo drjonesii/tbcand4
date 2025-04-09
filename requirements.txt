@@ -1,7 +1,7 @@
 # Testing and Infrastructure
-pytest
+pytest>=7.0.0
 pytest-terraform==0.7.0
-boto3==1.34.14
+boto3>=1.26.0
 botocore==1.34.14
 
 # Development Tools

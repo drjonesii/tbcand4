@@ -78,10 +78,12 @@ See [architecture.md](architecture.md) for a detailed diagram and description of
 - Python 3.x (for security tools)
 
 #### Environment Setup
-1. Set AWS credentials:
+1. Configure AWS credentials:
    ```bash
-   export AWS_ACCESS_KEY_ID=your_access_key
-   export AWS_SECRET_ACCESS_KEY=your_secret_key
+   # No longer needed:
+   # export AWS_ACCESS_KEY_ID=your_access_key
+   # export AWS_SECRET_ACCESS_KEY=your_secret_key
+   
    export AWS_REGION=your_preferred_region  # Optional, defaults to us-west-1
    ```
 
@@ -352,8 +354,9 @@ Security checks:
 ### Setting up GitHub Actions
 
 1. Add the following secrets to your GitHub repository:
-   - `AWS_ACCESS_KEY_ID`
-   - `AWS_SECRET_ACCESS_KEY`
+   - `AWS_ACCOUNT_ID`: Your AWS account ID
+   - `BACKUP_BUCKET`: S3 bucket name for state backups
+   - `ALLOWED_IPS`: Allowed IP addresses for infrastructure destruction
 
 2. The workflows will automatically run on:
    - Push to main branch
@@ -522,13 +525,9 @@ You can run the same checks that run in GitHub Actions locally using the provide
 
 ### Environment Variables
 
-Some checks require AWS credentials. Set these environment variables before running the checks:
-
-```bash
-export AWS_ACCESS_KEY_ID=your_access_key
-export AWS_SECRET_ACCESS_KEY=your_secret_key
-export AWS_DEFAULT_REGION=your_region
-```
+The following environment variables are used by the workflows:
+- `AWS_REGION`: The AWS region to deploy to (defaults to us-west-1)
+- `TF_VAR_environment`: The environment to deploy to (dev, staging, prod)
 
 ### Required IAM Roles
 
@@ -578,3 +577,27 @@ Example IAM role trust policy for all roles:
 ```
 
 Each role should have appropriate IAM policies attached based on the least privilege principle.
+
+### Required GitHub Secrets
+
+- `AWS_ACCOUNT_ID`: Your AWS account ID
+- `BACKUP_BUCKET`: S3 bucket name for state backups
+- `ALLOWED_IPS`: Allowed IP addresses for infrastructure destruction
+
+Note: AWS access keys are no longer needed as secrets since we use OIDC authentication.
+
+### Environment Setup
+1. Configure AWS credentials:
+   ```bash
+   # No longer needed:
+   # export AWS_ACCESS_KEY_ID=your_access_key
+   # export AWS_SECRET_ACCESS_KEY=your_secret_key
+   
+   export AWS_REGION=your_preferred_region  # Optional, defaults to us-west-1
+   ```
+
+### Environment Variables
+
+The following environment variables are used by the workflows:
+- `AWS_REGION`: The AWS region to deploy to (defaults to us-west-1)
+- `TF_VAR_environment`: The environment to deploy to (dev, staging, prod)

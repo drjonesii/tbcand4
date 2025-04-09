@@ -21,15 +21,6 @@ func TestEC2Module(t *testing.T) {
 		awsRegion = "us-west-2" // Default region
 	}
 
-	// Get AWS credentials from environment variables
-	awsAccessKeyID := os.Getenv("AWS_ACCESS_KEY_ID")
-	awsSecretAccessKey := os.Getenv("AWS_SECRET_ACCESS_KEY")
-
-	// Verify AWS credentials are set
-	if awsAccessKeyID == "" || awsSecretAccessKey == "" {
-		t.Fatal("AWS credentials not found. Please set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY environment variables.")
-	}
-
 	// First, create VPC and get its outputs
 	vpcOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir: "../modules/vpc",
@@ -39,9 +30,7 @@ func TestEC2Module(t *testing.T) {
 			"project_name": "turbot-assignment",
 		},
 		EnvVars: map[string]string{
-			"AWS_DEFAULT_REGION":    awsRegion,
-			"AWS_ACCESS_KEY_ID":     awsAccessKeyID,
-			"AWS_SECRET_ACCESS_KEY": awsSecretAccessKey,
+			"AWS_DEFAULT_REGION": awsRegion,
 		},
 		Lock: false,
 	})
@@ -67,9 +56,7 @@ func TestEC2Module(t *testing.T) {
 			"project_name":  "turbot-assignment",
 		},
 		EnvVars: map[string]string{
-			"AWS_DEFAULT_REGION":    awsRegion,
-			"AWS_ACCESS_KEY_ID":     awsAccessKeyID,
-			"AWS_SECRET_ACCESS_KEY": awsSecretAccessKey,
+			"AWS_DEFAULT_REGION": awsRegion,
 		},
 		Lock: false,
 	})
@@ -89,7 +76,7 @@ func TestEC2Module(t *testing.T) {
 	// Create AWS SDK v2 client
 	cfg, err := config.LoadDefaultConfig(context.TODO(),
 		config.WithRegion(awsRegion),
-		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(awsAccessKeyID, awsSecretAccessKey, "")),
+		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider("", "", "")),
 	)
 	assert.NoError(t, err)
 

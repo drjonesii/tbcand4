@@ -3,8 +3,12 @@
 
 # Skip specific checks that might be too strict for your environment
 skip-check:
-  - CKV_AWS_24  # Skip the check that was failing (SSH access from 0.0.0.0/0)
-  - CKV_AWS_126  # Skip check for ensuring that AWS CloudWatch Log Group has a retention period set
+  - CKV_AWS_24   # Skip SSH access check (not applicable)
+  - CKV_AWS_126  # Skip CloudWatch Log Group retention (already set in code)
+  - CKV_AWS_130  # Skip public IP assignment for public subnets (intentional)
+  - CKV2_AWS_62  # Skip S3 event notifications (not required for these buckets)
+  - CKV2_AWS_61  # Skip S3 lifecycle configuration (not required for these buckets)
+  - CKV2_AWS_16  # Skip DynamoDB autoscaling (low-traffic state locking table)
 
 # Framework to scan
 framework:

@@ -14,15 +14,13 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  id-token: write
+  id-token: write   # Required for OIDC
   contents: read
+  pull-requests: write  # For commenting on PRs
 
 env:
   AWS_REGION: us-west-1
   TERRATEST_VERSION: v0.46.4
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
   TF_VAR_environment: dev  # Set environment to dev for GitHub Actions
 
 jobs:
@@ -37,12 +35,47 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Verify AWS Authentication Prerequisites
+        run: |
+          if [ -z "${{ secrets.AWS_ACCOUNT_ID }}" ]; then
+            echo "Error: AWS_ACCOUNT_ID secret is not set"
+            exit 1
+          fi
+          
+          if [ "${{ env.AWS_REGION }}" == "" ]; then
+            echo "Error: AWS_REGION is not set"
+            exit 1
+          fi
+
       - name: Configure AWS Credentials
+        id: aws-credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-ci
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/turbot-candidate4-github-oidc-role
           aws-region: ${{ env.AWS_REGION }}
           role-duration-seconds: 900
+
+      - name: Verify AWS Authentication
+        run: |
+          # Verify AWS credentials are working
+          if ! aws sts get-caller-identity &>/dev/null; then
+            echo "Error: Failed to authenticate with AWS"
+            echo "Please check:"
+            echo "  1. OIDC provider is properly configured"
+            echo "  2. IAM role exists and has correct trust policy"
+            echo "  3. Role has necessary permissions"
+            exit 1
+          fi
+          
+          # Get and display caller identity for debugging
+          aws sts get-caller-identity
+          
+          # Verify assumed role is correct
+          ASSUMED_ROLE=$(aws sts get-caller-identity --query 'Arn' --output text)
+          if [[ ! "$ASSUMED_ROLE" =~ "turbot-candidate4-github-oidc-role" ]]; then
+            echo "Error: Assumed incorrect role: $ASSUMED_ROLE"
+            exit 1
+          fi
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -91,7 +124,7 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-ci
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/turbot-candidate4-github-oidc-role
           aws-region: ${{ env.AWS_REGION }}
           role-duration-seconds: 900
 

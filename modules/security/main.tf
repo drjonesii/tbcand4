@@ -20,6 +20,10 @@ resource "aws_security_group" "main" {
     Owner       = "candidate4"
     Project     = "turbot"
   }
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 # Get AWS service prefix lists

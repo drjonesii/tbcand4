@@ -214,3 +214,92 @@ data "aws_availability_zones" "available" {
 
 # Get current AWS region
 data "aws_region" "current" {}
+
+# Create SSM VPC endpoints
+resource "aws_vpc_endpoint" "ssm" {
+  vpc_id            = aws_vpc.main.id
+  service_name      = "com.amazonaws.${data.aws_region.current.name}.ssm"
+  vpc_endpoint_type = "Interface"
+  subnet_ids        = aws_subnet.private[*].id
+
+  security_group_ids = [aws_security_group.vpc_endpoints.id]
+
+  private_dns_enabled = true
+
+  tags = {
+    Name        = "${var.project_name}-ssm-endpoint"
+    Environment = var.environment
+    Owner       = "candidate4"
+    Project     = "turbot"
+  }
+}
+
+resource "aws_vpc_endpoint" "ssmmessages" {
+  vpc_id            = aws_vpc.main.id
+  service_name      = "com.amazonaws.${data.aws_region.current.name}.ssmmessages"
+  vpc_endpoint_type = "Interface"
+  subnet_ids        = aws_subnet.private[*].id
+
+  security_group_ids = [aws_security_group.vpc_endpoints.id]
+
+  private_dns_enabled = true
+
+  tags = {
+    Name        = "${var.project_name}-ssmmessages-endpoint"
+    Environment = var.environment
+    Owner       = "candidate4"
+    Project     = "turbot"
+  }
+}
+
+resource "aws_vpc_endpoint" "ec2messages" {
+  vpc_id            = aws_vpc.main.id
+  service_name      = "com.amazonaws.${data.aws_region.current.name}.ec2messages"
+  vpc_endpoint_type = "Interface"
+  subnet_ids        = aws_subnet.private[*].id
+
+  security_group_ids = [aws_security_group.vpc_endpoints.id]
+
+  private_dns_enabled = true
+
+  tags = {
+    Name        = "${var.project_name}-ec2messages-endpoint"
+    Environment = var.environment
+    Owner       = "candidate4"
+    Project     = "turbot"
+  }
+}
+
+# Security group for VPC endpoints
+resource "aws_security_group" "vpc_endpoints" {
+  name_prefix = "${var.project_name}-vpc-endpoints-sg"
+  vpc_id      = aws_vpc.main.id
+  description = "Security group for VPC endpoints"
+
+  ingress {
+    description = "Allow HTTPS from VPC"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = [aws_vpc.main.cidr_block]
+  }
+
+  tags = {
+    Name        = "${var.project_name}-vpc-endpoints-sg"
+    Environment = var.environment
+    Owner       = "candidate4"
+    Project     = "turbot"
+  }
+}
+
+# Add after the VPC resource
+resource "aws_default_security_group" "default" {
+  vpc_id = aws_vpc.main.id
+
+  tags = {
+    Name        = "${var.project_name}-default-sg"
+    Environment = var.environment
+    Owner       = "candidate4"
+    Project     = "turbot"
+  }
+}

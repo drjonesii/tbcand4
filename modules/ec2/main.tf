@@ -50,13 +50,13 @@ resource "aws_security_group" "instance" {
   vpc_id      = var.vpc_id
   description = "Security group for ${var.project_name} EC2 instance in ${var.environment} environment"
 
-  # Allow SSM traffic
+  # Allow HTTPS traffic for SSM
   ingress {
-    description      = "Allow SSM traffic"
-    from_port       = 443
-    to_port         = 443
-    protocol        = "tcp"
-    prefix_list_ids = [data.aws_ec2_managed_prefix_list.ssm.id]
+    description = "Allow HTTPS for SSM"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = [data.aws_vpc.selected.cidr_block]
   }
 
   egress {
@@ -209,8 +209,3 @@ data "aws_region" "current" {}
 
 # Get current AWS account ID
 data "aws_caller_identity" "current" {}
-
-# Get SSM prefix list
-data "aws_ec2_managed_prefix_list" "ssm" {
-  name = "com.amazonaws.${data.aws_region.current.name}.ssm"
-}

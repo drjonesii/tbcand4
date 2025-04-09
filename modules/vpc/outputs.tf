@@ -23,17 +23,17 @@ output "private_subnet_cidrs" {
   value       = aws_subnet.private[*].cidr_block
 }
 
-output "nat_gateway_id" {
-  description = "The ID of the NAT Gateway"
-  value       = aws_nat_gateway.main.id
+output "vpc_endpoint_ssm_id" {
+  description = "The ID of the SSM VPC endpoint"
+  value       = aws_vpc_endpoint.ssm.id
 }
 
-output "s3_endpoint_id" {
-  description = "The ID of the S3 Gateway Endpoint"
-  value       = aws_vpc_endpoint.s3.id
+output "vpc_endpoint_ssmmessages_id" {
+  description = "The ID of the SSM Messages VPC endpoint"
+  value       = aws_vpc_endpoint.ssmmessages.id
 }
 
-output "s3_endpoint_dns_entry" {
-  description = "The DNS entries for the S3 Gateway Endpoint"
-  value       = aws_vpc_endpoint.s3.dns_entry
+output "vpc_endpoint_ec2messages_id" {
+  description = "The ID of the EC2 Messages VPC endpoint"
+  value       = aws_vpc_endpoint.ec2messages.id
 }

@@ -41,9 +41,6 @@ def terraform_output():
 
 @pytest.fixture(scope="session", autouse=True)
 def setup_aws_credentials():
-    """Fixture to ensure AWS credentials are set up."""
-    required_vars = ["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_DEFAULT_REGION"]
-    missing_vars = [var for var in required_vars if not os.getenv(var)]
-    
-    if missing_vars:
-        pytest.skip(f"Missing required AWS environment variables: {', '.join(missing_vars)}") 
+    """Fixture to ensure AWS region is set."""
+    if not os.getenv("AWS_DEFAULT_REGION"):
+        os.environ["AWS_DEFAULT_REGION"] = "us-west-2" 

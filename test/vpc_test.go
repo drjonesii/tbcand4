@@ -43,9 +43,7 @@ func TestVPCModule(t *testing.T) {
 			"project_name": "turbot-assignment",
 		},
 		EnvVars: map[string]string{
-			"AWS_DEFAULT_REGION":    awsRegion,
-			"AWS_ACCESS_KEY_ID":     awsAccessKeyID,
-			"AWS_SECRET_ACCESS_KEY": awsSecretAccessKey,
+			"AWS_DEFAULT_REGION": awsRegion,
 		},
 		Lock: false, // Disable state locking for testing
 	})
