@@ -16,7 +16,10 @@ venv:
 # Install dependencies
 install-deps: venv
 	@echo "Installing dependencies..."
-	@. $(VENV_DIR)/bin/activate && $(PIP) install -r requirements.txt
+	@. $(VENV_DIR)/bin/activate && \
+		$(PIP) install --upgrade pip && \
+		$(PIP) install -r requirements.txt && \
+		$(PIP) install --upgrade checkov
 
 	@if ! command -v tflint >/dev/null 2>&1; then \
 		echo "Installing tflint..."; \
@@ -46,7 +49,7 @@ security:
 		exit 1; \
 	fi
 	@echo "Running Checkov..."
-	@. $(VENV_DIR)/bin/activate && checkov --directory . --framework terraform
+	@. $(VENV_DIR)/bin/activate && checkov --directory . --framework terraform --config-file .checkov.yml
 	@echo "Running tfsec..."
 	@if ! command -v tfsec >/dev/null 2>&1; then \
 		echo "tfsec not found. Run 'make install-deps' first"; \

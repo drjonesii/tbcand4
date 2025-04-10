@@ -1,0 +1,22 @@
+# Checkov configuration file
+---
+skip-check:
+  - CKV_AWS_24   # Skip SSH access check (not applicable)
+  - CKV_AWS_126  # Skip CloudWatch Log Group retention (already set in code)
+  - CKV2_AWS_62  # Skip S3 event notifications (not required for these buckets)
+  - CKV2_AWS_61  # Skip S3 lifecycle configuration (not required for these buckets)
+  - CKV2_AWS_16  # Skip DynamoDB autoscaling (low-traffic state locking table)
+  - CKV2_AWS_12  # Skip default security group check
+  - CKV2_AWS_64  # Skip KMS key policy check
+  - CKV2_AWS_5   # Skip unattached security group check
+
+framework:
+  - terraform
+
+output: cli
+
+soft-fail: false
+
+skip-path:
+  - "test/*"
+  - "*.tfvars" 

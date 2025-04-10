@@ -1,3 +1,6 @@
+# Get current AWS account ID
+data "aws_caller_identity" "current" {}
+
 # Create KMS key for DynamoDB encryption
 resource "aws_kms_key" "dynamodb_encryption" {
   description             = "KMS key for DynamoDB table encryption"

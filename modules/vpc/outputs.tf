@@ -37,3 +37,8 @@ output "vpc_endpoint_ec2messages_id" {
   description = "The ID of the EC2 Messages VPC endpoint"
   value       = aws_vpc_endpoint.ec2messages.id
 }
+
+output "cloudwatch_kms_key_arn" {
+  description = "ARN of the KMS key used for CloudWatch logs encryption"
+  value       = aws_kms_key.cloudwatch.arn
+}

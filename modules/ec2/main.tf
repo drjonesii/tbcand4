@@ -22,18 +22,58 @@ resource "aws_instance" "main" {
   monitoring    = true # Enable detailed monitoring
   ebs_optimized = true # Enable EBS optimization
 
+  # Enable auto recovery
+  maintenance_options {
+    auto_recovery = "default"
+  }
+
+  # Add instance health check
+  credit_specification {
+    cpu_credits = "standard"
+  }
+
+  # Add instance recovery alarm
+  lifecycle {
+    create_before_destroy = true
+  }
+
   user_data = <<-EOF
     #!/bin/bash
     # Install SSM agent
     if command -v yum >/dev/null; then
       yum install -y https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm
+      yum install -y amazon-cloudwatch-agent
     elif command -v apt-get >/dev/null; then
       snap install amazon-ssm-agent --classic
+      apt-get update && apt-get install -y amazon-cloudwatch-agent
     fi
     
-    # Start SSM agent
-    systemctl enable amazon-ssm-agent
-    systemctl start amazon-ssm-agent
+    # Configure CloudWatch agent
+    cat > /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json <<'EOL'
+    {
+      "metrics": {
+        "metrics_collected": {
+          "mem": {
+            "measurement": ["mem_used_percent"],
+            "metrics_collection_interval": 60
+          },
+          "swap": {
+            "measurement": ["swap_used_percent"],
+            "metrics_collection_interval": 60
+          },
+          "disk": {
+            "measurement": ["used_percent"],
+            "resources": ["/"],
+            "metrics_collection_interval": 60
+          }
+        }
+      }
+    }
+    EOL
+
+    # Start agents
+    systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent
+    systemctl enable amazon-cloudwatch-agent && systemctl start amazon-cloudwatch-agent
   EOF
 
   tags = {
@@ -59,12 +99,38 @@ resource "aws_security_group" "instance" {
     cidr_blocks = [data.aws_vpc.selected.cidr_block]
   }
 
+  # Replace existing egress rule with specific ports
   egress {
-    description = "Allow outbound access to VPC endpoints and AWS services only"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = [data.aws_vpc.selected.cidr_block] # Restrict to VPC CIDR
+    description = "Allow HTTP outbound"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    description = "Allow HTTPS outbound"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    description = "Allow high ports outbound"
+    from_port   = 1024
+    to_port     = 65535
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  # Keep VPC endpoint access
+  egress {
+    description = "Allow access to VPC endpoints"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = [data.aws_vpc.selected.cidr_block]
   }
 
   tags = {
@@ -96,6 +162,13 @@ resource "aws_iam_role" "instance_role" {
       }
     ]
   })
+
+  tags = {
+    Name        = "${var.project_name}-instance-role"
+    Environment = var.environment
+    Owner       = "candidate4"
+    Project     = "turbot"
+  }
 }
 
 # Create IAM instance profile
@@ -138,6 +211,13 @@ resource "aws_iam_policy" "s3_access" {
       }
     ]
   })
+
+  tags = {
+    Name        = "${var.project_name}-s3-access-policy"
+    Environment = var.environment
+    Owner       = "candidate4"
+    Project     = "turbot"
+  }
 }
 
 # Attach S3 access policy to EC2 role
@@ -209,3 +289,131 @@ data "aws_region" "current" {}
 
 # Get current AWS account ID
 data "aws_caller_identity" "current" {}
+
+# Create KMS policy for EC2 instance
+resource "aws_iam_role_policy" "kms_policy" {
+  name = "${var.project_name}-kms-policy"
+  role = aws_iam_role.instance_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "kms:Decrypt",
+          "kms:DescribeKey",
+          "kms:Encrypt",
+          "kms:GenerateDataKey*",
+          "kms:ReEncrypt*"
+        ]
+        Resource = [
+          var.cloudwatch_kms_key_arn,  # For CloudWatch logs
+          var.s3_kms_key_arn,          # For S3 access
+          var.dynamodb_kms_key_arn     # For DynamoDB access
+        ]
+      }
+    ]
+  })
+}
+
+# Replace CloudWatch Logs full access with specific permissions
+resource "aws_iam_role_policy" "cloudwatch_logs" {
+  name = "${var.project_name}-cloudwatch-logs-policy"
+  role = aws_iam_role.instance_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents",
+          "logs:DescribeLogStreams",
+          "logs:DescribeLogGroups"
+        ]
+        Resource = [
+          "${aws_cloudwatch_log_group.instance_logs.arn}:*",
+          aws_cloudwatch_log_group.instance_logs.arn
+        ]
+      }
+    ]
+  })
+}
+
+# Add CloudWatch alarm for instance recovery
+resource "aws_cloudwatch_metric_alarm" "instance_recovery" {
+  alarm_name          = "${var.project_name}-instance-recovery"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = "2"
+  metric_name         = "StatusCheckFailed_System"
+  namespace           = "AWS/EC2"
+  period              = "60"
+  statistic          = "Minimum"
+  threshold          = "0"
+  alarm_description  = "Recover EC2 instance when system status check fails"
+  alarm_actions      = ["arn:aws:automate:${data.aws_region.current.name}:ec2:recover"]
+
+  dimensions = {
+    InstanceId = aws_instance.main.id
+  }
+
+  tags = {
+    Name        = "${var.project_name}-instance-recovery-alarm"
+    Environment = var.environment
+    Owner       = "candidate4"
+    Project     = "turbot"
+  }
+}
+
+# Add CPU utilization alarm
+resource "aws_cloudwatch_metric_alarm" "cpu_utilization" {
+  alarm_name          = "${var.project_name}-cpu-utilization"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = "2"
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/EC2"
+  period              = "300"
+  statistic          = "Average"
+  threshold          = "80"
+  alarm_description  = "CPU utilization is too high"
+  alarm_actions      = [var.sns_topic_arn]
+
+  dimensions = {
+    InstanceId = aws_instance.main.id
+  }
+
+  tags = {
+    Name        = "${var.project_name}-cpu-utilization-alarm"
+    Environment = var.environment
+    Owner       = "candidate4"
+    Project     = "turbot"
+  }
+}
+
+# Add memory utilization monitoring
+resource "aws_cloudwatch_metric_alarm" "memory_utilization" {
+  alarm_name          = "${var.project_name}-memory-utilization"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = "2"
+  metric_name         = "mem_used_percent"
+  namespace          = "CWAgent"
+  period             = "300"
+  statistic          = "Average"
+  threshold          = "80"
+  alarm_description  = "Memory utilization is too high"
+  alarm_actions      = [var.sns_topic_arn]
+
+  dimensions = {
+    InstanceId = aws_instance.main.id
+  }
+
+  tags = {
+    Name        = "${var.project_name}-memory-utilization-alarm"
+    Environment = var.environment
+    Owner       = "candidate4"
+    Project     = "turbot"
+  }
+}

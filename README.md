@@ -1,5 +1,40 @@
 # Turbot Assignment
 
+## Infrastructure Costs
+
+### Current Monthly Costs
+[![Staging Cost](https://img.shields.io/badge/dynamic/json?url=https://raw.githubusercontent.com/yourusername/tbcand4/main/.infracost/staging.json&query=totalMonthlyCost&prefix=$&label=Staging%20Cost)](https://github.com/yourusername/tbcand4/actions)
+[![Production Cost](https://img.shields.io/badge/dynamic/json?url=https://raw.githubusercontent.com/yourusername/tbcand4/main/.infracost/prod.json&query=totalMonthlyCost&prefix=$&label=Production%20Cost)](https://github.com/yourusername/tbcand4/actions)
+
+### Cost Breakdown
+[![Staging Resources](https://img.shields.io/badge/dynamic/json?url=https://raw.githubusercontent.com/yourusername/tbcand4/main/.infracost/staging.json&query=resourceCount&label=Staging%20Resources)](https://github.com/yourusername/tbcand4/actions)
+[![Production Resources](https://img.shields.io/badge/dynamic/json?url=https://raw.githubusercontent.com/yourusername/tbcand4/main/.infracost/prod.json&query=resourceCount&label=Production%20Resources)](https://github.com/yourusername/tbcand4/actions)
+
+### Cost Trends
+![Staging Cost Trend](https://raw.githubusercontent.com/yourusername/tbcand4/main/.infracost/staging-trend.svg)
+![Production Cost Trend](https://raw.githubusercontent.com/yourusername/tbcand4/main/.infracost/prod-trend.svg)
+
+<details>
+<summary>📊 Detailed Cost Information</summary>
+
+#### Staging Environment
+- **Monthly Cost**: $XX.XX
+- **Hourly Cost**: $X.XX
+- **Most Expensive Resources**:
+  1. NAT Gateway: $XX.XX/month
+  2. EC2 Instance: $XX.XX/month
+  3. EBS Volumes: $XX.XX/month
+
+#### Production Environment
+- **Monthly Cost**: $XX.XX
+- **Hourly Cost**: $X.XX
+- **Most Expensive Resources**:
+  1. NAT Gateway: $XX.XX/month
+  2. EC2 Instance: $XX.XX/month
+  3. EBS Volumes: $XX.XX/month
+
+</details>
+
 This repository contains Terraform code for deploying AWS infrastructure with a focus on security and best practices.
 
 ## Architecture

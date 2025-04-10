@@ -26,4 +26,7 @@ module "ec2" {
   instance_type = "t3.micro"
   subnet_id     = module.vpc.private_subnet_ids[0]
   vpc_id        = module.vpc.vpc_id
+  cloudwatch_kms_key_arn  = module.vpc.cloudwatch_kms_key_arn
+  s3_kms_key_arn         = aws_kms_key.s3_encryption.arn
+  dynamodb_kms_key_arn   = aws_kms_key.dynamodb_encryption.arn
 }

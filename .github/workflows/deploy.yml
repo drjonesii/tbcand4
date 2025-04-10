@@ -1,0 +1,515 @@
+name: Deploy Infrastructure
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  TF_VERSION: "1.5.0"
+  AWS_REGION: "us-east-1"
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  security-checks:
+    name: Security Checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install security tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install checkov
+          curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+          curl -L https://github.com/aquasecurity/tfsec/releases/download/v1.28.1/tfsec-linux-amd64 -o tfsec
+          chmod +x tfsec
+          sudo mv tfsec /usr/local/bin/
+
+      - name: Run Checkov
+        run: checkov --directory . --framework terraform
+
+      - name: Run tfsec
+        run: tfsec .
+
+      - name: Run tflint
+        run: |
+          tflint --init
+          tflint --recursive
+
+  plan-staging:
+    name: Plan Staging
+    needs: security-checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-role
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Terraform Init
+        run: |
+          terraform init \
+            -backend-config="bucket=${{ secrets.TF_STATE_BUCKET }}" \
+            -backend-config="key=staging/terraform.tfstate" \
+            -backend-config="region=${{ env.AWS_REGION }}"
+
+      - name: Terraform Plan
+        run: |
+          terraform plan \
+            -var-file="environments/staging.tfvars" \
+            -out=tfplan
+        
+      - name: Upload Plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan-staging
+          path: tfplan
+          retention-days: 1
+
+      - name: Run Cost Estimation
+        run: |
+          terraform show -json tfplan | \
+          infracost breakdown --path - \
+          --format json \
+          --out-file cost-estimate.json
+
+      - name: Upload Cost Estimate
+        uses: actions/upload-artifact@v4
+        with:
+          name: cost-estimate-staging
+          path: cost-estimate.json
+
+  deploy-staging:
+    name: Deploy Staging
+    needs: plan-staging
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment:
+      name: staging
+      
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-role
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Download Plan
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan-staging
+
+      - name: Terraform Init
+        run: |
+          terraform init \
+            -backend-config="bucket=${{ secrets.TF_STATE_BUCKET }}" \
+            -backend-config="key=staging/terraform.tfstate" \
+            -backend-config="region=${{ env.AWS_REGION }}"
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve tfplan
+
+  test-staging:
+    name: Test Staging
+    needs: deploy-staging
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-role
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Run Tests
+        run: |
+          cd test
+          go test -v -timeout 30m
+        env:
+          TF_VAR_environment: staging
+
+  plan-prod:
+    name: Plan Production
+    needs: test-staging
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-role
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Terraform Init
+        run: |
+          terraform init \
+            -backend-config="bucket=${{ secrets.TF_STATE_BUCKET }}" \
+            -backend-config="key=prod/terraform.tfstate" \
+            -backend-config="region=${{ env.AWS_REGION }}"
+
+      - name: Terraform Plan
+        run: |
+          terraform plan \
+            -var-file="environments/prod.tfvars" \
+            -out=tfplan
+        
+      - name: Upload Plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan-prod
+          path: tfplan
+          retention-days: 1
+
+  deploy-prod:
+    name: Deploy Production
+    needs: plan-prod
+    runs-on: ubuntu-latest
+    environment:
+      name: prod
+      url: ${{ steps.deployment-url.outputs.url }}
+    timeout-minutes: 60  # Approval must happen within 60 minutes
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-role
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Download Plan
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan-prod
+
+      - name: Terraform Init
+        run: |
+          terraform init \
+            -backend-config="bucket=${{ secrets.TF_STATE_BUCKET }}" \
+            -backend-config="key=prod/terraform.tfstate" \
+            -backend-config="region=${{ env.AWS_REGION }}"
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve tfplan
+
+  test-prod:
+    name: Test Production
+    needs: deploy-prod
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-role
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Run Tests
+        run: |
+          cd test
+          go test -v -timeout 30m
+        env:
+          TF_VAR_environment: prod
+
+  validate:
+    name: Validate Code
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Terraform Format
+        run: terraform fmt -check -recursive
+
+      - name: Run gofmt
+        run: |
+          cd test
+          test -z $(gofmt -l .)
+
+      - name: Run golangci-lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: latest
+          working-directory: test 
+
+  check-drift:
+    name: Check Infrastructure Drift
+    runs-on: ubuntu-latest
+    needs: [security-checks]
+    strategy:
+      matrix:
+        environment: [staging, prod]
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-role
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Terraform Init
+        run: |
+          terraform init \
+            -backend-config="bucket=${{ secrets.TF_STATE_BUCKET }}" \
+            -backend-config="key=${{ matrix.environment }}/terraform.tfstate" \
+            -backend-config="region=${{ env.AWS_REGION }}"
+
+      - name: Check for Drift
+        run: terraform plan -detailed-exitcode
+        continue-on-error: true
+        id: drift
+
+      - name: Report Drift
+        if: steps.drift.outputs.exitcode == 2
+        run: |
+          echo "::warning::Infrastructure drift detected in ${{ matrix.environment }}" 
+
+  cleanup-workspace:
+    name: Cleanup Workspace
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Cleanup
+        run: |
+          rm -rf .terraform
+          rm -f .terraform.lock.hcl
+          rm -f terraform.tfstate*
+          find . -type f -name "*.tfplan" -delete
+
+  check-lock-file:
+    name: Check Lock File
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Lock
+        run: |
+          terraform providers lock \
+            -platform=linux_amd64 \
+            -platform=darwin_amd64
+          git diff --exit-code .terraform.lock.hcl
+
+  cost-estimation:
+    name: Cost Estimation
+    runs-on: ubuntu-latest
+    needs: [security-checks]
+    strategy:
+      matrix:
+        environment: [staging, prod]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-role
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Install Infracost
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/infracost/infracost/master/scripts/install.sh | sh
+          infracost --version
+
+      - name: Configure Infracost
+        run: |
+          infracost configure set api_key=${{ secrets.INFRACOST_API_KEY }}
+
+      - name: Terraform Init
+        run: |
+          terraform init \
+            -backend-config="bucket=${{ secrets.TF_STATE_BUCKET }}" \
+            -backend-config="key=${{ matrix.environment }}/terraform.tfstate" \
+            -backend-config="region=${{ env.AWS_REGION }}"
+
+      - name: Generate Terraform Plan
+        run: |
+          terraform plan \
+            -var-file="environments/${{ matrix.environment }}.tfvars" \
+            -out=tfplan
+
+      - name: Generate Infracost JSON
+        run: |
+          infracost breakdown \
+            --path=tfplan \
+            --format=json \
+            --out-file=/tmp/infracost-${{ matrix.environment }}.json
+
+      - name: Generate Infracost Report
+        run: |
+          infracost output \
+            --path=/tmp/infracost-${{ matrix.environment }}.json \
+            --format=html \
+            --out-file=/tmp/infracost-${{ matrix.environment }}.html
+
+      - name: Upload Cost Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: cost-report-${{ matrix.environment }}
+          path: |
+            /tmp/infracost-${{ matrix.environment }}.json
+            /tmp/infracost-${{ matrix.environment }}.html
+
+      - name: Post Cost Comment
+        if: github.event_name == 'pull_request'
+        run: |
+          infracost comment github \
+            --path=/tmp/infracost-${{ matrix.environment }}.json \
+            --repo=${{ github.repository }} \
+            --pull-request=${{ github.event.pull_request.number }} \
+            --github-token=${{ secrets.GITHUB_TOKEN }} \
+            --behavior=update
+
+      - name: Check Cost Increase
+        run: |
+          MONTHLY_COST=$(jq -r '.totalMonthlyCost' /tmp/infracost-${{ matrix.environment }}.json)
+          if (( $(echo "$MONTHLY_COST > 1000" | bc -l) )); then
+            echo "::error::Estimated monthly cost ($MONTHLY_COST) exceeds $1000 for ${{ matrix.environment }}"
+            exit 1
+          fi
+
+      - name: Store Cost Estimate
+        run: |
+          mkdir -p .infracost
+          cp /tmp/infracost-${{ matrix.environment }}.json .infracost/${{ matrix.environment }}.json
+          
+      - name: Commit Cost Update
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .infracost
+          git commit -m "Update cost estimates [skip ci]" || echo "No changes to commit"
+          git push
+
+      - name: Generate Cost Trend
+        run: |
+          # Get historical costs from previous commits
+          git log -n 30 --pretty=format:"%H" | while read commit; do
+            if git show "$commit:.infracost/${{ matrix.environment }}.json" > "/tmp/cost-$commit.json" 2>/dev/null; then
+              date=$(git show -s --format=%ci "$commit")
+              cost=$(jq -r '.totalMonthlyCost' "/tmp/cost-$commit.json")
+              echo "$date,$cost" >> "/tmp/cost-history.csv"
+            fi
+          done
+
+          # Generate SVG trend graph using gnuplot
+          cat > plot.gnu << EOL
+          set terminal svg size 800,400
+          set output ".infracost/${{ matrix.environment }}-trend.svg"
+          set title "${{ matrix.environment }} Infrastructure Cost Trend"
+          set xlabel "Date"
+          set ylabel "Monthly Cost ($)"
+          set xdata time
+          set timefmt "%Y-%m-%d"
+          set format x "%Y-%m-%d"
+          set grid
+          plot "/tmp/cost-history.csv" using 1:2 with lines title "Monthly Cost"
+          EOL
+          gnuplot plot.gnu
+
+      - name: Generate Detailed Cost Report
+        run: |
+          jq -r '
+            .breakdown.resources |
+            to_entries |
+            sort_by(.value.monthlyCost) |
+            reverse |
+            .[0:5] |
+            map({
+              name: .key,
+              cost: .value.monthlyCost
+            })
+          ' /tmp/infracost-${{ matrix.environment }}.json > /tmp/top-costs.json
+
+      - name: Update Cost Details
+        run: |
+          HOURLY_COST=$(jq -r '.totalHourlyCost' /tmp/infracost-${{ matrix.environment }}.json)
+          MONTHLY_COST=$(jq -r '.totalMonthlyCost' /tmp/infracost-${{ matrix.environment }}.json)
+          RESOURCE_COUNT=$(jq -r '.resourceCount' /tmp/infracost-${{ matrix.environment }}.json)
+          
+          echo "## ${{ matrix.environment }} Cost Details" > /tmp/cost-details.md
+          echo "- Monthly Cost: \$$MONTHLY_COST" >> /tmp/cost-details.md
+          echo "- Hourly Cost: \$$HOURLY_COST" >> /tmp/cost-details.md
+          echo "- Resource Count: $RESOURCE_COUNT" >> /tmp/cost-details.md
+          
+          echo "### Most Expensive Resources" >> /tmp/cost-details.md
+          jq -r '.[] | "- \(.name): \$\(.cost)/month"' /tmp/top-costs.json >> /tmp/cost-details.md
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false 
