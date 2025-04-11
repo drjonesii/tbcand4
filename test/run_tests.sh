@@ -12,7 +12,7 @@ fi
 
 # Set AWS region if not set
 if [ -z "$AWS_DEFAULT_REGION" ]; then
-    export AWS_DEFAULT_REGION="us-west-2"
+    export AWS_DEFAULT_REGION="us-west-1"
 fi
 
 # Set environment to test

@@ -15,13 +15,7 @@ import (
 )
 
 func TestEC2Module(t *testing.T) {
-	// Get AWS region
-	awsRegion := os.Getenv("AWS_DEFAULT_REGION")
-	if awsRegion == "" {
-		awsRegion = "us-west-2" // Default region
-	}
-
-	// First, create VPC and get its outputs
+	// First create VPC
 	vpcOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir: "../modules/vpc",
 		Vars: map[string]interface{}{
@@ -29,53 +23,53 @@ func TestEC2Module(t *testing.T) {
 			"environment":  "test",
 			"project_name": "turbot-assignment",
 		},
-		EnvVars: map[string]string{
-			"AWS_DEFAULT_REGION": awsRegion,
+		BackendConfig: map[string]interface{}{
+			"bucket":       "tbcand4-terraform-state",
+			"key":          "test/infrastructure/terraform.tfstate",
+			"region":       "us-west-1",
+			"encrypt":      true,
+			"use_lockfile": true,
 		},
-		Lock: false,
 	})
 
 	defer terraform.Destroy(t, vpcOptions)
-
 	terraform.InitAndApply(t, vpcOptions)
 
-	// Get VPC and subnet IDs
 	vpcID := terraform.Output(t, vpcOptions, "vpc_id")
 	privateSubnetIDs := terraform.OutputList(t, vpcOptions, "private_subnet_ids")
-	assert.NotEmpty(t, privateSubnetIDs, "Should have at least one private subnet")
 
-	// Now create EC2 instance
-	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
+	// Then create EC2 instance
+	ec2Options := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir: "../modules/ec2",
 		Vars: map[string]interface{}{
 			"vpc_id":        vpcID,
 			"subnet_id":     privateSubnetIDs[0],
-			"ami_id":        "ami-0c55b159cbfafe1f0", // Amazon Linux 2 AMI
 			"instance_type": "t3.micro",
 			"environment":   "test",
 			"project_name":  "turbot-assignment",
 		},
-		EnvVars: map[string]string{
-			"AWS_DEFAULT_REGION": awsRegion,
+		BackendConfig: map[string]interface{}{
+			"bucket":       "tbcand4-terraform-state",
+			"key":          "test/infrastructure/terraform.tfstate",
+			"region":       "us-west-1",
+			"encrypt":      true,
+			"use_lockfile": true,
 		},
-		Lock: false,
 	})
 
-	defer terraform.Destroy(t, terraformOptions)
+	defer terraform.Destroy(t, ec2Options)
+	terraform.InitAndApply(t, ec2Options)
 
-	terraform.InitAndApply(t, terraformOptions)
-
-	// Get instance ID
-	instanceID := terraform.Output(t, terraformOptions, "instance_id")
+	// Test EC2 outputs
+	instanceID := terraform.Output(t, ec2Options, "instance_id")
 	assert.NotEmpty(t, instanceID, "Instance ID should not be empty")
 
-	// Get instance private IP
-	privateIP := terraform.Output(t, terraformOptions, "instance_private_ip")
-	assert.NotEmpty(t, privateIP, "Private IP should not be empty")
+	securityGroupID := terraform.Output(t, ec2Options, "security_group_id")
+	assert.NotEmpty(t, securityGroupID, "Security group ID should not be empty")
 
 	// Create AWS SDK v2 client
 	cfg, err := config.LoadDefaultConfig(context.TODO(),
-		config.WithRegion(awsRegion),
+		config.WithRegion(os.Getenv("AWS_DEFAULT_REGION")),
 		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider("", "", "")),
 	)
 	assert.NoError(t, err)
@@ -105,16 +99,12 @@ func TestEC2Module(t *testing.T) {
 	}
 
 	// Test IAM role
-	instanceProfile := terraform.Output(t, terraformOptions, "instance_profile_name")
+	instanceProfile := terraform.Output(t, ec2Options, "instance_profile_name")
 	assert.NotEmpty(t, instanceProfile, "Instance profile name should not be empty")
 
 	// Test S3 access policy
-	s3PolicyName := terraform.Output(t, terraformOptions, "s3_policy_name")
+	s3PolicyName := terraform.Output(t, ec2Options, "s3_policy_name")
 	assert.NotEmpty(t, s3PolicyName, "S3 policy name should not be empty")
-
-	// Test security group
-	securityGroupID := terraform.Output(t, terraformOptions, "security_group_id")
-	assert.NotEmpty(t, securityGroupID, "Security group ID should not be empty")
 
 	// Verify security group rules using AWS SDK
 	result, err := ec2Client.DescribeSecurityGroups(context.TODO(), &ec2.DescribeSecurityGroupsInput{

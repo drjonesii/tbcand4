@@ -20,14 +20,14 @@ resource "aws_s3_bucket_versioning" "cis_report" {
   }
 }
 
-# Enable server-side encryption with customer-managed key
+# Update encryption to use AES256 instead of KMS
 resource "aws_s3_bucket_server_side_encryption_configuration" "cis_report" {
   bucket = aws_s3_bucket.cis_report.id
 
   rule {
     apply_server_side_encryption_by_default {
-      kms_master_key_id = aws_kms_key.s3_encryption.arn
       sse_algorithm     = "aws:kms"
+      kms_master_key_id = "alias/aws/s3"
     }
   }
 }
@@ -66,15 +66,15 @@ resource "aws_s3_bucket_versioning" "cis_report_replica" {
   }
 }
 
-# Enable server-side encryption with customer-managed key for replica bucket
+# Update encryption for replica bucket
 resource "aws_s3_bucket_server_side_encryption_configuration" "cis_report_replica" {
   provider = aws.replica
   bucket   = aws_s3_bucket.cis_report_replica.id
 
   rule {
     apply_server_side_encryption_by_default {
-      kms_master_key_id = aws_kms_key.s3_encryption.arn
       sse_algorithm     = "aws:kms"
+      kms_master_key_id = "alias/aws/s3"
     }
   }
 }
@@ -88,22 +88,6 @@ resource "aws_s3_bucket_public_access_block" "cis_report_replica" {
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
-}
-
-# Configure replication
-resource "aws_s3_bucket_replication_configuration" "cis_report" {
-  bucket = aws_s3_bucket.cis_report.id
-
-  role = aws_iam_role.replication.arn
-
-  rule {
-    id     = "cis_report_replication"
-    status = "Enabled"
-
-    destination {
-      bucket = aws_s3_bucket.cis_report_replica.arn
-    }
-  }
 }
 
 # Enable logging for primary bucket
@@ -145,14 +129,14 @@ resource "aws_s3_bucket_versioning" "access_logs" {
   }
 }
 
-# Enable server-side encryption with customer-managed key for access logs bucket
+# Update access logs bucket encryption to use KMS
 resource "aws_s3_bucket_server_side_encryption_configuration" "access_logs" {
   bucket = aws_s3_bucket.access_logs.id
 
   rule {
     apply_server_side_encryption_by_default {
-      kms_master_key_id = aws_kms_key.s3_encryption.arn
       sse_algorithm     = "aws:kms"
+      kms_master_key_id = "alias/aws/s3"
     }
   }
 }
@@ -191,15 +175,15 @@ resource "aws_s3_bucket_versioning" "access_logs_replica" {
   }
 }
 
-# Enable server-side encryption with customer-managed key for access logs replica bucket
+# Update access logs replica bucket encryption to use KMS
 resource "aws_s3_bucket_server_side_encryption_configuration" "access_logs_replica" {
   provider = aws.replica
   bucket   = aws_s3_bucket.access_logs_replica.id
 
   rule {
     apply_server_side_encryption_by_default {
-      kms_master_key_id = aws_kms_key.s3_encryption.arn
       sse_algorithm     = "aws:kms"
+      kms_master_key_id = "alias/aws/s3"
     }
   }
 }
@@ -213,22 +197,6 @@ resource "aws_s3_bucket_public_access_block" "access_logs_replica" {
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
-}
-
-# Configure replication for access logs
-resource "aws_s3_bucket_replication_configuration" "access_logs" {
-  bucket = aws_s3_bucket.access_logs.id
-
-  role = aws_iam_role.replication.arn
-
-  rule {
-    id     = "access_logs_replication"
-    status = "Enabled"
-
-    destination {
-      bucket = aws_s3_bucket.access_logs_replica.arn
-    }
-  }
 }
 
 # Enable logging for access logs bucket
@@ -246,4 +214,99 @@ resource "aws_s3_bucket_logging" "access_logs_replica" {
 
   target_bucket = aws_s3_bucket.access_logs_replica.id
   target_prefix = "access-logs-replica/"
+}
+
+# Add replication configuration for access logs
+resource "aws_s3_bucket_replication_configuration" "access_logs" {
+  bucket = aws_s3_bucket.access_logs.id
+  role   = aws_iam_role.replication.arn
+
+  rule {
+    id     = "access_logs_replication"
+    status = "Enabled"
+
+    destination {
+      bucket = aws_s3_bucket.access_logs_replica.arn
+    }
+  }
+}
+
+# Add replication configuration for CIS report
+resource "aws_s3_bucket_replication_configuration" "cis_report" {
+  bucket = aws_s3_bucket.cis_report.id
+  role   = aws_iam_role.replication.arn
+
+  rule {
+    id     = "cis_report_replication"
+    status = "Enabled"
+
+    destination {
+      bucket = aws_s3_bucket.cis_report_replica.arn
+    }
+  }
+}
+
+# Create IAM role for S3 replication
+resource "aws_iam_role" "replication" {
+  name = "${var.project_name}-s3-replication"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "s3.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+# Create IAM policy for S3 replication
+resource "aws_iam_role_policy" "replication" {
+  name = "${var.project_name}-s3-replication-policy"
+  role = aws_iam_role.replication.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "s3:GetReplicationConfiguration",
+          "s3:ListBucket"
+        ]
+        Effect = "Allow"
+        Resource = [
+          aws_s3_bucket.cis_report.arn,
+          aws_s3_bucket.access_logs.arn
+        ]
+      },
+      {
+        Action = [
+          "s3:GetObjectVersionForReplication",
+          "s3:GetObjectVersionAcl",
+          "s3:GetObjectVersionTagging"
+        ]
+        Effect = "Allow"
+        Resource = [
+          "${aws_s3_bucket.cis_report.arn}/*",
+          "${aws_s3_bucket.access_logs.arn}/*"
+        ]
+      },
+      {
+        Action = [
+          "s3:ReplicateObject",
+          "s3:ReplicateDelete",
+          "s3:ReplicateTags"
+        ]
+        Effect = "Allow"
+        Resource = [
+          "${aws_s3_bucket.cis_report_replica.arn}/*",
+          "${aws_s3_bucket.access_logs_replica.arn}/*"
+        ]
+      }
+    ]
+  })
 } 

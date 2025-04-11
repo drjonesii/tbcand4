@@ -1,6 +1,8 @@
 terraform {
   required_version = ">= 1.11.3"
-  backend "local" {
-    path = "terraform.tfstate"
+  backend "s3" {
+    use_lockfile = true
+    encrypt      = true
+    region       = "us-west-1"
   }
 } 

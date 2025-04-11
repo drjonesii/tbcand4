@@ -20,13 +20,10 @@ module "security" {
 module "ec2" {
   source = "./modules/ec2"
 
-  project_name  = var.project_name
-  environment   = var.environment
-  ami_id        = "ami-0c55b159cbfafe1f0" # Example AMI ID
-  instance_type = "t3.micro"
-  subnet_id     = module.vpc.private_subnet_ids[0]
   vpc_id        = module.vpc.vpc_id
-  cloudwatch_kms_key_arn  = module.vpc.cloudwatch_kms_key_arn
-  s3_kms_key_arn         = aws_kms_key.s3_encryption.arn
-  dynamodb_kms_key_arn   = aws_kms_key.dynamodb_encryption.arn
+  subnet_id     = module.vpc.private_subnet_ids[0]
+  environment   = var.environment
+  project_name  = var.project_name
+  ami_id        = "ami-0e0bf53f6def86294" # Amazon Linux 2 AMI in us-west-1
+  sns_topic_arn = module.vpc.sns_topic_arn
 }

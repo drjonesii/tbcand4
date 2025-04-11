@@ -1,0 +1,2137 @@
+Creating virtual environment...
+Requirement already satisfied: pip in ./.venv/lib/python3.12/site-packages (25.0.1)
+Installing dependencies...
+Requirement already satisfied: pip in ./.venv/lib/python3.12/site-packages (25.0.1)
+Requirement already satisfied: pytest>=7.0.0 in ./.venv/lib/python3.12/site-packages (from -r requirements.txt (line 2)) (8.3.5)
+Requirement already satisfied: pytest-terraform==0.7.0 in ./.venv/lib/python3.12/site-packages (from -r requirements.txt (line 3)) (0.7.0)
+Requirement already satisfied: boto3>=1.26.0 in ./.venv/lib/python3.12/site-packages (from -r requirements.txt (line 4)) (1.35.49)
+Collecting botocore==1.34.14 (from -r requirements.txt (line 5))
+  Using cached botocore-1.34.14-py3-none-any.whl.metadata (5.6 kB)
+Requirement already satisfied: black in ./.venv/lib/python3.12/site-packages (from -r requirements.txt (line 8)) (25.1.0)
+Requirement already satisfied: flake8==7.0.0 in ./.venv/lib/python3.12/site-packages (from -r requirements.txt (line 9)) (7.0.0)
+Requirement already satisfied: mypy==1.8.0 in ./.venv/lib/python3.12/site-packages (from -r requirements.txt (line 10)) (1.8.0)
+Requirement already satisfied: isort==5.13.2 in ./.venv/lib/python3.12/site-packages (from -r requirements.txt (line 11)) (5.13.2)
+Requirement already satisfied: mkdocs in ./.venv/lib/python3.12/site-packages (from -r requirements.txt (line 14)) (1.5.3)
+Requirement already satisfied: mkdocs-material==9.5.3 in ./.venv/lib/python3.12/site-packages (from -r requirements.txt (line 15)) (9.5.3)
+Requirement already satisfied: bandit==1.7.6 in ./.venv/lib/python3.12/site-packages (from -r requirements.txt (line 18)) (1.7.6)
+Requirement already satisfied: safety in ./.venv/lib/python3.12/site-packages (from -r requirements.txt (line 19)) (3.3.1)
+Requirement already satisfied: checkov in ./.venv/lib/python3.12/site-packages (from -r requirements.txt (line 20)) (3.2.403)
+Requirement already satisfied: jmespath>=0.10.0 in ./.venv/lib/python3.12/site-packages (from pytest-terraform==0.7.0->-r requirements.txt (line 3)) (1.0.1)
+Requirement already satisfied: portalocker>=1.7.0 in ./.venv/lib/python3.12/site-packages (from pytest-terraform==0.7.0->-r requirements.txt (line 3)) (3.1.1)
+Requirement already satisfied: pytest-xdist>=1.31.0 in ./.venv/lib/python3.12/site-packages (from pytest-terraform==0.7.0->-r requirements.txt (line 3)) (3.6.1)
+Requirement already satisfied: python-dateutil<3.0.0,>=2.1 in ./.venv/lib/python3.12/site-packages (from botocore==1.34.14->-r requirements.txt (line 5)) (2.9.0.post0)
+Requirement already satisfied: urllib3<2.1,>=1.25.4 in ./.venv/lib/python3.12/site-packages (from botocore==1.34.14->-r requirements.txt (line 5)) (2.0.7)
+Requirement already satisfied: mccabe<0.8.0,>=0.7.0 in ./.venv/lib/python3.12/site-packages (from flake8==7.0.0->-r requirements.txt (line 9)) (0.7.0)
+Requirement already satisfied: pycodestyle<2.12.0,>=2.11.0 in ./.venv/lib/python3.12/site-packages (from flake8==7.0.0->-r requirements.txt (line 9)) (2.11.1)
+Requirement already satisfied: pyflakes<3.3.0,>=3.2.0 in ./.venv/lib/python3.12/site-packages (from flake8==7.0.0->-r requirements.txt (line 9)) (3.2.0)
+Requirement already satisfied: typing-extensions>=4.1.0 in ./.venv/lib/python3.12/site-packages (from mypy==1.8.0->-r requirements.txt (line 10)) (4.13.2)
+Requirement already satisfied: mypy-extensions>=1.0.0 in ./.venv/lib/python3.12/site-packages (from mypy==1.8.0->-r requirements.txt (line 10)) (1.0.0)
+Requirement already satisfied: babel~=2.10 in ./.venv/lib/python3.12/site-packages (from mkdocs-material==9.5.3->-r requirements.txt (line 15)) (2.17.0)
+Requirement already satisfied: colorama~=0.4 in ./.venv/lib/python3.12/site-packages (from mkdocs-material==9.5.3->-r requirements.txt (line 15)) (0.4.6)
+Requirement already satisfied: jinja2~=3.0 in ./.venv/lib/python3.12/site-packages (from mkdocs-material==9.5.3->-r requirements.txt (line 15)) (3.1.6)
+Requirement already satisfied: markdown~=3.2 in ./.venv/lib/python3.12/site-packages (from mkdocs-material==9.5.3->-r requirements.txt (line 15)) (3.7)
+Requirement already satisfied: mkdocs-material-extensions~=1.3 in ./.venv/lib/python3.12/site-packages (from mkdocs-material==9.5.3->-r requirements.txt (line 15)) (1.3.1)
+Requirement already satisfied: paginate~=0.5 in ./.venv/lib/python3.12/site-packages (from mkdocs-material==9.5.3->-r requirements.txt (line 15)) (0.5.7)
+Requirement already satisfied: pygments~=2.16 in ./.venv/lib/python3.12/site-packages (from mkdocs-material==9.5.3->-r requirements.txt (line 15)) (2.19.1)
+Requirement already satisfied: pymdown-extensions~=10.2 in ./.venv/lib/python3.12/site-packages (from mkdocs-material==9.5.3->-r requirements.txt (line 15)) (10.14.3)
+Requirement already satisfied: regex>=2022.4 in ./.venv/lib/python3.12/site-packages (from mkdocs-material==9.5.3->-r requirements.txt (line 15)) (2024.11.6)
+Requirement already satisfied: requests~=2.26 in ./.venv/lib/python3.12/site-packages (from mkdocs-material==9.5.3->-r requirements.txt (line 15)) (2.32.3)
+Requirement already satisfied: GitPython>=3.1.30 in ./.venv/lib/python3.12/site-packages (from bandit==1.7.6->-r requirements.txt (line 18)) (3.1.44)
+Requirement already satisfied: PyYAML>=5.3.1 in ./.venv/lib/python3.12/site-packages (from bandit==1.7.6->-r requirements.txt (line 18)) (6.0.2)
+Requirement already satisfied: stevedore>=1.20.0 in ./.venv/lib/python3.12/site-packages (from bandit==1.7.6->-r requirements.txt (line 18)) (5.4.1)
+Requirement already satisfied: rich in ./.venv/lib/python3.12/site-packages (from bandit==1.7.6->-r requirements.txt (line 18)) (14.0.0)
+Requirement already satisfied: iniconfig in ./.venv/lib/python3.12/site-packages (from pytest>=7.0.0->-r requirements.txt (line 2)) (2.1.0)
+Requirement already satisfied: packaging in ./.venv/lib/python3.12/site-packages (from pytest>=7.0.0->-r requirements.txt (line 2)) (23.2)
+Requirement already satisfied: pluggy<2,>=1.5 in ./.venv/lib/python3.12/site-packages (from pytest>=7.0.0->-r requirements.txt (line 2)) (1.5.0)
+INFO: pip is looking at multiple versions of boto3 to determine which version is compatible with other requirements. This could take a while.
+Collecting boto3>=1.26.0 (from -r requirements.txt (line 4))
+  Using cached boto3-1.37.32-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.37.31-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.37.30-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.37.29-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.37.28-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.37.27-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.37.26-py3-none-any.whl.metadata (6.7 kB)
+INFO: pip is still looking at multiple versions of boto3 to determine which version is compatible with other requirements. This could take a while.
+  Using cached boto3-1.37.25-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.37.24-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.37.23-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.37.22-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.37.21-py3-none-any.whl.metadata (6.7 kB)
+INFO: This is taking longer than usual. You might need to provide the dependency resolver with stricter constraints to reduce runtime. See https://pip.pypa.io/warnings/backtracking for guidance. If you want to abort this run, press Ctrl + C.
+  Using cached boto3-1.37.20-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.37.19-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.37.18-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.37.17-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.37.16-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.37.15-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.37.14-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.37.13-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.37.12-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.37.11-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.37.10-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.37.9-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.37.8-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.37.7-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.37.6-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.37.5-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.37.4-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.37.3-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.37.2-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.37.1-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.37.0-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.36.26-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.36.25-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.36.24-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.36.23-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.36.22-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.36.21-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.36.20-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.36.19-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.36.18-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.36.17-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.36.16-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.36.15-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.36.14-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.36.13-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.36.12-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.36.11-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.36.10-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.36.9-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.36.8-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.36.7-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.36.6-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.36.5-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.36.4-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.36.3-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.36.2-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.36.1-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.36.0-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.35.99-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.98-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.97-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.96-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.95-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.94-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.93-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.92-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.91-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.90-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.89-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.88-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.87-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.86-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.85-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.84-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.83-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.82-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.81-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.80-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.79-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.78-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.77-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.76-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.75-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.74-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.73-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.72-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.71-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.70-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.69-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.68-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.67-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.66-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.65-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.64-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.63-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.62-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.61-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.60-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.59-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.58-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.57-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.56-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.55-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.54-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.53-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.52-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.51-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.50-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.48-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.47-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.46-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.45-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.44-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.43-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.42-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.41-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.40-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.39-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.38-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.37-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.36-py3-none-any.whl.metadata (6.7 kB)
+  Using cached boto3-1.35.35-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.35.34-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.35.33-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.35.32-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.35.31-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.35.30-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.35.29-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.35.28-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.35.27-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.35.26-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.35.25-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.35.24-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.35.23-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.35.22-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.35.21-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.35.20-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.35.19-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.35.18-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.35.17-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.35.16-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.35.15-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.35.14-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.35.13-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.35.12-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.35.11-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.35.10-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.35.9-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.35.8-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.35.7-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.35.6-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.35.5-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.35.4-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.35.3-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.35.2-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.35.1-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.35.0-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.162-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.161-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.160-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.159-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.158-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.157-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.156-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.155-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.154-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.153-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.152-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.151-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.150-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.149-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.148-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.147-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.146-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.145-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.144-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.143-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.142-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.141-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.140-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.139-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.138-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.137-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.136-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.135-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.134-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.133-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.132-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.131-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.130-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.129-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.128-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.127-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.126-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.125-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.124-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.123-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.122-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.121-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.120-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.119-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.118-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.117-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.116-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.115-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.114-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.113-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.112-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.111-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.110-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.109-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.108-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.107-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.106-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.105-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.104-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.103-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.102-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.101-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.100-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.99-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.98-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.97-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.96-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.95-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.94-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.93-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.92-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.91-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.90-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.89-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.88-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.87-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.86-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.85-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.84-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.83-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.82-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.81-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.80-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.79-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.78-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.77-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.76-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.75-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.74-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.73-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.72-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.71-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.70-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.69-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.68-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.67-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.66-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.65-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.64-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.63-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.62-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.61-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.60-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.59-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.58-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.57-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.56-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.55-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.54-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.53-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.52-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.51-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.50-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.49-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.48-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.47-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.46-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.45-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.44-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.43-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.42-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.41-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.40-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.39-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.38-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.37-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.36-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.35-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.34-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.33-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.32-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.31-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.30-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.29-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.28-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.27-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.26-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.25-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.24-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.23-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.22-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.21-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.20-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.19-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.18-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.17-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.16-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.15-py3-none-any.whl.metadata (6.6 kB)
+  Using cached boto3-1.34.14-py3-none-any.whl.metadata (6.6 kB)
+Requirement already satisfied: s3transfer<0.11.0,>=0.10.0 in ./.venv/lib/python3.12/site-packages (from boto3>=1.26.0->-r requirements.txt (line 4)) (0.10.4)
+Requirement already satisfied: click>=8.0.0 in ./.venv/lib/python3.12/site-packages (from black->-r requirements.txt (line 8)) (8.1.8)
+Requirement already satisfied: pathspec>=0.9.0 in ./.venv/lib/python3.12/site-packages (from black->-r requirements.txt (line 8)) (0.12.1)
+Requirement already satisfied: platformdirs>=2 in ./.venv/lib/python3.12/site-packages (from black->-r requirements.txt (line 8)) (4.3.7)
+Requirement already satisfied: ghp-import>=1.0 in ./.venv/lib/python3.12/site-packages (from mkdocs->-r requirements.txt (line 14)) (2.1.0)
+Requirement already satisfied: markupsafe>=2.0.1 in ./.venv/lib/python3.12/site-packages (from mkdocs->-r requirements.txt (line 14)) (3.0.2)
+Requirement already satisfied: mergedeep>=1.3.4 in ./.venv/lib/python3.12/site-packages (from mkdocs->-r requirements.txt (line 14)) (1.3.4)
+Requirement already satisfied: pyyaml-env-tag>=0.1 in ./.venv/lib/python3.12/site-packages (from mkdocs->-r requirements.txt (line 14)) (0.1)
+Requirement already satisfied: watchdog>=2.0 in ./.venv/lib/python3.12/site-packages (from mkdocs->-r requirements.txt (line 14)) (6.0.0)
+Requirement already satisfied: authlib>=1.2.0 in ./.venv/lib/python3.12/site-packages (from safety->-r requirements.txt (line 19)) (1.5.2)
+Requirement already satisfied: dparse>=0.6.4 in ./.venv/lib/python3.12/site-packages (from safety->-r requirements.txt (line 19)) (0.6.4)
+Requirement already satisfied: filelock~=3.16.1 in ./.venv/lib/python3.12/site-packages (from safety->-r requirements.txt (line 19)) (3.16.1)
+Requirement already satisfied: marshmallow>=3.15.0 in ./.venv/lib/python3.12/site-packages (from safety->-r requirements.txt (line 19)) (3.26.1)
+Requirement already satisfied: nltk>=3.9 in ./.venv/lib/python3.12/site-packages (from safety->-r requirements.txt (line 19)) (3.9.1)
+Requirement already satisfied: psutil~=6.1.0 in ./.venv/lib/python3.12/site-packages (from safety->-r requirements.txt (line 19)) (6.1.1)
+Requirement already satisfied: pydantic<2.10.0,>=2.6.0 in ./.venv/lib/python3.12/site-packages (from safety->-r requirements.txt (line 19)) (2.9.2)
+Requirement already satisfied: ruamel-yaml>=0.17.21 in ./.venv/lib/python3.12/site-packages (from safety->-r requirements.txt (line 19)) (0.18.10)
+Requirement already satisfied: safety-schemas==0.0.11 in ./.venv/lib/python3.12/site-packages (from safety->-r requirements.txt (line 19)) (0.0.11)
+Requirement already satisfied: setuptools>=65.5.1 in ./.venv/lib/python3.12/site-packages (from safety->-r requirements.txt (line 19)) (78.1.0)
+Requirement already satisfied: typer>=0.12.1 in ./.venv/lib/python3.12/site-packages (from safety->-r requirements.txt (line 19)) (0.15.2)
+Requirement already satisfied: bc-python-hcl2==0.4.2 in ./.venv/lib/python3.12/site-packages (from checkov->-r requirements.txt (line 20)) (0.4.2)
+Requirement already satisfied: bc-detect-secrets==1.5.40 in ./.venv/lib/python3.12/site-packages (from checkov->-r requirements.txt (line 20)) (1.5.40)
+Requirement already satisfied: bc-jsonpath-ng==1.6.1 in ./.venv/lib/python3.12/site-packages (from checkov->-r requirements.txt (line 20)) (1.6.1)
+Requirement already satisfied: pycep-parser==0.5.1 in ./.venv/lib/python3.12/site-packages (from checkov->-r requirements.txt (line 20)) (0.5.1)
+Requirement already satisfied: tabulate<0.10.0,>=0.9.0 in ./.venv/lib/python3.12/site-packages (from checkov->-r requirements.txt (line 20)) (0.9.0)
+Requirement already satisfied: termcolor<2.4.0,>=1.1.0 in ./.venv/lib/python3.12/site-packages (from checkov->-r requirements.txt (line 20)) (2.3.0)
+Requirement already satisfied: junit-xml<2.0,>=1.9 in ./.venv/lib/python3.12/site-packages (from checkov->-r requirements.txt (line 20)) (1.9)
+Requirement already satisfied: dpath==2.1.3 in ./.venv/lib/python3.12/site-packages (from checkov->-r requirements.txt (line 20)) (2.1.3)
+Requirement already satisfied: tqdm<5.0.0,>=4.65.0 in ./.venv/lib/python3.12/site-packages (from checkov->-r requirements.txt (line 20)) (4.67.1)
+Requirement already satisfied: cloudsplaining<0.8.0,>=0.7.0 in ./.venv/lib/python3.12/site-packages (from checkov->-r requirements.txt (line 20)) (0.7.0)
+Requirement already satisfied: networkx<2.7 in ./.venv/lib/python3.12/site-packages (from checkov->-r requirements.txt (line 20)) (2.6.3)
+Requirement already satisfied: dockerfile-parse<3.0.0,>=2.0.0 in ./.venv/lib/python3.12/site-packages (from checkov->-r requirements.txt (line 20)) (2.0.1)
+Requirement already satisfied: docker<8.0.0,>=6.0.1 in ./.venv/lib/python3.12/site-packages (from checkov->-r requirements.txt (line 20)) (7.1.0)
+Requirement already satisfied: configargparse<2.0.0,>=1.5.3 in ./.venv/lib/python3.12/site-packages (from checkov->-r requirements.txt (line 20)) (1.7)
+Requirement already satisfied: argcomplete<4.0.0,>=3.0.0 in ./.venv/lib/python3.12/site-packages (from checkov->-r requirements.txt (line 20)) (3.6.2)
+Requirement already satisfied: importlib-metadata<8.0.0,>=6.0.0 in ./.venv/lib/python3.12/site-packages (from checkov->-r requirements.txt (line 20)) (7.2.1)
+Requirement already satisfied: cachetools<6.0.0,>=5.2.0 in ./.venv/lib/python3.12/site-packages (from checkov->-r requirements.txt (line 20)) (5.5.2)
+Requirement already satisfied: cyclonedx-python-lib<8.0.0,>=6.0.0 in ./.venv/lib/python3.12/site-packages (from checkov->-r requirements.txt (line 20)) (6.4.4)
+Requirement already satisfied: packageurl-python<0.14.0,>=0.11.1 in ./.venv/lib/python3.12/site-packages (from checkov->-r requirements.txt (line 20)) (0.13.4)
+Requirement already satisfied: aiohttp<4.0.0,>=3.8.0 in ./.venv/lib/python3.12/site-packages (from checkov->-r requirements.txt (line 20)) (3.11.16)
+Requirement already satisfied: aiodns<4.0.0,>=3.0.0 in ./.venv/lib/python3.12/site-packages (from checkov->-r requirements.txt (line 20)) (3.2.0)
+Requirement already satisfied: aiomultiprocess<0.10.0,>=0.9.0 in ./.venv/lib/python3.12/site-packages (from checkov->-r requirements.txt (line 20)) (0.9.1)
+Requirement already satisfied: schema<=0.7.5 in ./.venv/lib/python3.12/site-packages (from checkov->-r requirements.txt (line 20)) (0.7.5)
+Requirement already satisfied: jsonschema<5.0.0,>=4.17.0 in ./.venv/lib/python3.12/site-packages (from checkov->-r requirements.txt (line 20)) (4.23.0)
+Requirement already satisfied: prettytable<4.0.0,>=3.6.0 in ./.venv/lib/python3.12/site-packages (from checkov->-r requirements.txt (line 20)) (3.16.0)
+Requirement already satisfied: charset-normalizer<4.0.0,>=3.1.0 in ./.venv/lib/python3.12/site-packages (from checkov->-r requirements.txt (line 20)) (3.4.1)
+Requirement already satisfied: yarl<2.0.0,>=1.9.1 in ./.venv/lib/python3.12/site-packages (from checkov->-r requirements.txt (line 20)) (1.19.0)
+Requirement already satisfied: openai<1.0.0 in ./.venv/lib/python3.12/site-packages (from checkov->-r requirements.txt (line 20)) (0.28.1)
+Requirement already satisfied: spdx-tools<0.9.0,>=0.8.0 in ./.venv/lib/python3.12/site-packages (from checkov->-r requirements.txt (line 20)) (0.8.3)
+Requirement already satisfied: license-expression<31.0.0,>=30.1.0 in ./.venv/lib/python3.12/site-packages (from checkov->-r requirements.txt (line 20)) (30.4.1)
+Requirement already satisfied: rustworkx<1.0.0,>=0.13.0 in ./.venv/lib/python3.12/site-packages (from checkov->-r requirements.txt (line 20)) (0.13.2)
+Collecting checkov (from -r requirements.txt (line 20))
+  Using cached checkov-3.2.403-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.402-py3-none-any.whl.metadata (26 kB)
+Collecting bc-detect-secrets==1.5.38 (from checkov->-r requirements.txt (line 20))
+  Using cached bc_detect_secrets-1.5.38-py3-none-any.whl.metadata (23 kB)
+Collecting checkov (from -r requirements.txt (line 20))
+  Using cached checkov-3.2.401-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.400-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.399-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.398-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.397-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.396-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.395-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.394-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.393-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.392-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.391-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.390-py3-none-any.whl.metadata (26 kB)
+Collecting bc-detect-secrets==1.5.37 (from checkov->-r requirements.txt (line 20))
+  Using cached bc_detect_secrets-1.5.37-py3-none-any.whl.metadata (23 kB)
+Collecting checkov (from -r requirements.txt (line 20))
+  Using cached checkov-3.2.389-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.388-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.387-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.386-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.385-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.384-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.383-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.382-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.381-py3-none-any.whl.metadata (26 kB)
+Collecting bc-detect-secrets==1.5.36 (from checkov->-r requirements.txt (line 20))
+  Using cached bc_detect_secrets-1.5.36-py3-none-any.whl.metadata (23 kB)
+Collecting checkov (from -r requirements.txt (line 20))
+  Using cached checkov-3.2.380-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.379-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.378-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.377-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.376-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.375-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.374-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.373-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.372-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.371-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.370-py3-none-any.whl.metadata (26 kB)
+Collecting bc-detect-secrets==1.5.35 (from checkov->-r requirements.txt (line 20))
+  Using cached bc_detect_secrets-1.5.35-py3-none-any.whl.metadata (23 kB)
+Collecting checkov (from -r requirements.txt (line 20))
+  Using cached checkov-3.2.369-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.368-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.367-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.366-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.365-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.364-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.363-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.362-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.361-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.360-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.359-py3-none-any.whl.metadata (26 kB)
+Collecting bc-detect-secrets==1.5.33 (from checkov->-r requirements.txt (line 20))
+  Using cached bc_detect_secrets-1.5.33-py3-none-any.whl.metadata (23 kB)
+Collecting checkov (from -r requirements.txt (line 20))
+  Using cached checkov-3.2.358-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.357-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.356-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.355-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.354-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.353-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.352-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.351-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.350-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.349-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.348-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.347-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.346-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.345-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.344-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.343-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.342-py3-none-any.whl.metadata (26 kB)
+Collecting bc-detect-secrets==1.5.27 (from checkov->-r requirements.txt (line 20))
+  Using cached bc_detect_secrets-1.5.27-py3-none-any.whl.metadata (23 kB)
+Collecting checkov (from -r requirements.txt (line 20))
+  Using cached checkov-3.2.341-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.340-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.339-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.337-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.336-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.335-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.334-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.333-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.332-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.331-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.330-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.329-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.328-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.327-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.326-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.325-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.324-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.322-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.321-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.320-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.319-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.318-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.317-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.316-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.315-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.314-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.313-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.312-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.311-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.310-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.309-py3-none-any.whl.metadata (26 kB)
+Collecting bc-detect-secrets==1.5.24 (from checkov->-r requirements.txt (line 20))
+  Using cached bc_detect_secrets-1.5.24-py3-none-any.whl.metadata (23 kB)
+Collecting checkov (from -r requirements.txt (line 20))
+  Using cached checkov-3.2.308-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.307-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.306-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.305-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.304-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.303-py3-none-any.whl.metadata (26 kB)
+Collecting bc-detect-secrets==1.5.22 (from checkov->-r requirements.txt (line 20))
+  Using cached bc_detect_secrets-1.5.22-py3-none-any.whl.metadata (23 kB)
+Collecting checkov (from -r requirements.txt (line 20))
+  Using cached checkov-3.2.302-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.301-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.300-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.299-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.298-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.297-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.296-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.295-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.294-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.293-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.292-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.291-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.290-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.289-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.288-py3-none-any.whl.metadata (26 kB)
+INFO: pip is looking at multiple versions of checkov to determine which version is compatible with other requirements. This could take a while.
+  Using cached checkov-3.2.287-py3-none-any.whl.metadata (26 kB)
+Collecting bc-detect-secrets==1.5.21 (from checkov->-r requirements.txt (line 20))
+  Using cached bc_detect_secrets-1.5.21-py3-none-any.whl.metadata (23 kB)
+Collecting checkov (from -r requirements.txt (line 20))
+  Using cached checkov-3.2.286-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.285-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.284-py3-none-any.whl.metadata (26 kB)
+Collecting bc-detect-secrets==1.5.20 (from checkov->-r requirements.txt (line 20))
+  Using cached bc_detect_secrets-1.5.20-py3-none-any.whl.metadata (23 kB)
+Collecting checkov (from -r requirements.txt (line 20))
+  Using cached checkov-3.2.283-py3-none-any.whl.metadata (26 kB)
+Collecting bc-detect-secrets==1.5.19 (from checkov->-r requirements.txt (line 20))
+  Using cached bc_detect_secrets-1.5.19-py3-none-any.whl.metadata (23 kB)
+Collecting checkov (from -r requirements.txt (line 20))
+  Using cached checkov-3.2.282-py3-none-any.whl.metadata (26 kB)
+Collecting bc-detect-secrets==1.5.17 (from checkov->-r requirements.txt (line 20))
+  Using cached bc_detect_secrets-1.5.17-py3-none-any.whl.metadata (23 kB)
+Collecting checkov (from -r requirements.txt (line 20))
+  Using cached checkov-3.2.281-py3-none-any.whl.metadata (26 kB)
+INFO: pip is still looking at multiple versions of checkov to determine which version is compatible with other requirements. This could take a while.
+  Using cached checkov-3.2.280-py3-none-any.whl.metadata (26 kB)
+Collecting pycep-parser==0.4.1 (from checkov->-r requirements.txt (line 20))
+  Using cached pycep_parser-0.4.1-py3-none-any.whl.metadata (2.8 kB)
+Collecting checkov (from -r requirements.txt (line 20))
+  Using cached checkov-3.2.279-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.278-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.277-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.276-py3-none-any.whl.metadata (26 kB)
+INFO: This is taking longer than usual. You might need to provide the dependency resolver with stricter constraints to reduce runtime. See https://pip.pypa.io/warnings/backtracking for guidance. If you want to abort this run, press Ctrl + C.
+  Using cached checkov-3.2.275-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.274-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.273-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.272-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.271-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.270-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.269-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.268-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.267-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.266-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.265-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.264-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.263-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.262-py3-none-any.whl.metadata (26 kB)
+Collecting bc-detect-secrets==1.5.15 (from checkov->-r requirements.txt (line 20))
+  Using cached bc_detect_secrets-1.5.15-py3-none-any.whl.metadata (23 kB)
+Collecting checkov (from -r requirements.txt (line 20))
+  Using cached checkov-3.2.261-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.260-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.259-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.258-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.257-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.256-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.255-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.254-py3-none-any.whl.metadata (26 kB)
+Collecting cloudsplaining<0.7.0,>=0.6.2 (from checkov->-r requirements.txt (line 20))
+  Using cached cloudsplaining-0.6.3-py3-none-any.whl.metadata (21 kB)
+Collecting checkov (from -r requirements.txt (line 20))
+  Using cached checkov-3.2.253-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.252-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.251-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.250-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.249-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.248-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.247-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.246-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.245-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.244-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.243-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.242-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.241-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.240-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.239-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.238-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.237-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.236-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.235-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.234-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.233-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.232-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.231-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.230-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.229-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.228-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.227-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.226-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.225-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.224-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.223-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.222-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.221-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.220-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.219-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.218-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.217-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.216-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.215-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.214-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.213-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.212-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.211-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.210-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.209-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.208-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.207-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.206-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.205-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.204-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.203-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.202-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.201-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.200-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.199-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.198-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.197-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.196-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.195-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.194-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.193-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.192-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.191-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.190-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.189-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.188-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.187-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.186-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.185-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.184-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.183-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.182-py3-none-any.whl.metadata (26 kB)
+Collecting bc-detect-secrets==1.5.13 (from checkov->-r requirements.txt (line 20))
+  Using cached bc_detect_secrets-1.5.13-py3-none-any.whl.metadata (23 kB)
+Collecting checkov (from -r requirements.txt (line 20))
+  Using cached checkov-3.2.181-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.180-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.179-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.178-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.177-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.176-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.175-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.174-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.173-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.172-py3-none-any.whl.metadata (26 kB)
+Collecting bc-detect-secrets==1.5.12 (from checkov->-r requirements.txt (line 20))
+  Using cached bc_detect_secrets-1.5.12-py3-none-any.whl.metadata (23 kB)
+Collecting checkov (from -r requirements.txt (line 20))
+  Using cached checkov-3.2.171-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.170-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.169-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.168-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.167-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.166-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.165-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.164-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.163-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.162-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.161-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.160-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.159-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.158-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.157-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.156-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.155-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.154-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.153-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.152-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.151-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.150-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.149-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.148-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.147-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.146-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.145-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.144-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.143-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.142-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.141-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.140-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.139-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.138-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.137-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.136-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.135-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.134-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.133-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.132-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.131-py3-none-any.whl.metadata (26 kB)
+Collecting bc-detect-secrets==1.5.11 (from checkov->-r requirements.txt (line 20))
+  Using cached bc_detect_secrets-1.5.11-py3-none-any.whl.metadata (23 kB)
+Collecting checkov (from -r requirements.txt (line 20))
+  Using cached checkov-3.2.130-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.129-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.128-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.127-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.126-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.125-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.124-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.123-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.122-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.120-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.116-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.115-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.114-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.113-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.112-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.111-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.110-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.109-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.108-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.107-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.106-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.105-py3-none-any.whl.metadata (26 kB)
+Collecting bc-detect-secrets==1.5.10 (from checkov->-r requirements.txt (line 20))
+  Using cached bc_detect_secrets-1.5.10-py3-none-any.whl.metadata (23 kB)
+Collecting checkov (from -r requirements.txt (line 20))
+  Using cached checkov-3.2.104-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.103-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.102-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.101-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.100-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.99-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.98-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.97-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.96-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.95-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.94-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.93-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.92-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.91-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.90-py3-none-any.whl.metadata (26 kB)
+Collecting bc-detect-secrets==1.5.9 (from checkov->-r requirements.txt (line 20))
+  Using cached bc_detect_secrets-1.5.9-py3-none-any.whl.metadata (23 kB)
+Collecting checkov (from -r requirements.txt (line 20))
+  Using cached checkov-3.2.89-py3-none-any.whl.metadata (26 kB)
+  Using cached checkov-3.2.88-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.87-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.86-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.85-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.84-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.83-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.82-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.81-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.80-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.79-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.78-py3-none-any.whl.metadata (25 kB)
+Collecting bc-detect-secrets==1.5.7 (from checkov->-r requirements.txt (line 20))
+  Using cached bc_detect_secrets-1.5.7-py3-none-any.whl.metadata (23 kB)
+Collecting checkov (from -r requirements.txt (line 20))
+  Using cached checkov-3.2.77-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.76-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.75-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.74-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.73-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.72-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.71-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.70-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.69-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.68-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.67-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.66-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.65-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.64-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.63-py3-none-any.whl.metadata (25 kB)
+Collecting bc-detect-secrets==1.5.5 (from checkov->-r requirements.txt (line 20))
+  Using cached bc_detect_secrets-1.5.5-py3-none-any.whl.metadata (23 kB)
+Collecting checkov (from -r requirements.txt (line 20))
+  Using cached checkov-3.2.62-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.61-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.60-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.59-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.58-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.57-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.56-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.55-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.54-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.53-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.52-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.51-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.50-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.49-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.48-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.47-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.46-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.45-py3-none-any.whl.metadata (25 kB)
+Collecting bc-detect-secrets==1.5.4 (from checkov->-r requirements.txt (line 20))
+  Using cached bc_detect_secrets-1.5.4-py3-none-any.whl.metadata (23 kB)
+Collecting checkov (from -r requirements.txt (line 20))
+  Using cached checkov-3.2.44-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.43-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.42-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.41-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.40-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.39-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.38-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.37-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.36-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.35-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.34-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.33-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.32-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.31-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.30-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.29-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.28-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.27-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.26-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.25-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.24-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.23-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.22-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.21-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.20-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.19-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.18-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.17-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.16-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.15-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.14-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.13-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.12-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.11-py3-none-any.whl.metadata (25 kB)
+  Using cached checkov-3.2.10-py3-none-any.whl.metadata (25 kB)
+Requirement already satisfied: unidiff in ./.venv/lib/python3.12/site-packages (from bc-detect-secrets==1.5.4->checkov->-r requirements.txt (line 20)) (0.7.5)
+Requirement already satisfied: ply in ./.venv/lib/python3.12/site-packages (from bc-jsonpath-ng==1.6.1->checkov->-r requirements.txt (line 20)) (3.11)
+Requirement already satisfied: decorator in ./.venv/lib/python3.12/site-packages (from bc-jsonpath-ng==1.6.1->checkov->-r requirements.txt (line 20)) (5.2.1)
+Requirement already satisfied: lark>=1.0.0 in ./.venv/lib/python3.12/site-packages (from bc-python-hcl2==0.4.2->checkov->-r requirements.txt (line 20)) (1.2.2)
+Requirement already satisfied: pycares>=4.0.0 in ./.venv/lib/python3.12/site-packages (from aiodns<4.0.0,>=3.0.0->checkov->-r requirements.txt (line 20)) (4.6.0)
+Requirement already satisfied: aiohappyeyeballs>=2.3.0 in ./.venv/lib/python3.12/site-packages (from aiohttp<4.0.0,>=3.8.0->checkov->-r requirements.txt (line 20)) (2.6.1)
+Requirement already satisfied: aiosignal>=1.1.2 in ./.venv/lib/python3.12/site-packages (from aiohttp<4.0.0,>=3.8.0->checkov->-r requirements.txt (line 20)) (1.3.2)
+Requirement already satisfied: attrs>=17.3.0 in ./.venv/lib/python3.12/site-packages (from aiohttp<4.0.0,>=3.8.0->checkov->-r requirements.txt (line 20)) (25.3.0)
+Requirement already satisfied: frozenlist>=1.1.1 in ./.venv/lib/python3.12/site-packages (from aiohttp<4.0.0,>=3.8.0->checkov->-r requirements.txt (line 20)) (1.5.0)
+Requirement already satisfied: multidict<7.0,>=4.5 in ./.venv/lib/python3.12/site-packages (from aiohttp<4.0.0,>=3.8.0->checkov->-r requirements.txt (line 20)) (6.4.3)
+Requirement already satisfied: propcache>=0.2.0 in ./.venv/lib/python3.12/site-packages (from aiohttp<4.0.0,>=3.8.0->checkov->-r requirements.txt (line 20)) (0.3.1)
+Requirement already satisfied: cryptography in ./.venv/lib/python3.12/site-packages (from authlib>=1.2.0->safety->-r requirements.txt (line 19)) (44.0.2)
+Requirement already satisfied: cached-property in ./.venv/lib/python3.12/site-packages (from cloudsplaining<0.7.0,>=0.6.2->checkov->-r requirements.txt (line 20)) (2.0.1)
+Requirement already satisfied: click-option-group in ./.venv/lib/python3.12/site-packages (from cloudsplaining<0.7.0,>=0.6.2->checkov->-r requirements.txt (line 20)) (0.5.7)
+Collecting policy-sentry<0.13,>=0.11.3 (from cloudsplaining<0.7.0,>=0.6.2->checkov->-r requirements.txt (line 20))
+  Using cached policy_sentry-0.12.15-py3-none-any.whl.metadata (20 kB)
+Requirement already satisfied: py-serializable<2,>=0.16 in ./.venv/lib/python3.12/site-packages (from cyclonedx-python-lib<8.0.0,>=6.0.0->checkov->-r requirements.txt (line 20)) (1.1.2)
+Requirement already satisfied: sortedcontainers<3.0.0,>=2.4.0 in ./.venv/lib/python3.12/site-packages (from cyclonedx-python-lib<8.0.0,>=6.0.0->checkov->-r requirements.txt (line 20)) (2.4.0)
+Requirement already satisfied: gitdb<5,>=4.0.1 in ./.venv/lib/python3.12/site-packages (from GitPython>=3.1.30->bandit==1.7.6->-r requirements.txt (line 18)) (4.0.12)
+Requirement already satisfied: zipp>=0.5 in ./.venv/lib/python3.12/site-packages (from importlib-metadata<8.0.0,>=6.0.0->checkov->-r requirements.txt (line 20)) (3.21.0)
+Requirement already satisfied: jsonschema-specifications>=2023.03.6 in ./.venv/lib/python3.12/site-packages (from jsonschema<5.0.0,>=4.17.0->checkov->-r requirements.txt (line 20)) (2024.10.1)
+Requirement already satisfied: referencing>=0.28.4 in ./.venv/lib/python3.12/site-packages (from jsonschema<5.0.0,>=4.17.0->checkov->-r requirements.txt (line 20)) (0.36.2)
+Requirement already satisfied: rpds-py>=0.7.1 in ./.venv/lib/python3.12/site-packages (from jsonschema<5.0.0,>=4.17.0->checkov->-r requirements.txt (line 20)) (0.24.0)
+Requirement already satisfied: six in ./.venv/lib/python3.12/site-packages (from junit-xml<2.0,>=1.9->checkov->-r requirements.txt (line 20)) (1.17.0)
+Requirement already satisfied: boolean.py>=4.0 in ./.venv/lib/python3.12/site-packages (from license-expression<31.0.0,>=30.1.0->checkov->-r requirements.txt (line 20)) (5.0)
+Requirement already satisfied: joblib in ./.venv/lib/python3.12/site-packages (from nltk>=3.9->safety->-r requirements.txt (line 19)) (1.4.2)
+Requirement already satisfied: wcwidth in ./.venv/lib/python3.12/site-packages (from prettytable<4.0.0,>=3.6.0->checkov->-r requirements.txt (line 20)) (0.2.13)
+Requirement already satisfied: annotated-types>=0.6.0 in ./.venv/lib/python3.12/site-packages (from pydantic<2.10.0,>=2.6.0->safety->-r requirements.txt (line 19)) (0.7.0)
+Requirement already satisfied: pydantic-core==2.23.4 in ./.venv/lib/python3.12/site-packages (from pydantic<2.10.0,>=2.6.0->safety->-r requirements.txt (line 19)) (2.23.4)
+Requirement already satisfied: execnet>=2.1 in ./.venv/lib/python3.12/site-packages (from pytest-xdist>=1.31.0->pytest-terraform==0.7.0->-r requirements.txt (line 3)) (2.1.1)
+Requirement already satisfied: idna<4,>=2.5 in ./.venv/lib/python3.12/site-packages (from requests~=2.26->mkdocs-material==9.5.3->-r requirements.txt (line 15)) (3.10)
+Requirement already satisfied: certifi>=2017.4.17 in ./.venv/lib/python3.12/site-packages (from requests~=2.26->mkdocs-material==9.5.3->-r requirements.txt (line 15)) (2025.1.31)
+Requirement already satisfied: ruamel.yaml.clib>=0.2.7 in ./.venv/lib/python3.12/site-packages (from ruamel-yaml>=0.17.21->safety->-r requirements.txt (line 19)) (0.2.12)
+Requirement already satisfied: numpy>=1.16.0 in ./.venv/lib/python3.12/site-packages (from rustworkx<1.0.0,>=0.13.0->checkov->-r requirements.txt (line 20)) (2.2.4)
+Requirement already satisfied: xmltodict in ./.venv/lib/python3.12/site-packages (from spdx-tools<0.9.0,>=0.8.0->checkov->-r requirements.txt (line 20)) (0.14.2)
+Requirement already satisfied: rdflib in ./.venv/lib/python3.12/site-packages (from spdx-tools<0.9.0,>=0.8.0->checkov->-r requirements.txt (line 20)) (7.1.4)
+Requirement already satisfied: beartype in ./.venv/lib/python3.12/site-packages (from spdx-tools<0.9.0,>=0.8.0->checkov->-r requirements.txt (line 20)) (0.20.2)
+Requirement already satisfied: uritools in ./.venv/lib/python3.12/site-packages (from spdx-tools<0.9.0,>=0.8.0->checkov->-r requirements.txt (line 20)) (4.0.3)
+Requirement already satisfied: semantic-version in ./.venv/lib/python3.12/site-packages (from spdx-tools<0.9.0,>=0.8.0->checkov->-r requirements.txt (line 20)) (2.10.0)
+Requirement already satisfied: pbr>=2.0.0 in ./.venv/lib/python3.12/site-packages (from stevedore>=1.20.0->bandit==1.7.6->-r requirements.txt (line 18)) (6.1.1)
+Requirement already satisfied: shellingham>=1.3.0 in ./.venv/lib/python3.12/site-packages (from typer>=0.12.1->safety->-r requirements.txt (line 19)) (1.5.4)
+Requirement already satisfied: markdown-it-py>=2.2.0 in ./.venv/lib/python3.12/site-packages (from rich->bandit==1.7.6->-r requirements.txt (line 18)) (3.0.0)
+Requirement already satisfied: smmap<6,>=3.0.1 in ./.venv/lib/python3.12/site-packages (from gitdb<5,>=4.0.1->GitPython>=3.1.30->bandit==1.7.6->-r requirements.txt (line 18)) (5.0.2)
+Requirement already satisfied: mdurl~=0.1 in ./.venv/lib/python3.12/site-packages (from markdown-it-py>=2.2.0->rich->bandit==1.7.6->-r requirements.txt (line 18)) (0.1.2)
+Requirement already satisfied: beautifulsoup4 in ./.venv/lib/python3.12/site-packages (from policy-sentry<0.13,>=0.11.3->cloudsplaining<0.7.0,>=0.6.2->checkov->-r requirements.txt (line 20)) (4.13.3)
+Requirement already satisfied: defusedxml<0.8.0,>=0.7.1 in ./.venv/lib/python3.12/site-packages (from py-serializable<2,>=0.16->cyclonedx-python-lib<8.0.0,>=6.0.0->checkov->-r requirements.txt (line 20)) (0.7.1)
+Requirement already satisfied: cffi>=1.5.0 in ./.venv/lib/python3.12/site-packages (from pycares>=4.0.0->aiodns<4.0.0,>=3.0.0->checkov->-r requirements.txt (line 20)) (1.17.1)
+Requirement already satisfied: pyparsing<4,>=2.1.0 in ./.venv/lib/python3.12/site-packages (from rdflib->spdx-tools<0.9.0,>=0.8.0->checkov->-r requirements.txt (line 20)) (3.2.3)
+Requirement already satisfied: contextlib2>=0.5.5 in ./.venv/lib/python3.12/site-packages (from schema<=0.7.5->checkov->-r requirements.txt (line 20)) (21.6.0)
+Requirement already satisfied: pycparser in ./.venv/lib/python3.12/site-packages (from cffi>=1.5.0->pycares>=4.0.0->aiodns<4.0.0,>=3.0.0->checkov->-r requirements.txt (line 20)) (2.22)
+Requirement already satisfied: soupsieve>1.2 in ./.venv/lib/python3.12/site-packages (from beautifulsoup4->policy-sentry<0.13,>=0.11.3->cloudsplaining<0.7.0,>=0.6.2->checkov->-r requirements.txt (line 20)) (2.6)
+Using cached botocore-1.34.14-py3-none-any.whl (11.9 MB)
+Using cached boto3-1.34.14-py3-none-any.whl (139 kB)
+Using cached checkov-3.2.10-py3-none-any.whl (2.0 MB)
+Using cached bc_detect_secrets-1.5.4-py3-none-any.whl (119 kB)
+Using cached pycep_parser-0.4.1-py3-none-any.whl (22 kB)
+Using cached cloudsplaining-0.6.3-py3-none-any.whl (2.0 MB)
+Using cached policy_sentry-0.12.15-py3-none-any.whl (4.5 MB)
+Installing collected packages: pycep-parser, policy-sentry, botocore, bc-detect-secrets, boto3, cloudsplaining, checkov
+  Attempting uninstall: pycep-parser
+    Found existing installation: pycep-parser 0.5.1
+    Uninstalling pycep-parser-0.5.1:
+      Successfully uninstalled pycep-parser-0.5.1
+  Attempting uninstall: policy-sentry
+    Found existing installation: policy_sentry 0.13.2
+    Uninstalling policy_sentry-0.13.2:
+      Successfully uninstalled policy_sentry-0.13.2
+  Attempting uninstall: botocore
+    Found existing installation: botocore 1.35.99
+    Uninstalling botocore-1.35.99:
+      Successfully uninstalled botocore-1.35.99
+  Attempting uninstall: bc-detect-secrets
+    Found existing installation: bc-detect-secrets 1.5.40
+    Uninstalling bc-detect-secrets-1.5.40:
+      Successfully uninstalled bc-detect-secrets-1.5.40
+  Attempting uninstall: boto3
+    Found existing installation: boto3 1.35.49
+    Uninstalling boto3-1.35.49:
+      Successfully uninstalled boto3-1.35.49
+  Attempting uninstall: cloudsplaining
+    Found existing installation: cloudsplaining 0.7.0
+    Uninstalling cloudsplaining-0.7.0:
+      Successfully uninstalled cloudsplaining-0.7.0
+  Attempting uninstall: checkov
+    Found existing installation: checkov 3.2.403
+    Uninstalling checkov-3.2.403:
+      Successfully uninstalled checkov-3.2.403
+Successfully installed bc-detect-secrets-1.5.4 boto3-1.34.14 botocore-1.34.14 checkov-3.2.10 cloudsplaining-0.6.3 policy-sentry-0.12.15 pycep-parser-0.4.1
+Requirement already satisfied: checkov in ./.venv/lib/python3.12/site-packages (3.2.10)
+Collecting checkov
+  Using cached checkov-3.2.403-py3-none-any.whl.metadata (26 kB)
+Requirement already satisfied: bc-python-hcl2==0.4.2 in ./.venv/lib/python3.12/site-packages (from checkov) (0.4.2)
+Collecting bc-detect-secrets==1.5.40 (from checkov)
+  Using cached bc_detect_secrets-1.5.40-py3-none-any.whl.metadata (23 kB)
+Requirement already satisfied: bc-jsonpath-ng==1.6.1 in ./.venv/lib/python3.12/site-packages (from checkov) (1.6.1)
+Collecting pycep-parser==0.5.1 (from checkov)
+  Using cached pycep_parser-0.5.1-py3-none-any.whl.metadata (2.6 kB)
+Requirement already satisfied: tabulate<0.10.0,>=0.9.0 in ./.venv/lib/python3.12/site-packages (from checkov) (0.9.0)
+Requirement already satisfied: colorama<0.5.0,>=0.4.3 in ./.venv/lib/python3.12/site-packages (from checkov) (0.4.6)
+Requirement already satisfied: termcolor<2.4.0,>=1.1.0 in ./.venv/lib/python3.12/site-packages (from checkov) (2.3.0)
+Requirement already satisfied: junit-xml<2.0,>=1.9 in ./.venv/lib/python3.12/site-packages (from checkov) (1.9)
+Requirement already satisfied: dpath==2.1.3 in ./.venv/lib/python3.12/site-packages (from checkov) (2.1.3)
+Requirement already satisfied: pyyaml<7.0.0,>=6.0.0 in ./.venv/lib/python3.12/site-packages (from checkov) (6.0.2)
+Collecting boto3==1.35.49 (from checkov)
+  Using cached boto3-1.35.49-py3-none-any.whl.metadata (6.7 kB)
+Requirement already satisfied: gitpython<4.0.0,>=3.1.30 in ./.venv/lib/python3.12/site-packages (from checkov) (3.1.44)
+Requirement already satisfied: jmespath<2.0.0,>=1.0.0 in ./.venv/lib/python3.12/site-packages (from checkov) (1.0.1)
+Requirement already satisfied: tqdm<5.0.0,>=4.65.0 in ./.venv/lib/python3.12/site-packages (from checkov) (4.67.1)
+Requirement already satisfied: packaging<24.0,>=23.0 in ./.venv/lib/python3.12/site-packages (from checkov) (23.2)
+Collecting cloudsplaining<0.8.0,>=0.7.0 (from checkov)
+  Using cached cloudsplaining-0.7.0-py3-none-any.whl.metadata (21 kB)
+Requirement already satisfied: networkx<2.7 in ./.venv/lib/python3.12/site-packages (from checkov) (2.6.3)
+Requirement already satisfied: dockerfile-parse<3.0.0,>=2.0.0 in ./.venv/lib/python3.12/site-packages (from checkov) (2.0.1)
+Requirement already satisfied: docker<8.0.0,>=6.0.1 in ./.venv/lib/python3.12/site-packages (from checkov) (7.1.0)
+Requirement already satisfied: configargparse<2.0.0,>=1.5.3 in ./.venv/lib/python3.12/site-packages (from checkov) (1.7)
+Requirement already satisfied: argcomplete<4.0.0,>=3.0.0 in ./.venv/lib/python3.12/site-packages (from checkov) (3.6.2)
+Requirement already satisfied: typing-extensions<5.0.0,>=4.5.0 in ./.venv/lib/python3.12/site-packages (from checkov) (4.13.2)
+Requirement already satisfied: importlib-metadata<8.0.0,>=6.0.0 in ./.venv/lib/python3.12/site-packages (from checkov) (7.2.1)
+Requirement already satisfied: cachetools<6.0.0,>=5.2.0 in ./.venv/lib/python3.12/site-packages (from checkov) (5.5.2)
+Requirement already satisfied: cyclonedx-python-lib<8.0.0,>=6.0.0 in ./.venv/lib/python3.12/site-packages (from checkov) (6.4.4)
+Requirement already satisfied: packageurl-python<0.14.0,>=0.11.1 in ./.venv/lib/python3.12/site-packages (from checkov) (0.13.4)
+Requirement already satisfied: click<9.0.0,>=8.1.0 in ./.venv/lib/python3.12/site-packages (from checkov) (8.1.8)
+Requirement already satisfied: aiohttp<4.0.0,>=3.8.0 in ./.venv/lib/python3.12/site-packages (from checkov) (3.11.16)
+Requirement already satisfied: aiodns<4.0.0,>=3.0.0 in ./.venv/lib/python3.12/site-packages (from checkov) (3.2.0)
+Requirement already satisfied: aiomultiprocess<0.10.0,>=0.9.0 in ./.venv/lib/python3.12/site-packages (from checkov) (0.9.1)
+Requirement already satisfied: schema<=0.7.5 in ./.venv/lib/python3.12/site-packages (from checkov) (0.7.5)
+Requirement already satisfied: jsonschema<5.0.0,>=4.17.0 in ./.venv/lib/python3.12/site-packages (from checkov) (4.23.0)
+Requirement already satisfied: prettytable<4.0.0,>=3.6.0 in ./.venv/lib/python3.12/site-packages (from checkov) (3.16.0)
+Requirement already satisfied: charset-normalizer<4.0.0,>=3.1.0 in ./.venv/lib/python3.12/site-packages (from checkov) (3.4.1)
+Requirement already satisfied: requests<3.0.0,>=2.28.0 in ./.venv/lib/python3.12/site-packages (from checkov) (2.32.3)
+Requirement already satisfied: yarl<2.0.0,>=1.9.1 in ./.venv/lib/python3.12/site-packages (from checkov) (1.19.0)
+Requirement already satisfied: openai<1.0.0 in ./.venv/lib/python3.12/site-packages (from checkov) (0.28.1)
+Requirement already satisfied: spdx-tools<0.9.0,>=0.8.0 in ./.venv/lib/python3.12/site-packages (from checkov) (0.8.3)
+Requirement already satisfied: license-expression<31.0.0,>=30.1.0 in ./.venv/lib/python3.12/site-packages (from checkov) (30.4.1)
+Requirement already satisfied: rustworkx<1.0.0,>=0.13.0 in ./.venv/lib/python3.12/site-packages (from checkov) (0.13.2)
+Requirement already satisfied: pydantic<3.0.0,>=2.0.0 in ./.venv/lib/python3.12/site-packages (from checkov) (2.9.2)
+Requirement already satisfied: unidiff in ./.venv/lib/python3.12/site-packages (from bc-detect-secrets==1.5.40->checkov) (0.7.5)
+Requirement already satisfied: ply in ./.venv/lib/python3.12/site-packages (from bc-jsonpath-ng==1.6.1->checkov) (3.11)
+Requirement already satisfied: decorator in ./.venv/lib/python3.12/site-packages (from bc-jsonpath-ng==1.6.1->checkov) (5.2.1)
+Requirement already satisfied: lark>=1.0.0 in ./.venv/lib/python3.12/site-packages (from bc-python-hcl2==0.4.2->checkov) (1.2.2)
+Collecting botocore<1.36.0,>=1.35.49 (from boto3==1.35.49->checkov)
+  Using cached botocore-1.35.99-py3-none-any.whl.metadata (5.7 kB)
+Requirement already satisfied: s3transfer<0.11.0,>=0.10.0 in ./.venv/lib/python3.12/site-packages (from boto3==1.35.49->checkov) (0.10.4)
+Requirement already satisfied: regex>=2022.1.18 in ./.venv/lib/python3.12/site-packages (from pycep-parser==0.5.1->checkov) (2024.11.6)
+Requirement already satisfied: pycares>=4.0.0 in ./.venv/lib/python3.12/site-packages (from aiodns<4.0.0,>=3.0.0->checkov) (4.6.0)
+Requirement already satisfied: aiohappyeyeballs>=2.3.0 in ./.venv/lib/python3.12/site-packages (from aiohttp<4.0.0,>=3.8.0->checkov) (2.6.1)
+Requirement already satisfied: aiosignal>=1.1.2 in ./.venv/lib/python3.12/site-packages (from aiohttp<4.0.0,>=3.8.0->checkov) (1.3.2)
+Requirement already satisfied: attrs>=17.3.0 in ./.venv/lib/python3.12/site-packages (from aiohttp<4.0.0,>=3.8.0->checkov) (25.3.0)
+Requirement already satisfied: frozenlist>=1.1.1 in ./.venv/lib/python3.12/site-packages (from aiohttp<4.0.0,>=3.8.0->checkov) (1.5.0)
+Requirement already satisfied: multidict<7.0,>=4.5 in ./.venv/lib/python3.12/site-packages (from aiohttp<4.0.0,>=3.8.0->checkov) (6.4.3)
+Requirement already satisfied: propcache>=0.2.0 in ./.venv/lib/python3.12/site-packages (from aiohttp<4.0.0,>=3.8.0->checkov) (0.3.1)
+Requirement already satisfied: cached-property in ./.venv/lib/python3.12/site-packages (from cloudsplaining<0.8.0,>=0.7.0->checkov) (2.0.1)
+Requirement already satisfied: click-option-group in ./.venv/lib/python3.12/site-packages (from cloudsplaining<0.8.0,>=0.7.0->checkov) (0.5.7)
+Requirement already satisfied: jinja2 in ./.venv/lib/python3.12/site-packages (from cloudsplaining<0.8.0,>=0.7.0->checkov) (3.1.6)
+Requirement already satisfied: markdown in ./.venv/lib/python3.12/site-packages (from cloudsplaining<0.8.0,>=0.7.0->checkov) (3.7)
+Collecting policy-sentry<0.14,>=0.13.0 (from cloudsplaining<0.8.0,>=0.7.0->checkov)
+  Using cached policy_sentry-0.13.2-py3-none-any.whl.metadata (1.3 kB)
+Requirement already satisfied: py-serializable<2,>=0.16 in ./.venv/lib/python3.12/site-packages (from cyclonedx-python-lib<8.0.0,>=6.0.0->checkov) (1.1.2)
+Requirement already satisfied: sortedcontainers<3.0.0,>=2.4.0 in ./.venv/lib/python3.12/site-packages (from cyclonedx-python-lib<8.0.0,>=6.0.0->checkov) (2.4.0)
+Requirement already satisfied: urllib3>=1.26.0 in ./.venv/lib/python3.12/site-packages (from docker<8.0.0,>=6.0.1->checkov) (2.0.7)
+Requirement already satisfied: gitdb<5,>=4.0.1 in ./.venv/lib/python3.12/site-packages (from gitpython<4.0.0,>=3.1.30->checkov) (4.0.12)
+Requirement already satisfied: zipp>=0.5 in ./.venv/lib/python3.12/site-packages (from importlib-metadata<8.0.0,>=6.0.0->checkov) (3.21.0)
+Requirement already satisfied: jsonschema-specifications>=2023.03.6 in ./.venv/lib/python3.12/site-packages (from jsonschema<5.0.0,>=4.17.0->checkov) (2024.10.1)
+Requirement already satisfied: referencing>=0.28.4 in ./.venv/lib/python3.12/site-packages (from jsonschema<5.0.0,>=4.17.0->checkov) (0.36.2)
+Requirement already satisfied: rpds-py>=0.7.1 in ./.venv/lib/python3.12/site-packages (from jsonschema<5.0.0,>=4.17.0->checkov) (0.24.0)
+Requirement already satisfied: six in ./.venv/lib/python3.12/site-packages (from junit-xml<2.0,>=1.9->checkov) (1.17.0)
+Requirement already satisfied: boolean.py>=4.0 in ./.venv/lib/python3.12/site-packages (from license-expression<31.0.0,>=30.1.0->checkov) (5.0)
+Requirement already satisfied: wcwidth in ./.venv/lib/python3.12/site-packages (from prettytable<4.0.0,>=3.6.0->checkov) (0.2.13)
+Requirement already satisfied: annotated-types>=0.6.0 in ./.venv/lib/python3.12/site-packages (from pydantic<3.0.0,>=2.0.0->checkov) (0.7.0)
+Requirement already satisfied: pydantic-core==2.23.4 in ./.venv/lib/python3.12/site-packages (from pydantic<3.0.0,>=2.0.0->checkov) (2.23.4)
+Requirement already satisfied: idna<4,>=2.5 in ./.venv/lib/python3.12/site-packages (from requests<3.0.0,>=2.28.0->checkov) (3.10)
+Requirement already satisfied: certifi>=2017.4.17 in ./.venv/lib/python3.12/site-packages (from requests<3.0.0,>=2.28.0->checkov) (2025.1.31)
+Requirement already satisfied: numpy>=1.16.0 in ./.venv/lib/python3.12/site-packages (from rustworkx<1.0.0,>=0.13.0->checkov) (2.2.4)
+Requirement already satisfied: contextlib2>=0.5.5 in ./.venv/lib/python3.12/site-packages (from schema<=0.7.5->checkov) (21.6.0)
+Requirement already satisfied: xmltodict in ./.venv/lib/python3.12/site-packages (from spdx-tools<0.9.0,>=0.8.0->checkov) (0.14.2)
+Requirement already satisfied: rdflib in ./.venv/lib/python3.12/site-packages (from spdx-tools<0.9.0,>=0.8.0->checkov) (7.1.4)
+Requirement already satisfied: beartype in ./.venv/lib/python3.12/site-packages (from spdx-tools<0.9.0,>=0.8.0->checkov) (0.20.2)
+Requirement already satisfied: uritools in ./.venv/lib/python3.12/site-packages (from spdx-tools<0.9.0,>=0.8.0->checkov) (4.0.3)
+Requirement already satisfied: semantic-version in ./.venv/lib/python3.12/site-packages (from spdx-tools<0.9.0,>=0.8.0->checkov) (2.10.0)
+Requirement already satisfied: python-dateutil<3.0.0,>=2.1 in ./.venv/lib/python3.12/site-packages (from botocore<1.36.0,>=1.35.49->boto3==1.35.49->checkov) (2.9.0.post0)
+Requirement already satisfied: smmap<6,>=3.0.1 in ./.venv/lib/python3.12/site-packages (from gitdb<5,>=4.0.1->gitpython<4.0.0,>=3.1.30->checkov) (5.0.2)
+Requirement already satisfied: beautifulsoup4 in ./.venv/lib/python3.12/site-packages (from policy-sentry<0.14,>=0.13.0->cloudsplaining<0.8.0,>=0.7.0->checkov) (4.13.3)
+Requirement already satisfied: orjson in ./.venv/lib/python3.12/site-packages (from policy-sentry<0.14,>=0.13.0->cloudsplaining<0.8.0,>=0.7.0->checkov) (3.10.16)
+Requirement already satisfied: defusedxml<0.8.0,>=0.7.1 in ./.venv/lib/python3.12/site-packages (from py-serializable<2,>=0.16->cyclonedx-python-lib<8.0.0,>=6.0.0->checkov) (0.7.1)
+Requirement already satisfied: cffi>=1.5.0 in ./.venv/lib/python3.12/site-packages (from pycares>=4.0.0->aiodns<4.0.0,>=3.0.0->checkov) (1.17.1)
+Requirement already satisfied: MarkupSafe>=2.0 in ./.venv/lib/python3.12/site-packages (from jinja2->cloudsplaining<0.8.0,>=0.7.0->checkov) (3.0.2)
+Requirement already satisfied: pyparsing<4,>=2.1.0 in ./.venv/lib/python3.12/site-packages (from rdflib->spdx-tools<0.9.0,>=0.8.0->checkov) (3.2.3)
+Requirement already satisfied: pycparser in ./.venv/lib/python3.12/site-packages (from cffi>=1.5.0->pycares>=4.0.0->aiodns<4.0.0,>=3.0.0->checkov) (2.22)
+Requirement already satisfied: soupsieve>1.2 in ./.venv/lib/python3.12/site-packages (from beautifulsoup4->policy-sentry<0.14,>=0.13.0->cloudsplaining<0.8.0,>=0.7.0->checkov) (2.6)
+Using cached checkov-3.2.403-py3-none-any.whl (2.3 MB)
+Using cached bc_detect_secrets-1.5.40-py3-none-any.whl (120 kB)
+Using cached boto3-1.35.49-py3-none-any.whl (139 kB)
+Using cached pycep_parser-0.5.1-py3-none-any.whl (23 kB)
+Using cached cloudsplaining-0.7.0-py3-none-any.whl (1.8 MB)
+Using cached botocore-1.35.99-py3-none-any.whl (13.3 MB)
+Using cached policy_sentry-0.13.2-py3-none-any.whl (966 kB)
+Installing collected packages: pycep-parser, policy-sentry, botocore, bc-detect-secrets, boto3, cloudsplaining, checkov
+  Attempting uninstall: pycep-parser
+    Found existing installation: pycep-parser 0.4.1
+    Uninstalling pycep-parser-0.4.1:
+      Successfully uninstalled pycep-parser-0.4.1
+  Attempting uninstall: policy-sentry
+    Found existing installation: policy-sentry 0.12.15
+    Uninstalling policy-sentry-0.12.15:
+      Successfully uninstalled policy-sentry-0.12.15
+  Attempting uninstall: botocore
+    Found existing installation: botocore 1.34.14
+    Uninstalling botocore-1.34.14:
+      Successfully uninstalled botocore-1.34.14
+  Attempting uninstall: bc-detect-secrets
+    Found existing installation: bc-detect-secrets 1.5.4
+    Uninstalling bc-detect-secrets-1.5.4:
+      Successfully uninstalled bc-detect-secrets-1.5.4
+  Attempting uninstall: boto3
+    Found existing installation: boto3 1.34.14
+    Uninstalling boto3-1.34.14:
+      Successfully uninstalled boto3-1.34.14
+  Attempting uninstall: cloudsplaining
+    Found existing installation: cloudsplaining 0.6.3
+    Uninstalling cloudsplaining-0.6.3:
+      Successfully uninstalled cloudsplaining-0.6.3
+  Attempting uninstall: checkov
+    Found existing installation: checkov 3.2.10
+    Uninstalling checkov-3.2.10:
+      Successfully uninstalled checkov-3.2.10
+Successfully installed bc-detect-secrets-1.5.40 boto3-1.35.49 botocore-1.35.99 checkov-3.2.403 cloudsplaining-0.7.0 policy-sentry-0.13.2 pycep-parser-0.5.1
+Formatting Terraform files...
+terraform fmt -recursive
+Initializing Terraform...
+terraform init -migrate-state -backend-config=backends/backend-test.tfvars
+[0m[1mInitializing the backend...[0m
+[0m[1mInitializing modules...[0m
+[0m[1mInitializing provider plugins...[0m
+- Reusing previous version of hashicorp/aws from the dependency lock file
+- Using previously-installed hashicorp/aws v5.94.1
+
+[0m[1m[32mTerraform has been successfully initialized![0m[32m[0m
+[0m[32m
+You may now begin working with Terraform. Try running "terraform plan" to see
+any changes that are required for your infrastructure. All Terraform commands
+should now work.
+
+If you ever set or change modules or backend configuration for Terraform,
+rerun this command to reinitialize your working directory. If you forget, other
+commands will detect it and remind you to do so if necessary.[0m
+Validating Terraform configuration...
+terraform validate
+[32m[1mSuccess![0m The configuration is valid.
+[0m
+Running security checks...
+Running Checkov...
+
+       _               _
+   ___| |__   ___  ___| | _______   __
+  / __| '_ \ / _ \/ __| |/ / _ \ \ / /
+ | (__| | | |  __/ (__|   < (_) \ V /
+  \___|_| |_|\___|\___|_|\_\___/ \_/
+
+By Prisma Cloud | version: 3.2.403 
+
+terraform scan results:
+
+Passed checks: 209, Failed checks: 0, Skipped checks: 0
+
+Check: CKV_AWS_93: "Ensure S3 bucket policy does not lockout all but root user. (Prevent lockouts needing root account fixes)"
+	PASSED for resource: aws_s3_bucket.terraform_state
+	File: /bootstrap/main.tf:2-13
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-24
+Check: CKV_AWS_54: "Ensure S3 bucket has block public policy enabled"
+	PASSED for resource: aws_s3_bucket_public_access_block.terraform_state
+	File: /bootstrap/main.tf:36-43
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-20
+Check: CKV_AWS_56: "Ensure S3 bucket has 'restrict_public_buckets' enabled"
+	PASSED for resource: aws_s3_bucket_public_access_block.terraform_state
+	File: /bootstrap/main.tf:36-43
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-22
+Check: CKV_AWS_53: "Ensure S3 bucket has block public ACLS enabled"
+	PASSED for resource: aws_s3_bucket_public_access_block.terraform_state
+	File: /bootstrap/main.tf:36-43
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-19
+Check: CKV_AWS_55: "Ensure S3 bucket has ignore public ACLs enabled"
+	PASSED for resource: aws_s3_bucket_public_access_block.terraform_state
+	File: /bootstrap/main.tf:36-43
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-21
+Check: CKV_AWS_93: "Ensure S3 bucket policy does not lockout all but root user. (Prevent lockouts needing root account fixes)"
+	PASSED for resource: aws_s3_bucket.terraform_state_replica
+	File: /bootstrap/main.tf:46-58
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-24
+Check: CKV_AWS_54: "Ensure S3 bucket has block public policy enabled"
+	PASSED for resource: aws_s3_bucket_public_access_block.terraform_state_replica
+	File: /bootstrap/main.tf:83-91
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-20
+Check: CKV_AWS_56: "Ensure S3 bucket has 'restrict_public_buckets' enabled"
+	PASSED for resource: aws_s3_bucket_public_access_block.terraform_state_replica
+	File: /bootstrap/main.tf:83-91
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-22
+Check: CKV_AWS_53: "Ensure S3 bucket has block public ACLS enabled"
+	PASSED for resource: aws_s3_bucket_public_access_block.terraform_state_replica
+	File: /bootstrap/main.tf:83-91
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-19
+Check: CKV_AWS_55: "Ensure S3 bucket has ignore public ACLs enabled"
+	PASSED for resource: aws_s3_bucket_public_access_block.terraform_state_replica
+	File: /bootstrap/main.tf:83-91
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-21
+Check: CKV_AWS_93: "Ensure S3 bucket policy does not lockout all but root user. (Prevent lockouts needing root account fixes)"
+	PASSED for resource: aws_s3_bucket.access_logs_primary
+	File: /bootstrap/main.tf:94-105
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-24
+Check: CKV_AWS_54: "Ensure S3 bucket has block public policy enabled"
+	PASSED for resource: aws_s3_bucket_public_access_block.access_logs_primary
+	File: /bootstrap/main.tf:128-135
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-20
+Check: CKV_AWS_56: "Ensure S3 bucket has 'restrict_public_buckets' enabled"
+	PASSED for resource: aws_s3_bucket_public_access_block.access_logs_primary
+	File: /bootstrap/main.tf:128-135
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-22
+Check: CKV_AWS_53: "Ensure S3 bucket has block public ACLS enabled"
+	PASSED for resource: aws_s3_bucket_public_access_block.access_logs_primary
+	File: /bootstrap/main.tf:128-135
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-19
+Check: CKV_AWS_55: "Ensure S3 bucket has ignore public ACLs enabled"
+	PASSED for resource: aws_s3_bucket_public_access_block.access_logs_primary
+	File: /bootstrap/main.tf:128-135
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-21
+Check: CKV_AWS_93: "Ensure S3 bucket policy does not lockout all but root user. (Prevent lockouts needing root account fixes)"
+	PASSED for resource: aws_s3_bucket.access_logs_replica
+	File: /bootstrap/main.tf:138-150
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-24
+Check: CKV_AWS_54: "Ensure S3 bucket has block public policy enabled"
+	PASSED for resource: aws_s3_bucket_public_access_block.access_logs_replica
+	File: /bootstrap/main.tf:175-183
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-20
+Check: CKV_AWS_56: "Ensure S3 bucket has 'restrict_public_buckets' enabled"
+	PASSED for resource: aws_s3_bucket_public_access_block.access_logs_replica
+	File: /bootstrap/main.tf:175-183
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-22
+Check: CKV_AWS_53: "Ensure S3 bucket has block public ACLS enabled"
+	PASSED for resource: aws_s3_bucket_public_access_block.access_logs_replica
+	File: /bootstrap/main.tf:175-183
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-19
+Check: CKV_AWS_55: "Ensure S3 bucket has ignore public ACLs enabled"
+	PASSED for resource: aws_s3_bucket_public_access_block.access_logs_replica
+	File: /bootstrap/main.tf:175-183
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-21
+Check: CKV_AWS_61: "Ensure AWS IAM policy does not allow assume role permission across all services"
+	PASSED for resource: aws_iam_role.replication
+	File: /bootstrap/main.tf:233-289
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-iam-45
+Check: CKV_AWS_60: "Ensure IAM role allows only specific services or principals to assume it"
+	PASSED for resource: aws_iam_role.replication
+	File: /bootstrap/main.tf:233-289
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-iam-44
+Check: CKV_AWS_274: "Disallow IAM roles, users, and groups from using the AWS AdministratorAccess policy"
+	PASSED for resource: aws_iam_role.replication
+	File: /bootstrap/main.tf:233-289
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-274
+Check: CKV_AWS_41: "Ensure no hard coded AWS access key and secret key exists in provider"
+	PASSED for resource: aws.default
+	File: /bootstrap/provider.tf:12-23
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/secrets-policies/bc-aws-secrets-5
+Check: CKV_AWS_41: "Ensure no hard coded AWS access key and secret key exists in provider"
+	PASSED for resource: aws.replica
+	File: /bootstrap/provider.tf:26-38
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/secrets-policies/bc-aws-secrets-5
+Check: CKV_AWS_93: "Ensure S3 bucket policy does not lockout all but root user. (Prevent lockouts needing root account fixes)"
+	PASSED for resource: aws_s3_bucket.cis_report
+	File: /cis_report.tf:2-13
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-24
+Check: CKV_AWS_54: "Ensure S3 bucket has block public policy enabled"
+	PASSED for resource: aws_s3_bucket_public_access_block.cis_report
+	File: /cis_report.tf:36-43
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-20
+Check: CKV_AWS_56: "Ensure S3 bucket has 'restrict_public_buckets' enabled"
+	PASSED for resource: aws_s3_bucket_public_access_block.cis_report
+	File: /cis_report.tf:36-43
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-22
+Check: CKV_AWS_53: "Ensure S3 bucket has block public ACLS enabled"
+	PASSED for resource: aws_s3_bucket_public_access_block.cis_report
+	File: /cis_report.tf:36-43
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-19
+Check: CKV_AWS_55: "Ensure S3 bucket has ignore public ACLs enabled"
+	PASSED for resource: aws_s3_bucket_public_access_block.cis_report
+	File: /cis_report.tf:36-43
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-21
+Check: CKV_AWS_93: "Ensure S3 bucket policy does not lockout all but root user. (Prevent lockouts needing root account fixes)"
+	PASSED for resource: aws_s3_bucket.cis_report_replica
+	File: /cis_report.tf:46-58
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-24
+Check: CKV_AWS_54: "Ensure S3 bucket has block public policy enabled"
+	PASSED for resource: aws_s3_bucket_public_access_block.cis_report_replica
+	File: /cis_report.tf:83-91
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-20
+Check: CKV_AWS_56: "Ensure S3 bucket has 'restrict_public_buckets' enabled"
+	PASSED for resource: aws_s3_bucket_public_access_block.cis_report_replica
+	File: /cis_report.tf:83-91
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-22
+Check: CKV_AWS_53: "Ensure S3 bucket has block public ACLS enabled"
+	PASSED for resource: aws_s3_bucket_public_access_block.cis_report_replica
+	File: /cis_report.tf:83-91
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-19
+Check: CKV_AWS_55: "Ensure S3 bucket has ignore public ACLs enabled"
+	PASSED for resource: aws_s3_bucket_public_access_block.cis_report_replica
+	File: /cis_report.tf:83-91
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-21
+Check: CKV_AWS_93: "Ensure S3 bucket policy does not lockout all but root user. (Prevent lockouts needing root account fixes)"
+	PASSED for resource: aws_s3_bucket.access_logs
+	File: /cis_report.tf:111-122
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-24
+Check: CKV_AWS_54: "Ensure S3 bucket has block public policy enabled"
+	PASSED for resource: aws_s3_bucket_public_access_block.access_logs
+	File: /cis_report.tf:145-152
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-20
+Check: CKV_AWS_56: "Ensure S3 bucket has 'restrict_public_buckets' enabled"
+	PASSED for resource: aws_s3_bucket_public_access_block.access_logs
+	File: /cis_report.tf:145-152
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-22
+Check: CKV_AWS_53: "Ensure S3 bucket has block public ACLS enabled"
+	PASSED for resource: aws_s3_bucket_public_access_block.access_logs
+	File: /cis_report.tf:145-152
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-19
+Check: CKV_AWS_55: "Ensure S3 bucket has ignore public ACLs enabled"
+	PASSED for resource: aws_s3_bucket_public_access_block.access_logs
+	File: /cis_report.tf:145-152
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-21
+Check: CKV_AWS_93: "Ensure S3 bucket policy does not lockout all but root user. (Prevent lockouts needing root account fixes)"
+	PASSED for resource: aws_s3_bucket.access_logs_replica
+	File: /cis_report.tf:155-167
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-24
+Check: CKV_AWS_54: "Ensure S3 bucket has block public policy enabled"
+	PASSED for resource: aws_s3_bucket_public_access_block.access_logs_replica
+	File: /cis_report.tf:192-200
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-20
+Check: CKV_AWS_56: "Ensure S3 bucket has 'restrict_public_buckets' enabled"
+	PASSED for resource: aws_s3_bucket_public_access_block.access_logs_replica
+	File: /cis_report.tf:192-200
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-22
+Check: CKV_AWS_53: "Ensure S3 bucket has block public ACLS enabled"
+	PASSED for resource: aws_s3_bucket_public_access_block.access_logs_replica
+	File: /cis_report.tf:192-200
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-19
+Check: CKV_AWS_55: "Ensure S3 bucket has ignore public ACLs enabled"
+	PASSED for resource: aws_s3_bucket_public_access_block.access_logs_replica
+	File: /cis_report.tf:192-200
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-21
+Check: CKV_AWS_61: "Ensure AWS IAM policy does not allow assume role permission across all services"
+	PASSED for resource: aws_iam_role.replication
+	File: /cis_report.tf:250-265
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-iam-45
+Check: CKV_AWS_60: "Ensure IAM role allows only specific services or principals to assume it"
+	PASSED for resource: aws_iam_role.replication
+	File: /cis_report.tf:250-265
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-iam-44
+Check: CKV_AWS_274: "Disallow IAM roles, users, and groups from using the AWS AdministratorAccess policy"
+	PASSED for resource: aws_iam_role.replication
+	File: /cis_report.tf:250-265
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-274
+Check: CKV_AWS_62: "Ensure IAM policies that allow full "*-*" administrative privileges are not created"
+	PASSED for resource: aws_iam_role_policy.replication
+	File: /cis_report.tf:268-312
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-iam-45
+Check: CKV_AWS_63: "Ensure no IAM policies documents allow "*" as a statement's actions"
+	PASSED for resource: aws_iam_role_policy.replication
+	File: /cis_report.tf:268-312
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/iam-48
+Check: CKV_AWS_88: "EC2 instance should not have public IP."
+	PASSED for resource: module.ec2.aws_instance.main
+	File: /modules/ec2/main.tf:2-85
+	Calling File: /main.tf:20-29
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/public-policies/public-12
+Check: CKV_AWS_79: "Ensure Instance Metadata Service Version 1 is not enabled"
+	PASSED for resource: module.ec2.aws_instance.main
+	File: /modules/ec2/main.tf:2-85
+	Calling File: /main.tf:20-29
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/bc-aws-general-31
+Check: CKV_AWS_8: "Ensure all data stored in the Launch configuration or instance Elastic Blocks Store is securely encrypted"
+	PASSED for resource: module.ec2.aws_instance.main
+	File: /modules/ec2/main.tf:2-85
+	Calling File: /main.tf:20-29
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/general-13
+Check: CKV_AWS_46: "Ensure no hard-coded secrets exist in EC2 user data"
+	PASSED for resource: module.ec2.aws_instance.main
+	File: /modules/ec2/main.tf:2-85
+	Calling File: /main.tf:20-29
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/secrets-policies/bc-aws-secrets-1
+Check: CKV_AWS_135: "Ensure that EC2 is EBS optimized"
+	PASSED for resource: module.ec2.aws_instance.main
+	File: /modules/ec2/main.tf:2-85
+	Calling File: /main.tf:20-29
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/ensure-that-ec2-is-ebs-optimized
+Check: CKV_AWS_23: "Ensure every security group and rule has a description"
+	PASSED for resource: module.ec2.aws_security_group.instance
+	File: /modules/ec2/main.tf:88-158
+	Calling File: /main.tf:20-29
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/networking-31
+Check: CKV_AWS_260: "Ensure no security groups allow ingress from 0.0.0.0:0 to port 80"
+	PASSED for resource: module.ec2.aws_security_group.instance
+	File: /modules/ec2/main.tf:88-158
+	Calling File: /main.tf:20-29
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/ensure-aws-security-groups-do-not-allow-ingress-from-00000-to-port-80
+Check: CKV_AWS_25: "Ensure no security groups allow ingress from 0.0.0.0:0 to port 3389"
+	PASSED for resource: module.ec2.aws_security_group.instance
+	File: /modules/ec2/main.tf:88-158
+	Calling File: /main.tf:20-29
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/networking-2
+Check: CKV_AWS_277: "Ensure no security groups allow ingress from 0.0.0.0:0 to port -1"
+	PASSED for resource: module.ec2.aws_security_group.instance
+	File: /modules/ec2/main.tf:88-158
+	Calling File: /main.tf:20-29
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/ensure-aws-security-group-does-not-allow-all-traffic-on-all-ports
+Check: CKV_AWS_382: "Ensure no security groups allow egress from 0.0.0.0:0 to port -1"
+	PASSED for resource: module.ec2.aws_security_group.instance
+	File: /modules/ec2/main.tf:88-158
+	Calling File: /main.tf:20-29
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/bc-aws-382
+Check: CKV_AWS_61: "Ensure AWS IAM policy does not allow assume role permission across all services"
+	PASSED for resource: module.ec2.aws_iam_role.instance_role
+	File: /modules/ec2/main.tf:171-193
+	Calling File: /main.tf:20-29
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-iam-45
+Check: CKV_AWS_60: "Ensure IAM role allows only specific services or principals to assume it"
+	PASSED for resource: module.ec2.aws_iam_role.instance_role
+	File: /modules/ec2/main.tf:171-193
+	Calling File: /main.tf:20-29
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-iam-44
+Check: CKV_AWS_274: "Disallow IAM roles, users, and groups from using the AWS AdministratorAccess policy"
+	PASSED for resource: module.ec2.aws_iam_role.instance_role
+	File: /modules/ec2/main.tf:171-193
+	Calling File: /main.tf:20-29
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-274
+Check: CKV_AWS_274: "Disallow IAM roles, users, and groups from using the AWS AdministratorAccess policy"
+	PASSED for resource: module.ec2.aws_iam_role_policy_attachment.cloudwatch_logs
+	File: /modules/ec2/main.tf:202-205
+	Calling File: /main.tf:20-29
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-274
+Check: CKV_AWS_274: "Disallow IAM roles, users, and groups from using the AWS AdministratorAccess policy"
+	PASSED for resource: module.ec2.aws_iam_role_policy_attachment.ssm
+	File: /modules/ec2/main.tf:208-211
+	Calling File: /main.tf:20-29
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-274
+Check: CKV_AWS_62: "Ensure IAM policies that allow full "*-*" administrative privileges are not created"
+	PASSED for resource: module.ec2.aws_iam_policy.s3_access
+	File: /modules/ec2/main.tf:214-235
+	Calling File: /main.tf:20-29
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-iam-45
+Check: CKV_AWS_63: "Ensure no IAM policies documents allow "*" as a statement's actions"
+	PASSED for resource: module.ec2.aws_iam_policy.s3_access
+	File: /modules/ec2/main.tf:214-235
+	Calling File: /main.tf:20-29
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/iam-48
+Check: CKV_AWS_274: "Disallow IAM roles, users, and groups from using the AWS AdministratorAccess policy"
+	PASSED for resource: module.ec2.aws_iam_role_policy_attachment.s3_access
+	File: /modules/ec2/main.tf:238-241
+	Calling File: /main.tf:20-29
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-274
+Check: CKV_AWS_66: "Ensure that CloudWatch Log Group specifies retention days"
+	PASSED for resource: module.ec2.aws_cloudwatch_log_group.instance_logs
+	File: /modules/ec2/main.tf:244-255
+	Calling File: /main.tf:20-29
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-logging-policies/logging-13
+Check: CKV_AWS_338: "Ensure CloudWatch log groups retains logs for at least 1 year"
+	PASSED for resource: module.ec2.aws_cloudwatch_log_group.instance_logs
+	File: /modules/ec2/main.tf:244-255
+	Calling File: /main.tf:20-29
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-logging-policies/bc-aws-338
+Check: CKV_AWS_158: "Ensure that CloudWatch Log Group is encrypted by KMS"
+	PASSED for resource: module.ec2.aws_cloudwatch_log_group.instance_logs
+	File: /modules/ec2/main.tf:244-255
+	Calling File: /main.tf:20-29
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/ensure-that-cloudwatch-log-group-is-encrypted-by-kms
+Check: CKV_AWS_290: "Ensure IAM policies does not allow write access without constraints"
+	PASSED for resource: module.ec2.aws_iam_role_policy.cloudwatch_logs
+	File: /modules/ec2/main.tf:270-289
+	Calling File: /main.tf:20-29
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-290
+Check: CKV_AWS_62: "Ensure IAM policies that allow full "*-*" administrative privileges are not created"
+	PASSED for resource: module.ec2.aws_iam_role_policy.cloudwatch_logs
+	File: /modules/ec2/main.tf:270-289
+	Calling File: /main.tf:20-29
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-iam-45
+Check: CKV_AWS_288: "Ensure IAM policies does not allow data exfiltration"
+	PASSED for resource: module.ec2.aws_iam_role_policy.cloudwatch_logs
+	File: /modules/ec2/main.tf:270-289
+	Calling File: /main.tf:20-29
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-288
+Check: CKV_AWS_287: "Ensure IAM policies does not allow credentials exposure"
+	PASSED for resource: module.ec2.aws_iam_role_policy.cloudwatch_logs
+	File: /modules/ec2/main.tf:270-289
+	Calling File: /main.tf:20-29
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-287
+Check: CKV_AWS_355: "Ensure no IAM policies documents allow "*" as a statement's resource for restrictable actions"
+	PASSED for resource: module.ec2.aws_iam_role_policy.cloudwatch_logs
+	File: /modules/ec2/main.tf:270-289
+	Calling File: /main.tf:20-29
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-355
+Check: CKV_AWS_63: "Ensure no IAM policies documents allow "*" as a statement's actions"
+	PASSED for resource: module.ec2.aws_iam_role_policy.cloudwatch_logs
+	File: /modules/ec2/main.tf:270-289
+	Calling File: /main.tf:20-29
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/iam-48
+Check: CKV_AWS_286: "Ensure IAM policies does not allow privilege escalation"
+	PASSED for resource: module.ec2.aws_iam_role_policy.cloudwatch_logs
+	File: /modules/ec2/main.tf:270-289
+	Calling File: /main.tf:20-29
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-286
+Check: CKV_AWS_289: "Ensure IAM policies does not allow permissions management / resource exposure without constraints"
+	PASSED for resource: module.ec2.aws_iam_role_policy.cloudwatch_logs
+	File: /modules/ec2/main.tf:270-289
+	Calling File: /main.tf:20-29
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-289
+Check: CKV_AWS_319: "Ensure that CloudWatch alarm actions are enabled"
+	PASSED for resource: module.ec2.aws_cloudwatch_metric_alarm.instance_recovery
+	File: /modules/ec2/main.tf:292-314
+	Calling File: /main.tf:20-29
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/bc-aws-319
+Check: CKV_AWS_319: "Ensure that CloudWatch alarm actions are enabled"
+	PASSED for resource: module.ec2.aws_cloudwatch_metric_alarm.cpu_utilization
+	File: /modules/ec2/main.tf:317-339
+	Calling File: /main.tf:20-29
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/bc-aws-319
+Check: CKV_AWS_319: "Ensure that CloudWatch alarm actions are enabled"
+	PASSED for resource: module.ec2.aws_cloudwatch_metric_alarm.memory_utilization
+	File: /modules/ec2/main.tf:342-364
+	Calling File: /main.tf:20-29
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/bc-aws-319
+Check: CKV_AWS_23: "Ensure every security group and rule has a description"
+	PASSED for resource: module.security.aws_security_group.main
+	File: /modules/security/main.tf:1-26
+	Calling File: /main.tf:11-17
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/networking-31
+Check: CKV_AWS_260: "Ensure no security groups allow ingress from 0.0.0.0:0 to port 80"
+	PASSED for resource: module.security.aws_security_group.main
+	File: /modules/security/main.tf:1-26
+	Calling File: /main.tf:11-17
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/ensure-aws-security-groups-do-not-allow-ingress-from-00000-to-port-80
+Check: CKV_AWS_25: "Ensure no security groups allow ingress from 0.0.0.0:0 to port 3389"
+	PASSED for resource: module.security.aws_security_group.main
+	File: /modules/security/main.tf:1-26
+	Calling File: /main.tf:11-17
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/networking-2
+Check: CKV_AWS_277: "Ensure no security groups allow ingress from 0.0.0.0:0 to port -1"
+	PASSED for resource: module.security.aws_security_group.main
+	File: /modules/security/main.tf:1-26
+	Calling File: /main.tf:11-17
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/ensure-aws-security-group-does-not-allow-all-traffic-on-all-ports
+Check: CKV_AWS_382: "Ensure no security groups allow egress from 0.0.0.0:0 to port -1"
+	PASSED for resource: module.security.aws_security_group.main
+	File: /modules/security/main.tf:1-26
+	Calling File: /main.tf:11-17
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/bc-aws-382
+Check: CKV_AWS_66: "Ensure that CloudWatch Log Group specifies retention days"
+	PASSED for resource: module.vpc.aws_cloudwatch_log_group.vpc_flow_log
+	File: /modules/vpc/main.tf:24-28
+	Calling File: /main.tf:2-8
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-logging-policies/logging-13
+Check: CKV_AWS_338: "Ensure CloudWatch log groups retains logs for at least 1 year"
+	PASSED for resource: module.vpc.aws_cloudwatch_log_group.vpc_flow_log
+	File: /modules/vpc/main.tf:24-28
+	Calling File: /main.tf:2-8
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-logging-policies/bc-aws-338
+Check: CKV_AWS_158: "Ensure that CloudWatch Log Group is encrypted by KMS"
+	PASSED for resource: module.vpc.aws_cloudwatch_log_group.vpc_flow_log
+	File: /modules/vpc/main.tf:24-28
+	Calling File: /main.tf:2-8
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/ensure-that-cloudwatch-log-group-is-encrypted-by-kms
+Check: CKV_AWS_61: "Ensure AWS IAM policy does not allow assume role permission across all services"
+	PASSED for resource: module.vpc.aws_iam_role.vpc_flow_log_role
+	File: /modules/vpc/main.tf:37-69
+	Calling File: /main.tf:2-8
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-iam-45
+Check: CKV_AWS_60: "Ensure IAM role allows only specific services or principals to assume it"
+	PASSED for resource: module.vpc.aws_iam_role.vpc_flow_log_role
+	File: /modules/vpc/main.tf:37-69
+	Calling File: /main.tf:2-8
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-iam-44
+Check: CKV_AWS_274: "Disallow IAM roles, users, and groups from using the AWS AdministratorAccess policy"
+	PASSED for resource: module.vpc.aws_iam_role.vpc_flow_log_role
+	File: /modules/vpc/main.tf:37-69
+	Calling File: /main.tf:2-8
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-274
+Check: CKV_AWS_130: "Ensure VPC subnets do not assign public IP by default"
+	PASSED for resource: module.vpc.aws_subnet.public[0]
+	File: /modules/vpc/main.tf:72-85
+	Calling File: /main.tf:2-8
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/ensure-vpc-subnets-do-not-assign-public-ip-by-default
+Check: CKV_AWS_130: "Ensure VPC subnets do not assign public IP by default"
+	PASSED for resource: module.vpc.aws_subnet.private[0]
+	File: /modules/vpc/main.tf:88-101
+	Calling File: /main.tf:2-8
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/ensure-vpc-subnets-do-not-assign-public-ip-by-default
+Check: CKV_AWS_23: "Ensure every security group and rule has a description"
+	PASSED for resource: module.vpc.aws_security_group.vpc_endpoints
+	File: /modules/vpc/main.tf:276-303
+	Calling File: /main.tf:2-8
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/networking-31
+Check: CKV_AWS_260: "Ensure no security groups allow ingress from 0.0.0.0:0 to port 80"
+	PASSED for resource: module.vpc.aws_security_group.vpc_endpoints
+	File: /modules/vpc/main.tf:276-303
+	Calling File: /main.tf:2-8
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/ensure-aws-security-groups-do-not-allow-ingress-from-00000-to-port-80
+Check: CKV_AWS_25: "Ensure no security groups allow ingress from 0.0.0.0:0 to port 3389"
+	PASSED for resource: module.vpc.aws_security_group.vpc_endpoints
+	File: /modules/vpc/main.tf:276-303
+	Calling File: /main.tf:2-8
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/networking-2
+Check: CKV_AWS_277: "Ensure no security groups allow ingress from 0.0.0.0:0 to port -1"
+	PASSED for resource: module.vpc.aws_security_group.vpc_endpoints
+	File: /modules/vpc/main.tf:276-303
+	Calling File: /main.tf:2-8
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/ensure-aws-security-group-does-not-allow-all-traffic-on-all-ports
+Check: CKV_AWS_382: "Ensure no security groups allow egress from 0.0.0.0:0 to port -1"
+	PASSED for resource: module.vpc.aws_security_group.vpc_endpoints
+	File: /modules/vpc/main.tf:276-303
+	Calling File: /main.tf:2-8
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/bc-aws-382
+Check: CKV_AWS_33: "Ensure KMS key policy does not contain wildcard (*) principal"
+	PASSED for resource: module.vpc.aws_kms_key.sns
+	File: /modules/vpc/main.tf:322-359
+	Calling File: /main.tf:2-8
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/ensure-kms-key-policy-does-not-contain-wildcard-principal
+Check: CKV_AWS_227: "Ensure KMS key is enabled"
+	PASSED for resource: module.vpc.aws_kms_key.sns
+	File: /modules/vpc/main.tf:322-359
+	Calling File: /main.tf:2-8
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/ensure-aws-key-management-service-kms-key-is-enabled
+Check: CKV_AWS_7: "Ensure rotation for customer created CMKs is enabled"
+	PASSED for resource: module.vpc.aws_kms_key.sns
+	File: /modules/vpc/main.tf:322-359
+	Calling File: /main.tf:2-8
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-logging-policies/logging-8
+Check: CKV_AWS_26: "Ensure all data stored in the SNS topic is encrypted"
+	PASSED for resource: module.vpc.aws_sns_topic.infrastructure_alerts
+	File: /modules/vpc/main.tf:368-378
+	Calling File: /main.tf:2-8
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/general-15
+Check: CKV_AWS_319: "Ensure that CloudWatch alarm actions are enabled"
+	PASSED for resource: module.vpc.aws_cloudwatch_metric_alarm.nat_gateway[0]
+	File: /modules/vpc/main.tf:381-404
+	Calling File: /main.tf:2-8
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/bc-aws-319
+Check: CKV_AWS_319: "Ensure that CloudWatch alarm actions are enabled"
+	PASSED for resource: module.vpc.aws_cloudwatch_metric_alarm.vpc_endpoint
+	File: /modules/vpc/main.tf:407-429
+	Calling File: /main.tf:2-8
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/bc-aws-319
+Check: CKV_AWS_319: "Ensure that CloudWatch alarm actions are enabled"
+	PASSED for resource: module.vpc.aws_cloudwatch_metric_alarm.vpc_endpoint_latency
+	File: /modules/vpc/main.tf:432-454
+	Calling File: /main.tf:2-8
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/bc-aws-319
+Check: CKV_AWS_319: "Ensure that CloudWatch alarm actions are enabled"
+	PASSED for resource: module.vpc.aws_cloudwatch_metric_alarm.nat_gateway_bandwidth[0]
+	File: /modules/vpc/main.tf:457-480
+	Calling File: /main.tf:2-8
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/bc-aws-319
+Check: CKV_AWS_290: "Ensure IAM policies does not allow write access without constraints"
+	PASSED for resource: module.vpc.aws_iam_policy.vpc_operations
+	File: /modules/vpc/main.tf:483-519
+	Calling File: /main.tf:2-8
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-290
+Check: CKV_AWS_62: "Ensure IAM policies that allow full "*-*" administrative privileges are not created"
+	PASSED for resource: module.vpc.aws_iam_policy.vpc_operations
+	File: /modules/vpc/main.tf:483-519
+	Calling File: /main.tf:2-8
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-iam-45
+Check: CKV_AWS_288: "Ensure IAM policies does not allow data exfiltration"
+	PASSED for resource: module.vpc.aws_iam_policy.vpc_operations
+	File: /modules/vpc/main.tf:483-519
+	Calling File: /main.tf:2-8
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-288
+Check: CKV_AWS_287: "Ensure IAM policies does not allow credentials exposure"
+	PASSED for resource: module.vpc.aws_iam_policy.vpc_operations
+	File: /modules/vpc/main.tf:483-519
+	Calling File: /main.tf:2-8
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-287
+Check: CKV_AWS_355: "Ensure no IAM policies documents allow "*" as a statement's resource for restrictable actions"
+	PASSED for resource: module.vpc.aws_iam_policy.vpc_operations
+	File: /modules/vpc/main.tf:483-519
+	Calling File: /main.tf:2-8
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-355
+Check: CKV_AWS_63: "Ensure no IAM policies documents allow "*" as a statement's actions"
+	PASSED for resource: module.vpc.aws_iam_policy.vpc_operations
+	File: /modules/vpc/main.tf:483-519
+	Calling File: /main.tf:2-8
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/iam-48
+Check: CKV_AWS_286: "Ensure IAM policies does not allow privilege escalation"
+	PASSED for resource: module.vpc.aws_iam_policy.vpc_operations
+	File: /modules/vpc/main.tf:483-519
+	Calling File: /main.tf:2-8
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-286
+Check: CKV_AWS_289: "Ensure IAM policies does not allow permissions management / resource exposure without constraints"
+	PASSED for resource: module.vpc.aws_iam_policy.vpc_operations
+	File: /modules/vpc/main.tf:483-519
+	Calling File: /main.tf:2-8
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-289
+Check: CKV_AWS_274: "Disallow IAM roles, users, and groups from using the AWS AdministratorAccess policy"
+	PASSED for resource: module.vpc.aws_iam_role_policy_attachment.vpc_operations
+	File: /modules/vpc/main.tf:522-525
+	Calling File: /main.tf:2-8
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-274
+Check: CKV_AWS_130: "Ensure VPC subnets do not assign public IP by default"
+	PASSED for resource: module.vpc.aws_subnet.public[1]
+	File: /modules/vpc/main.tf:72-85
+	Calling File: /main.tf:2-8
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/ensure-vpc-subnets-do-not-assign-public-ip-by-default
+Check: CKV_AWS_130: "Ensure VPC subnets do not assign public IP by default"
+	PASSED for resource: module.vpc.aws_subnet.private[1]
+	File: /modules/vpc/main.tf:88-101
+	Calling File: /main.tf:2-8
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/ensure-vpc-subnets-do-not-assign-public-ip-by-default
+Check: CKV_AWS_319: "Ensure that CloudWatch alarm actions are enabled"
+	PASSED for resource: module.vpc.aws_cloudwatch_metric_alarm.nat_gateway[1]
+	File: /modules/vpc/main.tf:381-404
+	Calling File: /main.tf:2-8
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/bc-aws-319
+Check: CKV_AWS_319: "Ensure that CloudWatch alarm actions are enabled"
+	PASSED for resource: module.vpc.aws_cloudwatch_metric_alarm.nat_gateway_bandwidth[1]
+	File: /modules/vpc/main.tf:457-480
+	Calling File: /main.tf:2-8
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/bc-aws-319
+Check: CKV_AWS_41: "Ensure no hard coded AWS access key and secret key exists in provider"
+	PASSED for resource: aws.default
+	File: /providers.tf:11-21
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/secrets-policies/bc-aws-secrets-5
+Check: CKV_AWS_41: "Ensure no hard coded AWS access key and secret key exists in provider"
+	PASSED for resource: aws.replica
+	File: /providers.tf:24-35
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/secrets-policies/bc-aws-secrets-5
+Check: CKV2_AWS_44: "Ensure AWS route table with VPC peering does not contain routes overly permissive to all traffic"
+	PASSED for resource: module.vpc.aws_route_table.public
+	File: /modules/vpc/main.tf:165-179
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/ensure-aws-route-table-with-vpc-peering-does-not-contain-routes-overly-permissive-to-all-traffic
+Check: CKV2_AWS_44: "Ensure AWS route table with VPC peering does not contain routes overly permissive to all traffic"
+	PASSED for resource: module.vpc.aws_route_table.private[0]
+	File: /modules/vpc/main.tf:182-192
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/ensure-aws-route-table-with-vpc-peering-does-not-contain-routes-overly-permissive-to-all-traffic
+Check: CKV2_AWS_44: "Ensure AWS route table with VPC peering does not contain routes overly permissive to all traffic"
+	PASSED for resource: module.vpc.aws_route.private_nat[0]
+	File: /modules/vpc/main.tf:195-200
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/ensure-aws-route-table-with-vpc-peering-does-not-contain-routes-overly-permissive-to-all-traffic
+Check: CKV2_AWS_44: "Ensure AWS route table with VPC peering does not contain routes overly permissive to all traffic"
+	PASSED for resource: module.vpc.aws_route_table.private[1]
+	File: /modules/vpc/main.tf:182-192
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/ensure-aws-route-table-with-vpc-peering-does-not-contain-routes-overly-permissive-to-all-traffic
+Check: CKV2_AWS_44: "Ensure AWS route table with VPC peering does not contain routes overly permissive to all traffic"
+	PASSED for resource: module.vpc.aws_route.private_nat[1]
+	File: /modules/vpc/main.tf:195-200
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/ensure-aws-route-table-with-vpc-peering-does-not-contain-routes-overly-permissive-to-all-traffic
+Check: CKV2_AWS_41: "Ensure an IAM role is attached to EC2 instance"
+	PASSED for resource: module.ec2.aws_instance.main
+	File: /modules/ec2/main.tf:2-85
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/ensure-an-iam-role-is-attached-to-ec2-instance
+Check: CKV2_AWS_11: "Ensure VPC flow logging is enabled in all VPCs"
+	PASSED for resource: module.vpc.aws_vpc.main
+	File: /modules/vpc/main.tf:2-13
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-logging-policies/logging-9-enable-vpc-flow-logging
+Check: CKV2_AWS_56: "Ensure AWS Managed IAMFullAccess IAM policy is not used."
+	PASSED for resource: aws_iam_role.replication
+	File: /cis_report.tf:250-265
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-2-56
+Check: CKV2_AWS_56: "Ensure AWS Managed IAMFullAccess IAM policy is not used."
+	PASSED for resource: module.ec2.aws_iam_role.instance_role
+	File: /modules/ec2/main.tf:171-193
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-2-56
+Check: CKV2_AWS_56: "Ensure AWS Managed IAMFullAccess IAM policy is not used."
+	PASSED for resource: module.ec2.aws_iam_role_policy_attachment.cloudwatch_logs
+	File: /modules/ec2/main.tf:202-205
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-2-56
+Check: CKV2_AWS_56: "Ensure AWS Managed IAMFullAccess IAM policy is not used."
+	PASSED for resource: module.ec2.aws_iam_role_policy_attachment.ssm
+	File: /modules/ec2/main.tf:208-211
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-2-56
+Check: CKV2_AWS_56: "Ensure AWS Managed IAMFullAccess IAM policy is not used."
+	PASSED for resource: module.vpc.aws_iam_role.vpc_flow_log_role
+	File: /modules/vpc/main.tf:37-69
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-2-56
+Check: CKV2_AWS_35: "AWS NAT Gateways should be utilized for the default route"
+	PASSED for resource: module.vpc.aws_route_table.public
+	File: /modules/vpc/main.tf:165-179
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/ensure-aws-nat-gateways-are-utilized-for-the-default-route
+Check: CKV2_AWS_35: "AWS NAT Gateways should be utilized for the default route"
+	PASSED for resource: module.vpc.aws_route_table.private[0]
+	File: /modules/vpc/main.tf:182-192
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/ensure-aws-nat-gateways-are-utilized-for-the-default-route
+Check: CKV2_AWS_35: "AWS NAT Gateways should be utilized for the default route"
+	PASSED for resource: module.vpc.aws_route.private_nat[0]
+	File: /modules/vpc/main.tf:195-200
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/ensure-aws-nat-gateways-are-utilized-for-the-default-route
+Check: CKV2_AWS_35: "AWS NAT Gateways should be utilized for the default route"
+	PASSED for resource: module.vpc.aws_route_table.private[1]
+	File: /modules/vpc/main.tf:182-192
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/ensure-aws-nat-gateways-are-utilized-for-the-default-route
+Check: CKV2_AWS_35: "AWS NAT Gateways should be utilized for the default route"
+	PASSED for resource: module.vpc.aws_route.private_nat[1]
+	File: /modules/vpc/main.tf:195-200
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/ensure-aws-nat-gateways-are-utilized-for-the-default-route
+Check: CKV2_AWS_40: "Ensure AWS IAM policy does not allow full IAM privileges"
+	PASSED for resource: module.ec2.aws_iam_policy.s3_access
+	File: /modules/ec2/main.tf:214-235
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-2-40
+Check: CKV2_AWS_40: "Ensure AWS IAM policy does not allow full IAM privileges"
+	PASSED for resource: module.ec2.aws_iam_role_policy.cloudwatch_logs
+	File: /modules/ec2/main.tf:270-289
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-2-40
+Check: CKV2_AWS_40: "Ensure AWS IAM policy does not allow full IAM privileges"
+	PASSED for resource: module.vpc.aws_iam_policy.vpc_operations
+	File: /modules/vpc/main.tf:483-519
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-2-40
+Check: CKV2_AWS_19: "Ensure that all EIP addresses allocated to a VPC are attached to EC2 instances"
+	PASSED for resource: module.vpc.aws_eip.nat[0]
+	File: /modules/vpc/main.tf:116-126
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/ensure-that-all-eip-addresses-allocated-to-a-vpc-are-attached-to-ec2-instances
+Check: CKV2_AWS_19: "Ensure that all EIP addresses allocated to a VPC are attached to EC2 instances"
+	PASSED for resource: module.vpc.aws_eip.nat[1]
+	File: /modules/vpc/main.tf:116-126
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/ensure-that-all-eip-addresses-allocated-to-a-vpc-are-attached-to-ec2-instances
+Check: CKV_AWS_20: "S3 Bucket has an ACL defined which allows public READ access."
+	PASSED for resource: aws_s3_bucket.terraform_state
+	File: /bootstrap/main.tf:2-13
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-1-acl-read-permissions-everyone
+Check: CKV_AWS_20: "S3 Bucket has an ACL defined which allows public READ access."
+	PASSED for resource: aws_s3_bucket.terraform_state_replica
+	File: /bootstrap/main.tf:46-58
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-1-acl-read-permissions-everyone
+Check: CKV_AWS_20: "S3 Bucket has an ACL defined which allows public READ access."
+	PASSED for resource: aws_s3_bucket.access_logs_primary
+	File: /bootstrap/main.tf:94-105
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-1-acl-read-permissions-everyone
+Check: CKV_AWS_20: "S3 Bucket has an ACL defined which allows public READ access."
+	PASSED for resource: aws_s3_bucket.access_logs_replica
+	File: /bootstrap/main.tf:138-150
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-1-acl-read-permissions-everyone
+Check: CKV_AWS_20: "S3 Bucket has an ACL defined which allows public READ access."
+	PASSED for resource: aws_s3_bucket.cis_report
+	File: /cis_report.tf:2-13
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-1-acl-read-permissions-everyone
+Check: CKV_AWS_20: "S3 Bucket has an ACL defined which allows public READ access."
+	PASSED for resource: aws_s3_bucket.cis_report_replica
+	File: /cis_report.tf:46-58
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-1-acl-read-permissions-everyone
+Check: CKV_AWS_20: "S3 Bucket has an ACL defined which allows public READ access."
+	PASSED for resource: aws_s3_bucket.access_logs
+	File: /cis_report.tf:111-122
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-1-acl-read-permissions-everyone
+Check: CKV_AWS_20: "S3 Bucket has an ACL defined which allows public READ access."
+	PASSED for resource: aws_s3_bucket.access_logs_replica
+	File: /cis_report.tf:155-167
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-1-acl-read-permissions-everyone
+Check: CKV_AWS_57: "S3 Bucket has an ACL defined which allows public WRITE access."
+	PASSED for resource: aws_s3_bucket.terraform_state
+	File: /bootstrap/main.tf:2-13
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-2-acl-write-permissions-everyone
+Check: CKV_AWS_57: "S3 Bucket has an ACL defined which allows public WRITE access."
+	PASSED for resource: aws_s3_bucket.terraform_state_replica
+	File: /bootstrap/main.tf:46-58
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-2-acl-write-permissions-everyone
+Check: CKV_AWS_57: "S3 Bucket has an ACL defined which allows public WRITE access."
+	PASSED for resource: aws_s3_bucket.access_logs_primary
+	File: /bootstrap/main.tf:94-105
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-2-acl-write-permissions-everyone
+Check: CKV_AWS_57: "S3 Bucket has an ACL defined which allows public WRITE access."
+	PASSED for resource: aws_s3_bucket.access_logs_replica
+	File: /bootstrap/main.tf:138-150
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-2-acl-write-permissions-everyone
+Check: CKV_AWS_57: "S3 Bucket has an ACL defined which allows public WRITE access."
+	PASSED for resource: aws_s3_bucket.cis_report
+	File: /cis_report.tf:2-13
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-2-acl-write-permissions-everyone
+Check: CKV_AWS_57: "S3 Bucket has an ACL defined which allows public WRITE access."
+	PASSED for resource: aws_s3_bucket.cis_report_replica
+	File: /cis_report.tf:46-58
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-2-acl-write-permissions-everyone
+Check: CKV_AWS_57: "S3 Bucket has an ACL defined which allows public WRITE access."
+	PASSED for resource: aws_s3_bucket.access_logs
+	File: /cis_report.tf:111-122
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-2-acl-write-permissions-everyone
+Check: CKV_AWS_57: "S3 Bucket has an ACL defined which allows public WRITE access."
+	PASSED for resource: aws_s3_bucket.access_logs_replica
+	File: /cis_report.tf:155-167
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-2-acl-write-permissions-everyone
+Check: CKV_AWS_18: "Ensure the S3 bucket has access logging enabled"
+	PASSED for resource: aws_s3_bucket.terraform_state
+	File: /bootstrap/main.tf:2-13
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-13-enable-logging
+Check: CKV_AWS_18: "Ensure the S3 bucket has access logging enabled"
+	PASSED for resource: aws_s3_bucket.access_logs_primary
+	File: /bootstrap/main.tf:94-105
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-13-enable-logging
+Check: CKV_AWS_18: "Ensure the S3 bucket has access logging enabled"
+	PASSED for resource: aws_s3_bucket.terraform_state_replica
+	File: /bootstrap/main.tf:46-58
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-13-enable-logging
+Check: CKV_AWS_18: "Ensure the S3 bucket has access logging enabled"
+	PASSED for resource: aws_s3_bucket.access_logs_replica
+	File: /bootstrap/main.tf:138-150
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-13-enable-logging
+Check: CKV_AWS_18: "Ensure the S3 bucket has access logging enabled"
+	PASSED for resource: aws_s3_bucket.cis_report
+	File: /cis_report.tf:2-13
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-13-enable-logging
+Check: CKV_AWS_18: "Ensure the S3 bucket has access logging enabled"
+	PASSED for resource: aws_s3_bucket.access_logs
+	File: /cis_report.tf:111-122
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-13-enable-logging
+Check: CKV_AWS_18: "Ensure the S3 bucket has access logging enabled"
+	PASSED for resource: aws_s3_bucket.cis_report_replica
+	File: /cis_report.tf:46-58
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-13-enable-logging
+Check: CKV_AWS_18: "Ensure the S3 bucket has access logging enabled"
+	PASSED for resource: aws_s3_bucket.access_logs_replica
+	File: /cis_report.tf:155-167
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-13-enable-logging
+Check: CKV_AWS_145: "Ensure that S3 buckets are encrypted with KMS by default"
+	PASSED for resource: aws_s3_bucket.terraform_state
+	File: /bootstrap/main.tf:2-13
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/ensure-that-s3-buckets-are-encrypted-with-kms-by-default
+Check: CKV_AWS_145: "Ensure that S3 buckets are encrypted with KMS by default"
+	PASSED for resource: aws_s3_bucket.terraform_state_replica
+	File: /bootstrap/main.tf:46-58
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/ensure-that-s3-buckets-are-encrypted-with-kms-by-default
+Check: CKV_AWS_145: "Ensure that S3 buckets are encrypted with KMS by default"
+	PASSED for resource: aws_s3_bucket.access_logs_primary
+	File: /bootstrap/main.tf:94-105
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/ensure-that-s3-buckets-are-encrypted-with-kms-by-default
+Check: CKV_AWS_145: "Ensure that S3 buckets are encrypted with KMS by default"
+	PASSED for resource: aws_s3_bucket.access_logs_replica
+	File: /bootstrap/main.tf:138-150
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/ensure-that-s3-buckets-are-encrypted-with-kms-by-default
+Check: CKV_AWS_145: "Ensure that S3 buckets are encrypted with KMS by default"
+	PASSED for resource: aws_s3_bucket.cis_report
+	File: /cis_report.tf:2-13
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/ensure-that-s3-buckets-are-encrypted-with-kms-by-default
+Check: CKV_AWS_145: "Ensure that S3 buckets are encrypted with KMS by default"
+	PASSED for resource: aws_s3_bucket.cis_report_replica
+	File: /cis_report.tf:46-58
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/ensure-that-s3-buckets-are-encrypted-with-kms-by-default
+Check: CKV_AWS_145: "Ensure that S3 buckets are encrypted with KMS by default"
+	PASSED for resource: aws_s3_bucket.access_logs
+	File: /cis_report.tf:111-122
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/ensure-that-s3-buckets-are-encrypted-with-kms-by-default
+Check: CKV_AWS_145: "Ensure that S3 buckets are encrypted with KMS by default"
+	PASSED for resource: aws_s3_bucket.access_logs_replica
+	File: /cis_report.tf:155-167
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/ensure-that-s3-buckets-are-encrypted-with-kms-by-default
+Check: CKV2_AWS_6: "Ensure that S3 bucket has a Public Access block"
+	PASSED for resource: aws_s3_bucket.terraform_state
+	File: /bootstrap/main.tf:2-13
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/s3-bucket-should-have-public-access-blocks-defaults-to-false-if-the-public-access-block-is-not-attached
+Check: CKV2_AWS_6: "Ensure that S3 bucket has a Public Access block"
+	PASSED for resource: aws_s3_bucket.terraform_state_replica
+	File: /bootstrap/main.tf:46-58
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/s3-bucket-should-have-public-access-blocks-defaults-to-false-if-the-public-access-block-is-not-attached
+Check: CKV2_AWS_6: "Ensure that S3 bucket has a Public Access block"
+	PASSED for resource: aws_s3_bucket.access_logs_primary
+	File: /bootstrap/main.tf:94-105
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/s3-bucket-should-have-public-access-blocks-defaults-to-false-if-the-public-access-block-is-not-attached
+Check: CKV2_AWS_6: "Ensure that S3 bucket has a Public Access block"
+	PASSED for resource: aws_s3_bucket.access_logs_replica
+	File: /bootstrap/main.tf:138-150
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/s3-bucket-should-have-public-access-blocks-defaults-to-false-if-the-public-access-block-is-not-attached
+Check: CKV2_AWS_6: "Ensure that S3 bucket has a Public Access block"
+	PASSED for resource: aws_s3_bucket.cis_report
+	File: /cis_report.tf:2-13
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/s3-bucket-should-have-public-access-blocks-defaults-to-false-if-the-public-access-block-is-not-attached
+Check: CKV2_AWS_6: "Ensure that S3 bucket has a Public Access block"
+	PASSED for resource: aws_s3_bucket.cis_report_replica
+	File: /cis_report.tf:46-58
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/s3-bucket-should-have-public-access-blocks-defaults-to-false-if-the-public-access-block-is-not-attached
+Check: CKV2_AWS_6: "Ensure that S3 bucket has a Public Access block"
+	PASSED for resource: aws_s3_bucket.access_logs
+	File: /cis_report.tf:111-122
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/s3-bucket-should-have-public-access-blocks-defaults-to-false-if-the-public-access-block-is-not-attached
+Check: CKV2_AWS_6: "Ensure that S3 bucket has a Public Access block"
+	PASSED for resource: aws_s3_bucket.access_logs_replica
+	File: /cis_report.tf:155-167
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/s3-bucket-should-have-public-access-blocks-defaults-to-false-if-the-public-access-block-is-not-attached
+Check: CKV_AWS_21: "Ensure all data stored in the S3 bucket have versioning enabled"
+	PASSED for resource: aws_s3_bucket.terraform_state
+	File: /bootstrap/main.tf:2-13
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-16-enable-versioning
+Check: CKV_AWS_21: "Ensure all data stored in the S3 bucket have versioning enabled"
+	PASSED for resource: aws_s3_bucket.terraform_state_replica
+	File: /bootstrap/main.tf:46-58
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-16-enable-versioning
+Check: CKV_AWS_21: "Ensure all data stored in the S3 bucket have versioning enabled"
+	PASSED for resource: aws_s3_bucket.access_logs_primary
+	File: /bootstrap/main.tf:94-105
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-16-enable-versioning
+Check: CKV_AWS_21: "Ensure all data stored in the S3 bucket have versioning enabled"
+	PASSED for resource: aws_s3_bucket.access_logs_replica
+	File: /bootstrap/main.tf:138-150
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-16-enable-versioning
+Check: CKV_AWS_21: "Ensure all data stored in the S3 bucket have versioning enabled"
+	PASSED for resource: aws_s3_bucket.cis_report
+	File: /cis_report.tf:2-13
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-16-enable-versioning
+Check: CKV_AWS_21: "Ensure all data stored in the S3 bucket have versioning enabled"
+	PASSED for resource: aws_s3_bucket.cis_report_replica
+	File: /cis_report.tf:46-58
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-16-enable-versioning
+Check: CKV_AWS_21: "Ensure all data stored in the S3 bucket have versioning enabled"
+	PASSED for resource: aws_s3_bucket.access_logs
+	File: /cis_report.tf:111-122
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-16-enable-versioning
+Check: CKV_AWS_21: "Ensure all data stored in the S3 bucket have versioning enabled"
+	PASSED for resource: aws_s3_bucket.access_logs_replica
+	File: /cis_report.tf:155-167
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-16-enable-versioning
+Check: CKV_AWS_19: "Ensure all data stored in the S3 bucket is securely encrypted at rest"
+	PASSED for resource: aws_s3_bucket.terraform_state
+	File: /bootstrap/main.tf:2-13
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-14-data-encrypted-at-rest
+Check: CKV_AWS_19: "Ensure all data stored in the S3 bucket is securely encrypted at rest"
+	PASSED for resource: aws_s3_bucket.terraform_state_replica
+	File: /bootstrap/main.tf:46-58
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-14-data-encrypted-at-rest
+Check: CKV_AWS_19: "Ensure all data stored in the S3 bucket is securely encrypted at rest"
+	PASSED for resource: aws_s3_bucket.access_logs_primary
+	File: /bootstrap/main.tf:94-105
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-14-data-encrypted-at-rest
+Check: CKV_AWS_19: "Ensure all data stored in the S3 bucket is securely encrypted at rest"
+	PASSED for resource: aws_s3_bucket.access_logs_replica
+	File: /bootstrap/main.tf:138-150
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-14-data-encrypted-at-rest
+Check: CKV_AWS_19: "Ensure all data stored in the S3 bucket is securely encrypted at rest"
+	PASSED for resource: aws_s3_bucket.cis_report
+	File: /cis_report.tf:2-13
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-14-data-encrypted-at-rest
+Check: CKV_AWS_19: "Ensure all data stored in the S3 bucket is securely encrypted at rest"
+	PASSED for resource: aws_s3_bucket.cis_report_replica
+	File: /cis_report.tf:46-58
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-14-data-encrypted-at-rest
+Check: CKV_AWS_19: "Ensure all data stored in the S3 bucket is securely encrypted at rest"
+	PASSED for resource: aws_s3_bucket.access_logs
+	File: /cis_report.tf:111-122
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-14-data-encrypted-at-rest
+Check: CKV_AWS_19: "Ensure all data stored in the S3 bucket is securely encrypted at rest"
+	PASSED for resource: aws_s3_bucket.access_logs_replica
+	File: /cis_report.tf:155-167
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-14-data-encrypted-at-rest
+Check: CKV_AWS_144: "Ensure that S3 bucket has cross-region replication enabled"
+	PASSED for resource: aws_s3_bucket.terraform_state
+	File: /bootstrap/main.tf:2-13
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/ensure-that-s3-bucket-has-cross-region-replication-enabled
+Check: CKV_AWS_144: "Ensure that S3 bucket has cross-region replication enabled"
+	PASSED for resource: aws_s3_bucket.terraform_state_replica
+	File: /bootstrap/main.tf:46-58
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/ensure-that-s3-bucket-has-cross-region-replication-enabled
+Check: CKV_AWS_144: "Ensure that S3 bucket has cross-region replication enabled"
+	PASSED for resource: aws_s3_bucket.access_logs_primary
+	File: /bootstrap/main.tf:94-105
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/ensure-that-s3-bucket-has-cross-region-replication-enabled
+Check: CKV_AWS_144: "Ensure that S3 bucket has cross-region replication enabled"
+	PASSED for resource: aws_s3_bucket.access_logs_replica
+	File: /bootstrap/main.tf:138-150
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/ensure-that-s3-bucket-has-cross-region-replication-enabled
+Check: CKV_AWS_144: "Ensure that S3 bucket has cross-region replication enabled"
+	PASSED for resource: aws_s3_bucket.access_logs
+	File: /cis_report.tf:111-122
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/ensure-that-s3-bucket-has-cross-region-replication-enabled
+Check: CKV_AWS_144: "Ensure that S3 bucket has cross-region replication enabled"
+	PASSED for resource: aws_s3_bucket.access_logs_replica
+	File: /cis_report.tf:155-167
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/ensure-that-s3-bucket-has-cross-region-replication-enabled
+Check: CKV_AWS_144: "Ensure that S3 bucket has cross-region replication enabled"
+	PASSED for resource: aws_s3_bucket.cis_report
+	File: /cis_report.tf:2-13
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/ensure-that-s3-bucket-has-cross-region-replication-enabled
+Check: CKV_AWS_144: "Ensure that S3 bucket has cross-region replication enabled"
+	PASSED for resource: aws_s3_bucket.cis_report_replica
+	File: /cis_report.tf:46-58
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/ensure-that-s3-bucket-has-cross-region-replication-enabled
+
+Running tfsec...
+tfsec .
+
+[0m[3mResults #1-2[0m [0m[31mHIGH[39m[0m [1mIAM policy document uses sensitive action 's3:PutObject' on wildcarded resource 'cis-reports'[0m [2m(2 similar results)[0m
+[0m[0m[90m────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+[0m[0m  [3mmodules/ec2/main.tf[2m[3m:219
+[0m[0m   [2mvia [0m[3mmain.tf[2m[3m:20-29 (module.ec2)
+[0m[0m[90m────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
+[0m[0m[90m  214  [0m[0m  [0m[38;5;33mresource[0m [38;5;37m"aws_iam_policy"[0m [38;5;37m"s3_access"[0m {[0m
+[0m[90m  ...  [0m
+[0m[31m  219  [0m[0m[31m[[39m[0m[0m     [38;5;245mVersion[0m = [38;5;37m"2012-10-17"[0m
+[0m[90m  ...  [0m
+[0m[90m  235  [0m[0m  }[0m
+[0m[90m────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
+[0m[0m  [2mIndividual Causes
+[0m[0m  [2m- [0m[3mmodules/ec2/main.tf[2m[3m:20-29 (module.ec2)[0m [2m[3m2 instances
+[0m[0m[90m────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
+[0m[0m  [2m        ID[0m[3m aws-iam-no-policy-wildcards
+[0m[0m  [2m    Impact[0m Overly permissive policies may grant access to sensitive resources
+[0m[0m  [2mResolution[0m Specify the exact permissions required, and to which resources they should apply instead of using wildcards.
+[0m[0m
+  [2mMore Information[0m[0m[0m
+  [2m-[0m [34mhttps://aquasecurity.github.io/tfsec/v1.28.1/checks/aws/iam/no-policy-wildcards/[0m[0m
+  [2m-[0m [34mhttps://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document[0m[0m
+[90m────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
+
+
+[0m[0m[3mResult #3[0m [0m[31mHIGH[39m[0m [1mIAM policy document uses sensitive action 'logs:CreateLogStream' on wildcarded resource '3cd1a419-4ab0-4e8b-8079-276c5120899b:*'[0m [2m[0m
+[0m[0m[90m────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+[0m[0m  [3mmodules/ec2/main.tf[3m[2m:275
+[0m[0m   [2mvia [0m[3mmain.tf[2m[3m:20-29 (module.ec2)
+[0m[0m[90m────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
+[0m[0m[90m  270  [0m[0m  [0m[38;5;33mresource[0m [38;5;37m"aws_iam_role_policy"[0m [38;5;37m"cloudwatch_logs"[0m {[0m
+[0m[90m  ...  [0m
+[0m[31m  275  [0m[0m[31m[[39m[0m[0m     [38;5;245mVersion[0m = [38;5;37m"2012-10-17"[0m
+[0m[90m  ...  [0m
+[0m[90m  289  [0m[0m  }[0m
+[0m[90m────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
+[0m[0m  [2m        ID[0m[3m aws-iam-no-policy-wildcards
+[0m[0m  [2m    Impact[0m Overly permissive policies may grant access to sensitive resources
+[0m[0m  [2mResolution[0m Specify the exact permissions required, and to which resources they should apply instead of using wildcards.
+[0m[0m
+  [2mMore Information[0m[0m[0m
+  [2m-[0m [34mhttps://aquasecurity.github.io/tfsec/v1.28.1/checks/aws/iam/no-policy-wildcards/[0m[0m
+  [2m-[0m [34mhttps://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document[0m[0m
+[90m────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
+
+
+[0m[0m[3mResult #4[0m [0m[31mHIGH[39m[0m [1mIAM policy document uses sensitive action 'logs:CreateLogStream' on wildcarded resource 'ca86dda7-171c-4bab-91fd-03609cfebcc4:*'[0m [2m[0m
+[0m[0m[90m────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+[0m[0m  [3mmodules/vpc/main.tf[2m[3m:56
+[0m[0m   [2mvia [0m[3mmain.tf[3m[2m:2-8 (module.vpc)
+[0m[0m[90m────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
+[0m[0m[90m   37  [0m[0m  [0m[38;5;33mresource[0m [38;5;37m"aws_iam_role"[0m [38;5;37m"vpc_flow_log_role"[0m {[0m
+[0m[90m   ..  [0m
+[0m[31m   56  [0m[0m[31m[[39m[0m[0m       [38;5;245mVersion[0m = [38;5;37m"2012-10-17"[0m
+[0m[90m   ..  [0m
+[0m[90m   69  [0m[0m  }[0m
+[0m[90m────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
+[0m[0m  [2m        ID[0m[3m aws-iam-no-policy-wildcards
+[0m[0m  [2m    Impact[0m Overly permissive policies may grant access to sensitive resources
+[0m[0m  [2mResolution[0m Specify the exact permissions required, and to which resources they should apply instead of using wildcards.
+[0m[0m
+  [2mMore Information[0m[0m[0m
+  [2m-[0m [34mhttps://aquasecurity.github.io/tfsec/v1.28.1/checks/aws/iam/no-policy-wildcards/[0m[0m
+  [2m-[0m [34mhttps://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document[0m[0m
+[90m────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
+
+
+[0m[0m  [1mtimings[0m
+  ──────────────────────────────────────────
+[0m[0m  [2mdisk i/o            [0m 258.179µs
+[0m[0m  [2mparsing             [0m 34.439368ms
+[0m[0m  [2madaptation          [0m 4.98902ms
+[0m[0m  [2mchecks              [0m 19.222679ms
+[0m[0m  [2mtotal               [0m 58.909246ms
+[0m
+[0m  [1mcounts[0m
+  ──────────────────────────────────────────
+[0m[0m  [2mmodules downloaded  [0m 0
+[0m[0m  [2mmodules processed   [0m 4
+[0m[0m  [2mblocks processed    [0m 138
+[0m[0m  [2mfiles read          [0m 18
+[0m
+[0m  [1mresults[0m
+  ──────────────────────────────────────────
+[0m[0m  [2mpassed              [0m 90
+[0m[0m  [2mignored             [0m 0
+[0m[0m  [2mcritical            [0m 0
+[0m[0m  [2mhigh                [0m 4
+[0m[0m  [2mmedium              [0m 0
+[0m[0m  [2mlow                 [0m 0
+[0m
+[0m  [31m[1m90 passed, 4 potential problem(s) detected.
+
+[0m

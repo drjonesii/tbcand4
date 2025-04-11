@@ -9,8 +9,7 @@ resource "aws_security_group" "main" {
     to_port     = 443
     protocol    = "tcp"
     prefix_list_ids = [
-      data.aws_prefix_list.s3.id,
-      data.aws_prefix_list.dynamodb.id
+      data.aws_prefix_list.s3.id
     ]
   }
 
@@ -29,8 +28,4 @@ resource "aws_security_group" "main" {
 # Get AWS service prefix lists
 data "aws_prefix_list" "s3" {
   name = "com.amazonaws.*.s3"
-}
-
-data "aws_prefix_list" "dynamodb" {
-  name = "com.amazonaws.*.dynamodb"
 }

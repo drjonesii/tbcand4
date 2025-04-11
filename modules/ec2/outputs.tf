@@ -27,3 +27,14 @@ output "s3_policy_name" {
   description = "The name of the S3 access policy"
   value       = aws_iam_policy.s3_access.name
 }
+
+# Add CloudWatch log outputs
+output "instance_log_group_name" {
+  description = "Name of the EC2 instance log group"
+  value       = aws_cloudwatch_log_group.instance_logs.name
+}
+
+output "instance_log_stream_name" {
+  description = "Name of the EC2 instance log stream"
+  value       = aws_cloudwatch_log_stream.instance_log_stream.name
+}

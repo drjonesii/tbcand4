@@ -81,32 +81,7 @@ variable "cis_report_bucket" {
   }
 }
 
-variable "cloudwatch_kms_key_arn" {
-  description = "ARN of the KMS key used for CloudWatch logs encryption"
+variable "sns_topic_arn" {
+  description = "ARN of the SNS topic for alarm notifications"
   type        = string
-
-  validation {
-    condition     = can(regex("^arn:aws:kms:[a-z0-9-]+:[0-9]{12}:key/[a-f0-9-]{36}$", var.cloudwatch_kms_key_arn))
-    error_message = "Must be a valid KMS key ARN"
-  }
-}
-
-variable "s3_kms_key_arn" {
-  description = "ARN of the KMS key used for S3 encryption"
-  type        = string
-
-  validation {
-    condition     = can(regex("^arn:aws:kms:[a-z0-9-]+:[0-9]{12}:key/[a-f0-9-]{36}$", var.s3_kms_key_arn))
-    error_message = "Must be a valid KMS key ARN"
-  }
-}
-
-variable "dynamodb_kms_key_arn" {
-  description = "ARN of the KMS key used for DynamoDB encryption"
-  type        = string
-
-  validation {
-    condition     = can(regex("^arn:aws:kms:[a-z0-9-]+:[0-9]{12}:key/[a-f0-9-]{36}$", var.dynamodb_kms_key_arn))
-    error_message = "Must be a valid KMS key ARN"
-  }
 }

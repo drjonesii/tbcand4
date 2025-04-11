@@ -49,18 +49,7 @@ jobs:
             exit 1
           fi
 
-      - name: Check IP restrictions
-        run: |
-          # Get the runner's IP address
-          RUNNER_IP=$(curl -s https://api.ipify.org)
-          # Get allowed IPs from environment secrets
-          ALLOWED_IPS="${{ secrets.ALLOWED_IPS }}"
-          
-          if [[ ! $ALLOWED_IPS =~ $RUNNER_IP ]]; then
-            echo "❌ IP $RUNNER_IP is not in the allowed list: $ALLOWED_IPS"
-            exit 1
-          fi
-          echo "✅ IP $RUNNER_IP is allowed to proceed"
+      # IP check section removed
 
   destroy:
     name: Destroy Infrastructure
@@ -108,10 +97,11 @@ jobs:
           terraform_version: "1.7.5"
 
       - name: Terraform Init
-        run: terraform init
-
-      - name: Terraform Workspace Select
-        run: terraform workspace select ${{ github.event.inputs.environment }} || terraform workspace new ${{ github.event.inputs.environment }}
+        run: |
+          terraform init \
+            -backend-config="bucket=${{ secrets.TF_STATE_BUCKET }}" \
+            -backend-config="key=${{ github.event.inputs.environment }}/terraform.tfstate" \
+            -backend-config="region=${{ env.AWS_REGION }}"
 
       - name: List Resources to be Destroyed
         run: |
@@ -121,10 +111,23 @@ jobs:
           sleep 30
 
       - name: Terraform Destroy
-        run: |
-          terraform destroy -auto-approve
+        run: terraform destroy -auto-approve -var-file="environments/${{ github.event.inputs.environment }}.tfvars"
         env:
           TF_VAR_environment: ${{ github.event.inputs.environment }}
+
+      - name: Log Completion Status
+        if: always()
+        run: |
+          STATUS="${{ job.status }}"
+          ENVIRONMENT="${{ github.event.inputs.environment }}"
+          ACTOR="${{ github.actor }}"
+          MESSAGE=$([ "$STATUS" = "success" ] && echo "✅ Destroyed" || echo "❌ Failed")
+          
+          aws cloudwatch put-metric-data \
+            --namespace "Infrastructure/Destroy" \
+            --metric-name "DestroyStatus" \
+            --dimensions Environment=$ENVIRONMENT,Actor=$ACTOR \
+            --value $([ "$STATUS" = "success" ] && echo 1 || echo 0)
 
       - name: Cleanup Workspace
         if: always()

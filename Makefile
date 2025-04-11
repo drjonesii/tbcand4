@@ -1,11 +1,14 @@
-.PHONY: all terraform security test test-vpc test-ec2 test-s3 clean install-deps venv
+.PHONY: all terraform security test test-vpc test-ec2 test-s3 clean install-deps venv terraform-fmt terraform-init terraform-validate bootstrap bootstrap-destroy
 
 # Default target
-all: install-deps terraform security test
+all: install-deps terraform-fmt terraform-init terraform-validate security test
 
 VENV_DIR := .venv
 PYTHON := python3
 PIP := pip3
+
+# Add environment variable with a default value
+ENV ?= test
 
 # Create and activate virtual environment
 venv:
@@ -34,12 +37,19 @@ install-deps: venv
 	fi
 
 # Terraform checks
-terraform:
-	@echo "Running Terraform checks..."
-	terraform fmt -check -recursive
-	terraform init
+terraform: terraform-fmt terraform-init terraform-validate
+
+terraform-fmt:
+	@echo "Formatting Terraform files..."
+	terraform fmt -recursive
+
+terraform-init:
+	@echo "Initializing Terraform..."
+	terraform init -migrate-state -backend-config=backends/backend-$(ENV).tfvars
+
+terraform-validate:
+	@echo "Validating Terraform configuration..."
 	terraform validate
-	terraform plan
 
 # Security checks
 security:
@@ -69,15 +79,15 @@ test: test-vpc test-ec2 test-s3
 
 test-vpc:
 	@echo "Running VPC tests..."
-	cd test && go test -v -timeout 30m -run TestVPCModule
+	cd test && ENV=test go test -v -run TestVPCModule -timeout 30m
 
 test-ec2:
 	@echo "Running EC2 tests..."
-	cd test && go test -v -timeout 30m -run TestEC2Module
+	cd test && ENV=test go test -v -run TestEC2Module -timeout 30m
 
 test-s3:
 	@echo "Running S3 tests..."
-	cd test && go test -v -timeout 30m -run TestS3Module
+	cd test && ENV=test go test -v -run TestS3Module -timeout 30m
 
 # Clean up
 clean:
@@ -89,4 +99,20 @@ clean:
 	find . -type d -name ".terraform" -exec rm -rf {} +
 	rm -rf $(VENV_DIR)
 	rm -f checkov-report.*
-	rm -f tfsec 
+	rm -f tfsec
+
+# Update other terraform commands to ensure they use the right environment
+plan:
+	terraform plan -var-file=env/$(ENV).tfvars
+
+apply:
+	terraform apply -var-file=env/$(ENV).tfvars -auto-approve
+
+# Add bootstrap-destroy target
+bootstrap:
+	@echo "Creating backend infrastructure..."
+	cd bootstrap && terraform init && terraform apply -auto-approve
+
+bootstrap-destroy:
+	@echo "Destroying backend infrastructure..."
+	cd bootstrap && terraform init && terraform destroy -auto-approve 

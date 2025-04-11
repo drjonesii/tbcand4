@@ -105,7 +105,7 @@ resource "aws_security_group" "instance" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = [data.aws_vpc.selected.cidr_block]
   }
 
   egress {
@@ -113,7 +113,7 @@ resource "aws_security_group" "instance" {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = [data.aws_vpc.selected.cidr_block]
   }
 
   egress {
@@ -121,15 +121,31 @@ resource "aws_security_group" "instance" {
     from_port   = 1024
     to_port     = 65535
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = [data.aws_vpc.selected.cidr_block]
   }
 
   # Keep VPC endpoint access
   egress {
-    description = "Allow access to VPC endpoints"
+    description = "Allow HTTPS to VPC endpoints"
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
+    cidr_blocks = [data.aws_vpc.selected.cidr_block]
+  }
+
+  egress {
+    description     = "Allow SSM Session Manager"
+    from_port       = 443
+    to_port         = 443
+    protocol        = "tcp"
+    prefix_list_ids = [data.aws_prefix_list.s3.id]
+  }
+
+  egress {
+    description = "Allow DNS resolution"
+    from_port   = 53
+    to_port     = 53
+    protocol    = "udp"
     cidr_blocks = [data.aws_vpc.selected.cidr_block]
   }
 
@@ -144,6 +160,11 @@ resource "aws_security_group" "instance" {
 # Get VPC details for CIDR block
 data "aws_vpc" "selected" {
   id = var.vpc_id
+}
+
+# Get S3 prefix list for VPC endpoint
+data "aws_prefix_list" "s3" {
+  name = "com.amazonaws.${data.aws_region.current.name}.s3"
 }
 
 # Create IAM role for EC2 instance
@@ -191,8 +212,8 @@ resource "aws_iam_role_policy_attachment" "ssm" {
 
 # Create IAM policy for S3 access
 resource "aws_iam_policy" "s3_access" {
-  name        = "${var.project_name}-s3-access-policy"
-  description = "Policy to allow EC2 instance to write CIS reports to S3"
+  name = "${var.project_name}-s3-access"
+  path = "/"
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -205,19 +226,12 @@ resource "aws_iam_policy" "s3_access" {
           "s3:ListBucket"
         ]
         Resource = [
-          "arn:aws:s3:::${var.cis_report_bucket}",
-          "arn:aws:s3:::${var.cis_report_bucket}/*"
+          "${var.cis_report_bucket}",
+          "${var.cis_report_bucket}/*"
         ]
       }
     ]
   })
-
-  tags = {
-    Name        = "${var.project_name}-s3-access-policy"
-    Environment = var.environment
-    Owner       = "candidate4"
-    Project     = "turbot"
-  }
 }
 
 # Attach S3 access policy to EC2 role
@@ -226,55 +240,11 @@ resource "aws_iam_role_policy_attachment" "s3_access" {
   policy_arn = aws_iam_policy.s3_access.arn
 }
 
-# Create KMS key for CloudWatch logs encryption
-resource "aws_kms_key" "cloudwatch" {
-  description             = "KMS key for CloudWatch logs encryption"
-  deletion_window_in_days = 7
-  enable_key_rotation     = true
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Sid    = "Enable IAM User Permissions"
-        Effect = "Allow"
-        Principal = {
-          AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
-        }
-        Action   = "kms:*"
-        Resource = "*"
-      },
-      {
-        Sid    = "Allow CloudWatch Logs"
-        Effect = "Allow"
-        Principal = {
-          Service = "logs.${data.aws_region.current.name}.amazonaws.com"
-        }
-        Action = [
-          "kms:Encrypt*",
-          "kms:Decrypt*",
-          "kms:ReEncrypt*",
-          "kms:GenerateDataKey*",
-          "kms:Describe*"
-        ]
-        Resource = "*"
-      }
-    ]
-  })
-
-  tags = {
-    Name        = "${var.project_name}-cloudwatch-key"
-    Environment = var.environment
-    Owner       = "candidate4"
-    Project     = "turbot"
-  }
-}
-
 # Create CloudWatch Log Group
 resource "aws_cloudwatch_log_group" "instance_logs" {
   name              = "/aws/ec2/${var.project_name}-${var.environment}/instance-logs"
-  retention_in_days = 365 # 1 year retention
-  kms_key_id        = aws_kms_key.cloudwatch.arn
+  retention_in_days = 365
+  kms_key_id        = "alias/aws/logs" # Use AWS managed key
 
   tags = {
     Name        = "${var.project_name}-${var.environment}-instance-logs"
@@ -288,38 +258,17 @@ resource "aws_cloudwatch_log_group" "instance_logs" {
 data "aws_region" "current" {}
 
 # Get current AWS account ID
-data "aws_caller_identity" "current" {}
+# data "aws_caller_identity" "current" {}
 
-# Create KMS policy for EC2 instance
-resource "aws_iam_role_policy" "kms_policy" {
-  name = "${var.project_name}-kms-policy"
-  role = aws_iam_role.instance_role.id
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "kms:Decrypt",
-          "kms:DescribeKey",
-          "kms:Encrypt",
-          "kms:GenerateDataKey*",
-          "kms:ReEncrypt*"
-        ]
-        Resource = [
-          var.cloudwatch_kms_key_arn,  # For CloudWatch logs
-          var.s3_kms_key_arn,          # For S3 access
-          var.dynamodb_kms_key_arn     # For DynamoDB access
-        ]
-      }
-    ]
-  })
+# Create a specific log stream
+resource "aws_cloudwatch_log_stream" "instance_log_stream" {
+  name           = "${var.project_name}-${var.environment}-instance-logs"
+  log_group_name = aws_cloudwatch_log_group.instance_logs.name
 }
 
-# Replace CloudWatch Logs full access with specific permissions
+# Update policy to reference specific log stream
 resource "aws_iam_role_policy" "cloudwatch_logs" {
-  name = "${var.project_name}-cloudwatch-logs-policy"
+  name = "${var.project_name}-cloudwatch-logs"
   role = aws_iam_role.instance_role.id
 
   policy = jsonencode({
@@ -328,15 +277,11 @@ resource "aws_iam_role_policy" "cloudwatch_logs" {
       {
         Effect = "Allow"
         Action = [
-          "logs:CreateLogGroup",
           "logs:CreateLogStream",
-          "logs:PutLogEvents",
-          "logs:DescribeLogStreams",
-          "logs:DescribeLogGroups"
+          "logs:PutLogEvents"
         ]
         Resource = [
-          "${aws_cloudwatch_log_group.instance_logs.arn}:*",
-          aws_cloudwatch_log_group.instance_logs.arn
+          "${aws_cloudwatch_log_group.instance_logs.arn}:*"
         ]
       }
     ]
@@ -351,10 +296,10 @@ resource "aws_cloudwatch_metric_alarm" "instance_recovery" {
   metric_name         = "StatusCheckFailed_System"
   namespace           = "AWS/EC2"
   period              = "60"
-  statistic          = "Minimum"
-  threshold          = "0"
-  alarm_description  = "Recover EC2 instance when system status check fails"
-  alarm_actions      = ["arn:aws:automate:${data.aws_region.current.name}:ec2:recover"]
+  statistic           = "Minimum"
+  threshold           = "0"
+  alarm_description   = "Recover EC2 instance when system status check fails"
+  alarm_actions       = ["arn:aws:automate:${data.aws_region.current.name}:ec2:recover"]
 
   dimensions = {
     InstanceId = aws_instance.main.id
@@ -376,10 +321,10 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization" {
   metric_name         = "CPUUtilization"
   namespace           = "AWS/EC2"
   period              = "300"
-  statistic          = "Average"
-  threshold          = "80"
-  alarm_description  = "CPU utilization is too high"
-  alarm_actions      = [var.sns_topic_arn]
+  statistic           = "Average"
+  threshold           = "80"
+  alarm_description   = "CPU utilization is too high"
+  alarm_actions       = [var.sns_topic_arn]
 
   dimensions = {
     InstanceId = aws_instance.main.id
@@ -399,12 +344,12 @@ resource "aws_cloudwatch_metric_alarm" "memory_utilization" {
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = "2"
   metric_name         = "mem_used_percent"
-  namespace          = "CWAgent"
-  period             = "300"
-  statistic          = "Average"
-  threshold          = "80"
-  alarm_description  = "Memory utilization is too high"
-  alarm_actions      = [var.sns_topic_arn]
+  namespace           = "CWAgent"
+  period              = "300"
+  statistic           = "Average"
+  threshold           = "80"
+  alarm_description   = "Memory utilization is too high"
+  alarm_actions       = [var.sns_topic_arn]
 
   dimensions = {
     InstanceId = aws_instance.main.id

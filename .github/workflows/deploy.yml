@@ -16,8 +16,32 @@ permissions:
   contents: read
 
 jobs:
+  bootstrap:
+    name: Bootstrap Backend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-role
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Bootstrap Backend Infrastructure
+        working-directory: tbcand4/bootstrap
+        run: |
+          terraform init
+          terraform apply -auto-approve
+
   security-checks:
     name: Security Checks
+    needs: bootstrap
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -210,7 +234,6 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: prod
-      url: ${{ steps.deployment-url.outputs.url }}
     timeout-minutes: 60  # Approval must happen within 60 minutes
     
     steps:
@@ -509,6 +532,15 @@ jobs:
           
           echo "### Most Expensive Resources" >> /tmp/cost-details.md
           jq -r '.[] | "- \(.name): \$\(.cost)/month"' /tmp/top-costs.json >> /tmp/cost-details.md
+
+  set-deployment-url:
+    name: Set Deployment URL
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set Deployment URL
+        id: deployment-url
+        run: |
+          echo "url=https://console.aws.amazon.com/cloudwatch/home?region=${{ env.AWS_REGION }}" >> $GITHUB_OUTPUT
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
