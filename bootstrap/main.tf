@@ -12,6 +12,11 @@ resource "aws_s3_bucket" "terraform_state" {
   }
 }
 
+variable "project_name" {
+    type = string
+    description = "candidate4-prod"
+}
+
 # Enable versioning for state bucket
 resource "aws_s3_bucket_versioning" "terraform_state" {
   bucket = aws_s3_bucket.terraform_state.id
